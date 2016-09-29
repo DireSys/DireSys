@@ -1,44 +1,44 @@
 Goal: Make it out of the spaceship
 
-Features:
+* Features
 
-* Roguelikelike
-* Tile engine
-* Fixed maps (3 maps)
-** Arcade mode?
+  * Roguelikelike
+  * Tile engine
+  * Fixed maps (3 maps)
+  ** Arcade mode?
 
-Art:
+* Art
 
-* 160 x 144 resolution
-* 2-bit / 4 colours
-* 4-channel audio -- 4-bit PCM @ 8126?Hz (bsfx?)
+  * 160 x 144 resolution
+  * 2-bit / 4 colours
+  * 4-channel audio -- 4-bit PCM @ 8126?Hz (bsfx?)
 
-Controls:
+* Controls
 
-* Button 1: Run (held) / Action
-* Button 2: Use item
-* Start: Motion Sensor / Menu
-* Select: Switch item
+  * Button 1: Run (held) / Action
+  * Button 2: Use item
+  * Start: Motion Sensor / Menu
+  * Select: Switch item
 
-Gameplay:
+* Gameplay
 
-* Pixel-perfect movement
-* Top-down
-* Field of view
-* Fog of war
-* Sounds play important role (stereo?)
-** Left/Right, Loud/Quiet
+  * Pixel-perfect movement
+  * Top-down
+  * Field of view
+  * Fog of war
+  * Sounds play important role (stereo?)
+  ** Left/Right, Loud/Quiet
 
-* Hiding
-** Tables
-** Closets
-** Vents
-** Line-of-sight
-** Light level?
+  * Hiding
+  ** Tables
+  ** Closets
+  ** Vents
+  ** Line-of-sight
+  ** Light level?
 
-Monster(s):
+* Monster(s)
 
-* Primary: Alien / Stalker
-* Secondary:
-** Androids
-** Alarm systems / Sound generators
+  * Primary: Alien / Stalker
+  * Secondary:
+  ** Androids
+  ** Alarm systems / Sound generators
