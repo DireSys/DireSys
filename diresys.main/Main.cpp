@@ -1,9 +1,10 @@
 #include <SFML/Graphics.hpp>
 
+#include "DireSys.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(160, 144), "DireSys");
+	sf::RenderWindow window(sf::VideoMode(160, 144), APP_NAME);
 	sf::CircleShape shape(60.f);
 	shape.setFillColor(sf::Color::Green);
 
