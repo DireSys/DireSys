@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="DireSys.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="World.h" />
