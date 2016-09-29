@@ -11,16 +11,17 @@ class World {
 private:
 	int width;
 	int height;
-	vector<unique_ptr<Tile>> map;
+	vector<Tile*> map;
 	b2World box_world;
+	vector<Actor*> actor_list;
 public:
 	World(int width, int height);
 	~World();
 
-	void setTile(int tile_x, int tile_y, unique_ptr<Tile> tile);
-	unique_ptr<Tile> getTile(int tile_x, int tile_y);
-	void addActor(int tile_x, int tile_y, unique_ptr<Actor> actor);
-	void removeActor(unique_ptr<Actor> actor);
+	void setTile(int tile_x, int tile_y, const Tile* tile);
+	const Tile* getTile(int tile_x, int tile_y);
+	void addActor(int tile_x, int tile_y, const Actor* actor);
+	void removeActor(const Actor* actor);
 	void clearMap();
 
 	void draw();
