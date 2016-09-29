@@ -8,12 +8,6 @@ using namespace std;
 #include "Box2D.h"
 
 class World {
-private:
-	int width;
-	int height;
-	vector<Tile*> map;
-	b2World box_world;
-	vector<Actor*> actor_list;
 public:
 	World(int width, int height);
 	~World();
@@ -28,5 +22,12 @@ public:
 	void draw_actors();
 	void draw_tiles();
 	void draw_shadows();
+
+private:
+	int width;
+	int height;
+	vector<Tile*> map;
+	b2World box_world;
+	vector<Actor*> actor_list;
 };
 

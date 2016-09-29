@@ -19,14 +19,14 @@ enum class LightIntensity {
 };
 
 class Tile {
+public:
+	Tile();
+	virtual ~Tile();
+
 private:
 	int id;
 	TileType type;
 	LightIntensity light_intensity;
 	bool bcollidable = false;
-	
-public:
-	Tile();
-	virtual ~Tile();
 };
 
