@@ -24,6 +24,7 @@ void DireSys::addStage(World * world) {
 void DireSys::loadStage(int index) {
 	assert(index < stages.size());
 	stageIndex = index;
+	eventManager->setPhysics(stages[stageIndex]->getPhysicsWorld());
 }
 
 void DireSys::runGameLoop() {

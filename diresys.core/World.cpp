@@ -96,6 +96,7 @@ void World::step() {
 	this->physics_world->Step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 	this->positionCamera();
 	this->draw();
+	this->handleEvents();
 }
 
 void World::positionCamera() {
