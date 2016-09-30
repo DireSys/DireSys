@@ -1,32 +1,17 @@
 #pragma once
-enum class TileType {
-	empty,
-	floor,
-	wall,
-	door,
-	closet,
-	table,
-	vent,
-	entrance,
-	exit,
-};
 
-enum class LightIntensity {
-	full,
-	dim1,
-	dim0,
-	dark,
-};
+#include <SFML/Graphics.hpp>
 
-class Tile {
+class Tile
+{
 public:
-	Tile();
-	virtual ~Tile();
+	Tile(sf::Uint16 type = 0,
+		 bool isCollidable = false,
+		 sf::Uint8 lightIntensity = 0);
 
-private:
-	int id;
-	TileType type;
-	LightIntensity light_intensity;
-	bool bcollidable = false;
+	Tile(Tile& copy);
+
+	sf::Uint16 type;
+	sf::Uint8 lightIntensity;
+	bool isCollidable;
 };
-
