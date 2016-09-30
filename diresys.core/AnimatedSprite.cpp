@@ -77,7 +77,7 @@ sf::Sprite* AnimatedSprite::getCurrentFrame_()
 
 	for (auto frameLength : mFrameDurations)
 	{
-		if (mElapsedTime > frameStart && mElapsedTime < frameStart + frameLength)
+        if (mElapsedTime >= frameStart && mElapsedTime < frameStart + frameLength)
 		{
 			// Current time on this frame
 			return mFrames.at(frameIndex);
