@@ -111,12 +111,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="DSConstants.h" />
     <ClInclude Include="DireSys.h" />
+    <ClInclude Include="DSEvent.h" />
+    <ClInclude Include="EmptyTile.h" />
+    <ClInclude Include="EventManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DireSys.cpp" />
+    <ClCompile Include="DSEvent.cpp" />
+    <ClCompile Include="EmptyTile.cpp" />
+    <ClCompile Include="EventManager.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>

@@ -1,32 +1,53 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <algorithm>
+#include <cassert>
 using namespace std;
 
-#include "Tile.h"
-#include "Actor.h"
+#include "SFML/Graphics.hpp"
 #include "Box2D.h"
+
+#include "Tile.h"
+#include "EmptyTile.h"
+#include "Actor.h"
+#include "Camera.h"
+#include "EventManager.h"
 
 class World {
 private:
 	int width;
 	int height;
-	vector<Tile*> map;
-	b2World box_world;
-	vector<Actor*> actor_list;
+	vector<Tile*> tile_map; //O
+	b2World* physics_world = nullptr; //O
+	vector<Actor*> actor_list; //O
+	Actor* player = nullptr; //R
+	Camera* camera = nullptr; //O
+	sf::RenderWindow* window; //R
 public:
 	World(int width, int height);
 	~World();
 
-	void setTile(int tile_x, int tile_y, const Tile* tile);
-	const Tile* getTile(int tile_x, int tile_y);
-	void addActor(int tile_x, int tile_y, const Actor* actor);
-	void removeActor(const Actor* actor);
+	b2World* getPhysicsWorld();
+	void setWindow(sf::RenderWindow* window);
+	
+	void setTile(int tile_x, int tile_y, Tile* tile);
+	Tile* getTile(int tile_x, int tile_y);
 	void clearMap();
 
-	void draw();
+	void setPlayer(Actor* player);
+
+	void addActor(Actor* actor);
+	void removeActor(Actor* actor);
+
+	void handleEvents();
+
+	void positionCamera();
 	void draw_actors();
 	void draw_tiles();
 	void draw_shadows();
+	void draw();
+
+	void step();
 };
 
