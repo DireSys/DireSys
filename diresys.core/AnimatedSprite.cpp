@@ -46,6 +46,7 @@ void AnimatedSprite::pushFrame(sf::Sprite & frame, const sf::Time & duration)
 {
 	mFrames.push_back(&frame);
 	mFrameDurations.push_back(sf::Time(duration));
+    mTotalTime += duration;
 }
 
 void AnimatedSprite::clear()
