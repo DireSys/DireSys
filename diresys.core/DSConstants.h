@@ -10,15 +10,17 @@ constexpr float WINDOW_ASPECT() {
 }
 
 // Box2D Properties
-#define PHYSICS_SCALE 16
+#define SCALE 16
 
 // Scale to fit within box2d physics constraints
-constexpr float SCALE_OUT() {
-	return PHYSICS_SCALE;
+constexpr float WORLD_SCALE() {
+	return SCALE;
 }
-constexpr float SCALE_IN() {
-	return 1.0f / PHYSICS_SCALE;
+constexpr float PHYSICS_SCALE() {
+	return 1.0f / SCALE;
 }
+
+#define TILE_SIZE 8
 
 #define TIME_STEP (1.0f / 60.0f)
 #define VELOCITY_ITERATIONS 8

@@ -7,11 +7,15 @@ World::World(int width, int height) {
 	// Initialize Physics World
 	b2Vec2 gravity(0.0f, 0.0f);
 	this->physics_world = new b2World(gravity);
-
-	// Populate World with empty tiles
-	for (int i = 0; i < (width * height); i++) {
-		this->tile_map.push_back(static_cast<Tile*>(new EmptyTile(physics_world)));
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			auto position = make_pair(
+				i * TILE_SIZE,
+				j * TILE_SIZE);
+			this->tile_map.push_back(new Tile(physics_world, position));
+		}
 	}
+	clearMap();
 }
 
 World::~World() {
@@ -57,7 +61,7 @@ Tile* World::getTile(int tile_x, int tile_y) {
 	return this->tile_map[index];
 }
 
-void World::addActor(Actor* actor) {
+void World::addActor(int tile_x, int tile_y, Actor* actor) {
 	this->actor_list.push_back(actor);
 }
 
@@ -67,7 +71,7 @@ void World::removeActor(Actor* actor) {
 }
 
 void World::handleEvents() {
-	for (auto* event : EventManager::getInstance()->getEvents()) {
+	for (auto& event : EventManager::getInstance()->getEvents()) {
 		//process events
 	}
 }
@@ -75,12 +79,19 @@ void World::handleEvents() {
 void World::clearMap() {
 	for (int i = 0; i < (width); i++) {
 		for (int j = 0; j < height; j++) {
-			this->setTile(i, j, static_cast<Tile*>(new EmptyTile(physics_world)));
+			auto position = make_pair(
+				i*TILE_SIZE, j*TILE_SIZE);
+			this->setTile(i, j, static_cast<Tile*>(new EmptyTile(physics_world, position)));
 		}
 	}
 }
 
-void World::setPlayer(Actor * player) {
+Camera * World::getCamera()
+{
+	return camera;
+}
+
+void World::setPlayer(Player* player) {
 	this->player = player;
 	this->camera->linkActor(player);
 }

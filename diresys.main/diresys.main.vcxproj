@@ -127,6 +127,12 @@
       <Project>{40a19082-464a-4c18-a252-09992e1c73b6}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Assets.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\sfml-system.redist.2.3.2.0\build\native\sfml-system.redist.targets" Condition="Exists('..\packages\sfml-system.redist.2.3.2.0\build\native\sfml-system.redist.targets')" />

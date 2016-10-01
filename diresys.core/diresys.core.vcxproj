@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -118,8 +118,11 @@
     <ClInclude Include="DSEvent.h" />
     <ClInclude Include="EmptyTile.h" />
     <ClInclude Include="EventManager.h" />
+    <ClInclude Include="FloorTile.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="World.h" />
+    <ClInclude Include="WorldGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
@@ -128,8 +131,11 @@
     <ClCompile Include="DSEvent.cpp" />
     <ClCompile Include="EmptyTile.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="FloorTile.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="WorldGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

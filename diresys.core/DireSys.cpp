@@ -11,8 +11,10 @@ DireSys::~DireSys() {
 }
 
 void DireSys::handleEvents() {
-	for (auto* event : eventManager->getEvents()) {
-		//process any events
+	for (auto& event : eventManager->getEvents()) {
+		if (event.getType() == EventType::quit) {
+			this->brunning = false;
+		}
 	}
 }
 
@@ -28,6 +30,7 @@ void DireSys::loadStage(int index) {
 }
 
 void DireSys::runGameLoop() {
+	this->brunning = true;
 	while (this->brunning && stageIndex < stages.size()) {
 		//Graphics Clear
 		window->clear();

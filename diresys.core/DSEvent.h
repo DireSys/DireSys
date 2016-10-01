@@ -14,7 +14,7 @@ class DSEvent {
 private:
 	EventType event_type;
 public:
-	DSEvent();
+	DSEvent(EventType event = EventType::test);
 	virtual ~DSEvent();
 
 	EventType getType();

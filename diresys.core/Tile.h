@@ -1,6 +1,11 @@
 #pragma once
+#include <tuple>
+using namespace std;
+
 #include "SFML/Graphics.hpp"
 #include "Box2D.h"
+
+#include "DSConstants.h"
 
 enum class TileType {
 	empty,
@@ -21,9 +26,6 @@ enum class LightIntensity {
 	none,
 };
 
-b2BodyDef tile_createBodyDefinition(b2World* world);
-b2FixtureDef tile_createFixtureDefinition(b2Body* body);
-
 class Tile {
 private:
 	int id;
@@ -32,8 +34,11 @@ private:
 	b2World* physics_world;
 	b2Body* physics_body;
 public:
-	Tile(b2World* physics_world);
+	Tile(b2World* physics_world, pair<float, float> position);
 	virtual ~Tile();
+
+	virtual void initPhysicsBody(pair<float, float> position);
+	virtual void initPhysicsFixture();
 
 	virtual void draw(sf::RenderWindow* window, int tile_x, int tile_y);
 	virtual void draw_shadow(sf::RenderWindow* window, int tile_x, int tile_y);

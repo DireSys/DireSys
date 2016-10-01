@@ -2,7 +2,8 @@
 
 
 
-DSEvent::DSEvent() {
+DSEvent::DSEvent(EventType type) {
+	this->event_type = type;
 }
 
 DSEvent::~DSEvent(){

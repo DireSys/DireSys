@@ -10,11 +10,15 @@ void EventManager::setPhysics(b2World * physics_world) {
 }
 
 void EventManager::processEvents() {
+	assert(this->window != nullptr);
+	assert(this->physics_world != nullptr);
+
 	sf::Event sfml_event;
 	//Generate Events from the SFML events
 	while (window->pollEvent(sfml_event)) {
-		//if (sfml_event.type == ...)
-		//generate event
+		if (sfml_event.type == sf::Event::Closed) {
+			this->generateQuit();
+		}
 	}
 
 	//Generate Events from Box2D Physics Contacts
@@ -26,22 +30,24 @@ void EventManager::processEvents() {
 
 	//Generate one test event
 #ifndef NDEBUG
-	this->addEvent(new DSEvent());
+	this->addEvent(DSEvent());
 #endif
 
 }
 
-void EventManager::addEvent(DSEvent * event) {
+void EventManager::addEvent(DSEvent event) {
 	this->event_list.push_back(event);
 }
 
-const vector<DSEvent*>& EventManager::getEvents() {
+vector<DSEvent>& EventManager::getEvents() {
 	return this->event_list;
 }
 
 void EventManager::clearEvents() {
-	for (auto* event : event_list) {
-		delete event;
-	}
 	event_list.clear();
+}
+
+void EventManager::generateQuit() {
+	auto instance = EventManager::getInstance();
+	instance->addEvent(DSEvent(EventType::quit));
 }

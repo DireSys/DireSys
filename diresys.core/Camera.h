@@ -4,17 +4,17 @@
 #include "SFML\Graphics.hpp"
 
 #include "DSConstants.h"
-#include "Actor.h"
+#include "Player.h"
 
 class Camera {
 private:
 	sf::View* view = nullptr; //O
-	Actor* linked_actor = nullptr; //R
+	Player* linked_actor = nullptr; //R
 public:
 	Camera(sf::RenderWindow* window);
 	~Camera();
 
-	void linkActor(Actor* actor);
+	void linkActor(Player* actor);
 	void unlinkActor();
 	void reposition();
 };

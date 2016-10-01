@@ -8,7 +8,7 @@ Camera::~Camera() {
 	delete view;
 }
 
-void Camera::linkActor(Actor* actor) {
+void Camera::linkActor(Player* actor) {
 	linked_actor = actor;
 }
 

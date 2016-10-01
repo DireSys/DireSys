@@ -15,7 +15,7 @@ private:
 	EventManager(EventManager const&) {};
 	void operator=(EventManager const&) {};
 
-	vector<DSEvent*> event_list;
+	vector<DSEvent> event_list;
 	sf::Window* window = nullptr;
 	b2World* physics_world = nullptr;
 public:
@@ -28,8 +28,15 @@ public:
 	void setPhysics(b2World* physics_world);
 
 	void processEvents();
-	void addEvent(DSEvent* event);
-	const vector<DSEvent*>& getEvents();
+	void addEvent(DSEvent event);
+	vector<DSEvent>& getEvents();
 	void clearEvents();
+
+	//
+	// Event Generation
+	//   Automatically places events in the event manager
+
+	//Person Clicked on the close button
+	void generateQuit();
 };
 

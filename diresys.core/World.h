@@ -3,6 +3,7 @@
 #include <memory>
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 using namespace std;
 
 #include "SFML/Graphics.hpp"
@@ -10,7 +11,9 @@ using namespace std;
 
 #include "Tile.h"
 #include "EmptyTile.h"
+#include "FloorTile.h"
 #include "Actor.h"
+#include "Player.h"
 #include "Camera.h"
 #include "EventManager.h"
 
@@ -21,7 +24,7 @@ private:
 	vector<Tile*> tile_map; //O
 	b2World* physics_world = nullptr; //O
 	vector<Actor*> actor_list; //O
-	Actor* player = nullptr; //R
+	Player* player = nullptr; //R
 	Camera* camera = nullptr; //O
 	sf::RenderWindow* window; //R
 public:
@@ -33,15 +36,17 @@ public:
 	
 	void setTile(int tile_x, int tile_y, Tile* tile);
 	Tile* getTile(int tile_x, int tile_y);
+
 	void clearMap();
 
-	void setPlayer(Actor* player);
+	void setPlayer(Player* player);
 
-	void addActor(Actor* actor);
+	void addActor(int tile_x, int tile_y, Actor* actor);
 	void removeActor(Actor* actor);
 
 	void handleEvents();
 
+	Camera* getCamera();
 	void positionCamera();
 	void draw_actors();
 	void draw_tiles();
