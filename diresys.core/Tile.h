@@ -1,5 +1,6 @@
 #pragma once
 #include <tuple>
+#include <iostream>
 using namespace std;
 
 #include "SFML/Graphics.hpp"
@@ -8,6 +9,7 @@ using namespace std;
 #include "DSConstants.h"
 
 enum class TileType {
+	none,
 	empty,
 	floor,
 	wall,
@@ -26,20 +28,25 @@ enum class LightIntensity {
 	none,
 };
 
+typedef pair<float, float> TilePosition;
+
 class Tile {
 private:
 	int id;
-	TileType type;
-	LightIntensity light_intensity;
-	b2World* physics_world;
-	b2Body* physics_body;
+	TileType type = TileType::none;
+	LightIntensity light_intensity = LightIntensity::full;
+	shared_ptr<b2World> physics_world;
+	shared_ptr<b2Body> physics_body;
 public:
-	Tile(b2World* physics_world, pair<float, float> position);
+	Tile(shared_ptr<b2World> physics_world, TilePosition position);
 	virtual ~Tile();
+	void setType(TileType type);
 
-	virtual void initPhysicsBody(pair<float, float> position);
+	virtual void initPhysicsBody(TilePosition position);
 	virtual void initPhysicsFixture();
 
-	virtual void draw(sf::RenderWindow* window, int tile_x, int tile_y);
-	virtual void draw_shadow(sf::RenderWindow* window, int tile_x, int tile_y);
+	virtual void draw(shared_ptr<sf::RenderWindow> window,
+		int tile_x, int tile_y);
+	virtual void draw_shadow(shared_ptr<sf::RenderWindow> window,
+		int tile_x, int tile_y);
 };

@@ -2,13 +2,12 @@
 
 DireSys::DireSys() {
 	this->eventManager = EventManager::getInstance();
-	this->window = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), APP_NAME);
+	this->window = shared_ptr<sf::RenderWindow>(
+		new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), APP_NAME));
 	this->eventManager->setWindow(window);
 }
 
-DireSys::~DireSys() {
-	delete this->window;
-}
+DireSys::~DireSys() {}
 
 void DireSys::handleEvents() {
 	for (auto& event : eventManager->getEvents()) {
@@ -18,9 +17,9 @@ void DireSys::handleEvents() {
 	}
 }
 
-void DireSys::addStage(World * world) {
+void DireSys::addStage(unique_ptr<World> world) {
 	world->setWindow(window);
-	stages.push_back(world);
+	stages.push_back(move(world));
 }
 
 void DireSys::loadStage(int index) {

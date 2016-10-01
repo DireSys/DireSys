@@ -1,12 +1,6 @@
 #include "FloorTile.h"
 
-
-
-FloorTile::FloorTile(b2World* physics_world, pair<float, float> position) :
+FloorTile::FloorTile(shared_ptr<b2World> physics_world, TilePosition position) :
 	Tile(physics_world, position) {
-}
-
-
-FloorTile::~FloorTile() {
-	Tile::~Tile();
+	this->setType(TileType::floor);
 }

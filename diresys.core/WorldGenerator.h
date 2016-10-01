@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <streambuf>
-
+#include <memory>
 using namespace std;
 
 #include "World.h"
@@ -12,14 +12,12 @@ using namespace std;
 #include "EmptyTile.h"
 
 class WorldGenerator {
-private:
-
 public:
 	WorldGenerator();
 	~WorldGenerator();
 
-	static World* loadFromFile(string filename);
-	static pair<int, int> getWorldExtents(string input);
-	static World* generateWorld(string input);
+	static unique_ptr<World> loadFromFile(string filename);
+	static pair<size_t, size_t> getWorldExtents(string input);
+	static unique_ptr<World> generateWorld(string input);
 };
 

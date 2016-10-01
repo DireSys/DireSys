@@ -1,11 +1,11 @@
 #include "EventManager.h"
 
 
-void EventManager::setWindow(sf::RenderWindow* window) {
+void EventManager::setWindow(shared_ptr<sf::RenderWindow> window) {
 	this->window = window;
 }
 
-void EventManager::setPhysics(b2World * physics_world) {
+void EventManager::setPhysics(shared_ptr<b2World> physics_world) {
 	this->physics_world = physics_world;
 }
 

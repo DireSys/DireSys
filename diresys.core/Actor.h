@@ -1,5 +1,6 @@
 #pragma once
 #include <tuple>
+#include <memory>
 using namespace std;
 
 #include "Box2D.h"
@@ -7,29 +8,28 @@ using namespace std;
 
 #include "DSConstants.h"
 
-b2BodyDef actor_createBodyDefinition(b2World* world);
-b2FixtureDef actor_createBodyFixtureDefinition(b2Body* body);
+typedef pair<float, float> ActorPosition;
 
 class Actor {
 private:
 	 sf::Sprite sprite;
 
 	 //Physics
-	 b2World* physics_world;
-	 b2Body* physics_body;
+	 shared_ptr<b2World> physics_world;
+	 shared_ptr<b2Body> physics_body;
 public:
-	Actor(b2World* physics_world);
+	Actor(shared_ptr<b2World> physics_world, ActorPosition position);
 	virtual ~Actor();
 
-	virtual void initPhysicsBody();
+	virtual void initPhysicsBody(ActorPosition position);
 	virtual void initPhysicsFixture();
 
-	void setPosition(int x, int y);
-	pair<float, float> getPosition();
+	void setPosition(float x, float y);
+	ActorPosition getPosition();
 
 	void applyForce(float x, float y);
 	void applyImpulse(float x, float y);
 
-	virtual void draw(sf::RenderWindow* window);
+	virtual void draw(shared_ptr<sf::RenderWindow> window);
 };
 

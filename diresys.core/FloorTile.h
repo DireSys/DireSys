@@ -2,7 +2,7 @@
 #include "Tile.h"
 class FloorTile : public Tile {
 public:
-	FloorTile(b2World * physics_world, pair<float, float> position);
-	~FloorTile();
+	FloorTile(shared_ptr<b2World> physics_world, TilePosition position);
+	~FloorTile() { Tile::~Tile(); };
 };
 

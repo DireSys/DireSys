@@ -3,7 +3,7 @@
 
 class EmptyTile : public Tile {
 public:
-	EmptyTile(b2World* world, pair<float, float> position);
+	EmptyTile(shared_ptr<b2World> world, TilePosition position);
 	~EmptyTile();
 };
 

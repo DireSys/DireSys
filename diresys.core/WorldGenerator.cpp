@@ -1,31 +1,23 @@
 #include "WorldGenerator.h"
 
+WorldGenerator::WorldGenerator(){}
+WorldGenerator::~WorldGenerator(){}
 
-
-WorldGenerator::WorldGenerator()
-{
-}
-
-
-WorldGenerator::~WorldGenerator()
-{
-}
-
-World* WorldGenerator::loadFromFile(string filename) {
+unique_ptr<World> WorldGenerator::loadFromFile(string filename) {
 	ifstream filehandle(filename);
 	string output((istreambuf_iterator<char>(filehandle)),
 		istreambuf_iterator<char>());
 
-	auto* world = generateWorld(output);
-	return world;
+	auto world = generateWorld(output);
+	return move(world);
 }
 
-pair<int, int> WorldGenerator::getWorldExtents(string input) {
+pair<size_t, size_t> WorldGenerator::getWorldExtents(string input) {
 	istringstream stream(input);
 	string line;
 
-	int i = 0;
-	int j = 0;
+	size_t i = 0;
+	size_t j = 0;
 	while (getline(stream, line)) {
 		i = line.size();
 		j++;
@@ -33,19 +25,19 @@ pair<int, int> WorldGenerator::getWorldExtents(string input) {
 
 	cout << "Width: " << i << endl;
 	cout << "Height: " << j << endl;
-	return pair<int, int>(i, j);
+	return make_pair(i, j);
 }
 
-World * WorldGenerator::generateWorld(string input) {
+unique_ptr<World> WorldGenerator::generateWorld(string input) {
 	istringstream stream(input);
 	string line;
 
 	//Generate world based on extents
 	auto dims = WorldGenerator::getWorldExtents(input);
-	int width = dims.first;
-	int height = dims.second;
-	auto* world = new World(width, height);
-	auto* physics = world->getPhysicsWorld();
+	auto width = dims.first;
+	auto height = dims.second;
+	auto world = make_unique<World>(World(width, height));
+	auto physics = world->getPhysicsWorld();
 
 	int j = 0;
 	while (getline(stream, line)) {
@@ -53,19 +45,22 @@ World * WorldGenerator::generateWorld(string input) {
 			auto position = make_pair(i*TILE_SIZE, j*TILE_SIZE);
 			char character = line[i];
 			if (character == '.') {
-				world->setTile(i, j, static_cast<Tile*>(new EmptyTile(physics, position)));
+				auto tile = make_shared<Tile>(EmptyTile(physics, position));
+				//world->setTile(i, j, tile);
 			}
 			else if (character == '+') {
-				world->setTile(i, j, static_cast<Tile*>(new FloorTile(physics, position)));
+				auto tile = make_shared<Tile>(FloorTile(physics, position));
+				//world->setTile(i, j, tile);
 			}
 			else if (character == '@') {
-				auto* player = new Player(physics);
-				world->setTile(i, j, static_cast<Tile*>(new FloorTile(physics, position)));
-				world->addActor(i, j, static_cast<Actor*>(player));
-				world->setPlayer(player);
+				auto player = make_shared<Actor>(Player(physics, position));
+				auto tile = make_shared<Tile>(FloorTile(physics, position));
+				//world->setTile(i, j, tile);
+				//world->addActor(i, j, player);
+				//world->setPlayer(static_pointer_cast<Player>(player));
 			}
 		}
 		j++;
 	}
-	return world;
+	return move(world);
 }

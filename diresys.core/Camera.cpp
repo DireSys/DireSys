@@ -1,14 +1,12 @@
 #include "Camera.h"
 
-Camera::Camera(sf::RenderWindow * window) {
+Camera::Camera(shared_ptr<sf::RenderWindow> window) {
 	window->setView(*view);
 }
 
-Camera::~Camera() {
-	delete view;
-}
+Camera::~Camera() {}
 
-void Camera::linkActor(Player* actor) {
+void Camera::linkActor(shared_ptr<Player> actor) {
 	linked_actor = actor;
 }
 

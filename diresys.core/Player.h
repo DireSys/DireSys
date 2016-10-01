@@ -2,7 +2,6 @@
 #include "Actor.h"
 class Player : public Actor {
 public:
-	Player(b2World* world);
-	~Player();
+	Player(shared_ptr<b2World> world, ActorPosition position);
+	~Player() { Actor::~Actor(); };
 };
-

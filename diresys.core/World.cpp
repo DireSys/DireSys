@@ -6,66 +6,46 @@ World::World(int width, int height) {
 
 	// Initialize Physics World
 	b2Vec2 gravity(0.0f, 0.0f);
-	this->physics_world = new b2World(gravity);
+	this->physics_world = make_shared<b2World>(b2World(gravity));
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
 			auto position = make_pair(
 				i * TILE_SIZE,
 				j * TILE_SIZE);
-			this->tile_map.push_back(new Tile(physics_world, position));
+			auto tile = make_shared<Tile>(Tile(physics_world, position));
+			this->tile_map.push_back(tile);
 		}
 	}
 	clearMap();
 }
 
-World::~World() {
-	//Remove all tiles
-	for (int i = 0; i < (width * height); i++) {
-		delete this->tile_map[i];
-	}
+World::~World() {}
 
-	//Remove all actors
-	for (auto* actor : actor_list) {
-		this->removeActor(actor);
-	}
-
-	//Delete the box2d world.
-	delete this->physics_world;
-
-	//Delete the Camera
-	delete this->camera;
-
-	this->player = nullptr;
-}
-
-b2World * World::getPhysicsWorld() {
+shared_ptr<b2World> World::getPhysicsWorld() {
 	assert(this->physics_world != nullptr);
 	return this->physics_world;
 }
 
-void World::setWindow(sf::RenderWindow* window) {
+void World::setWindow(shared_ptr<sf::RenderWindow> window) {
 	assert(this->window == nullptr);
 	this->window = window;
 }
 
-void World::setTile(int tile_x, int tile_y, Tile* tile) {
+void World::setTile(int tile_x, int tile_y, shared_ptr<Tile> tile) {
 	int index = tile_x + width * tile_y;
-	//delete the old tile
-	delete this->tile_map[index];
-
-	this->tile_map[index] = tile;
+	this->tile_map[index] = move(tile);
 }
 
-Tile* World::getTile(int tile_x, int tile_y) {
+shared_ptr<Tile> World::getTile(int tile_x, int tile_y) {
 	int index = tile_x + this->height * tile_y;
 	return this->tile_map[index];
 }
 
-void World::addActor(int tile_x, int tile_y, Actor* actor) {
+void World::addActor(int tile_x, int tile_y, shared_ptr<Actor> actor) {
 	this->actor_list.push_back(actor);
 }
 
-void World::removeActor(Actor* actor) {
+void World::removeActor(shared_ptr<Actor> actor) {
 	remove_if(this->actor_list.begin(), this->actor_list.end(),
 		[&actor](auto _actor) {return actor != _actor;});
 }
@@ -81,17 +61,18 @@ void World::clearMap() {
 		for (int j = 0; j < height; j++) {
 			auto position = make_pair(
 				i*TILE_SIZE, j*TILE_SIZE);
-			this->setTile(i, j, static_cast<Tile*>(new EmptyTile(physics_world, position)));
+			auto tile = make_shared<Tile>(EmptyTile(physics_world, position));
+			this->setTile(i, j, tile);
 		}
 	}
 }
 
-Camera * World::getCamera()
+shared_ptr<Camera> World::getCamera()
 {
 	return camera;
 }
 
-void World::setPlayer(Player* player) {
+void World::setPlayer(shared_ptr<Player> player) {
 	this->player = player;
 	this->camera->linkActor(player);
 }
@@ -115,7 +96,7 @@ void World::positionCamera() {
 }
 
 void World::draw_actors() {
-	for (auto* actor : actor_list) {
+	for (auto actor : actor_list) {
 		actor->draw(this->window);
 	}
 }
@@ -123,7 +104,7 @@ void World::draw_actors() {
 void World::draw_tiles() {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			auto* tile = this->getTile(i, j);
+			auto tile = this->getTile(i, j);
 			tile->draw(window, i, j);
 		}
 	}
@@ -132,7 +113,7 @@ void World::draw_tiles() {
 void World::draw_shadows() {
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			auto* tile = getTile(i, j);
+			auto tile = getTile(i, j);
 			tile->draw_shadow(window, i, j);
 		}
 	}

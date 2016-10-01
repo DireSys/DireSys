@@ -16,16 +16,16 @@ private:
 	void operator=(EventManager const&) {};
 
 	vector<DSEvent> event_list;
-	sf::Window* window = nullptr;
-	b2World* physics_world = nullptr;
+	shared_ptr<sf::RenderWindow> window = nullptr;
+	shared_ptr<b2World> physics_world = nullptr;
 public:
 	static EventManager* getInstance() {
 		static EventManager _instance = EventManager();
 		return &_instance;
 	}
 
-	void setWindow(sf::RenderWindow* window);
-	void setPhysics(b2World* physics_world);
+	void setWindow(shared_ptr<sf::RenderWindow> window);
+	void setPhysics(shared_ptr<b2World> physics_world);
 
 	void processEvents();
 	void addEvent(DSEvent event);
