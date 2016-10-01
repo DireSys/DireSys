@@ -32,11 +32,10 @@ typedef pair<float, float> TilePosition;
 
 class Tile {
 private:
-	int id;
 	TileType type = TileType::none;
 	LightIntensity light_intensity = LightIntensity::full;
-	shared_ptr<b2World> physics_world;
-	shared_ptr<b2Body> physics_body;
+	shared_ptr<b2World> physics_world = nullptr;
+	shared_ptr<b2Body> physics_body = nullptr;
 public:
 	Tile(shared_ptr<b2World> physics_world, TilePosition position);
 	virtual ~Tile();

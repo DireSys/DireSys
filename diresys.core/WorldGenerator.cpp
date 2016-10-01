@@ -46,18 +46,18 @@ unique_ptr<World> WorldGenerator::generateWorld(string input) {
 			char character = line[i];
 			if (character == '.') {
 				auto tile = make_shared<Tile>(EmptyTile(physics, position));
-				//world->setTile(i, j, tile);
+				world->setTile(i, j, tile);
 			}
 			else if (character == '+') {
 				auto tile = make_shared<Tile>(FloorTile(physics, position));
-				//world->setTile(i, j, tile);
+				world->setTile(i, j, tile);
 			}
 			else if (character == '@') {
 				auto player = make_shared<Actor>(Player(physics, position));
 				auto tile = make_shared<Tile>(FloorTile(physics, position));
-				//world->setTile(i, j, tile);
-				//world->addActor(i, j, player);
-				//world->setPlayer(static_pointer_cast<Player>(player));
+				world->setTile(i, j, tile);
+				world->addActor(i, j, player);
+				world->setPlayer(static_pointer_cast<Player>(player));
 			}
 		}
 		j++;

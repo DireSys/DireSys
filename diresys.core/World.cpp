@@ -3,20 +3,20 @@
 World::World(int width, int height) {
 	this->width = width;
 	this->height = height;
-
 	// Initialize Physics World
 	b2Vec2 gravity(0.0f, 0.0f);
 	this->physics_world = make_shared<b2World>(b2World(gravity));
 	for (int i = 0; i < width; i++) {
 		for (int j = 0; j < height; j++) {
-			auto position = make_pair(
+			/*auto position = make_pair(
 				i * TILE_SIZE,
 				j * TILE_SIZE);
 			auto tile = make_shared<Tile>(Tile(physics_world, position));
-			this->tile_map.push_back(tile);
+			this->tile_map.push_back(tile);*/
+			this->tile_map.push_back(shared_ptr<Tile>(nullptr));
 		}
 	}
-	clearMap();
+
 }
 
 World::~World() {}
@@ -29,11 +29,12 @@ shared_ptr<b2World> World::getPhysicsWorld() {
 void World::setWindow(shared_ptr<sf::RenderWindow> window) {
 	assert(this->window == nullptr);
 	this->window = window;
+	this->camera = make_shared<Camera>(Camera(window));
 }
 
 void World::setTile(int tile_x, int tile_y, shared_ptr<Tile> tile) {
 	int index = tile_x + width * tile_y;
-	this->tile_map[index] = move(tile);
+	this->tile_map[index] = tile;
 }
 
 shared_ptr<Tile> World::getTile(int tile_x, int tile_y) {

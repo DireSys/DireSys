@@ -21,12 +21,12 @@ class World {
 private:
 	int width;
 	int height;
-	vector<shared_ptr<Tile> > tile_map; //O
-	shared_ptr<b2World> physics_world = nullptr; //O
-	vector<shared_ptr<Actor> > actor_list; //O
-	shared_ptr<Player> player = nullptr; //R
-	shared_ptr<Camera> camera = nullptr; //O
-	shared_ptr<sf::RenderWindow> window; //R
+	vector<shared_ptr<Tile> > tile_map;
+	shared_ptr<b2World> physics_world = nullptr;
+	vector<shared_ptr<Actor> > actor_list;
+	shared_ptr<Player> player = nullptr;
+	shared_ptr<Camera> camera = nullptr;
+	shared_ptr<sf::RenderWindow> window;
 public:
 	World(int width, int height);
 	~World();

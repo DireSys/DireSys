@@ -12,7 +12,7 @@ void Tile::setType(TileType type) {
 	this->type = type;
 }
 
-void Tile::initPhysicsBody(pair<float, float> position) {
+void Tile::initPhysicsBody(TilePosition position) {
 	b2BodyDef bodydef;
 	bodydef.position.Set(
 		position.first * PHYSICS_SCALE(),
@@ -22,11 +22,21 @@ void Tile::initPhysicsBody(pair<float, float> position) {
 	bodydef.active = false;
 	auto* rawbody = this->physics_world->CreateBody(&bodydef);
 
-	//we assign a custom deleter, since the pointer is allocated in box2d's memory allocation
+	//we assign a custom deleter, since the pointer is allocated in box2d's memory allocator
 	auto body = shared_ptr<b2Body>(rawbody, [=](auto* b) {
-		cout << "About to delete body" << endl;
-		this->physics_world->DestroyBody(b);
-		cout << "Body deleted" << endl;
+		cout << "About to delete body:" << b << endl;
+		if (this->physics_world == nullptr) {
+			return;
+		}
+		auto* bodyiter = this->physics_world->GetBodyList();
+		while (bodyiter->GetNext()) {
+			if (b == bodyiter) {
+				this->physics_world->DestroyBody(b);
+				cout << "Body deleted" << endl;
+				break;
+			}
+		}
+		
 	});
 	this->physics_body = body;
 }
