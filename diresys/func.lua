@@ -36,9 +36,9 @@ func.filter = function(t, f)
 end
 
 func.reduce = function(t, f)
-	local result = t[i]
-	for i,v in ipairs(func.rest(t)) do
-		result = f(result, t[i])
+	local result = t[1]
+	for _,v in ipairs(func.rest(t)) do
+		result = f(result, v)
 	end
 	return result
 end
@@ -103,8 +103,8 @@ end
 
 func.keys = function(t)
 	local resultTable = {}
-	for i,v in pairs(t) do
-		table.insert(resultTable, i)
+	for k,v in pairs(t) do
+		table.insert(resultTable, k)
 	end
 	return resultTable
 end
