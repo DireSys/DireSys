@@ -4,7 +4,11 @@
 
 local core = {}
 
-function core.run_game()
+function core.load()
+	
+end
+
+function core.draw()
 	
 end
 
