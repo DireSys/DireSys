@@ -62,7 +62,6 @@ function assets.load_assets()
 	--
 	-- Wall Tiles
 	--
-	load_sprite("wall_default", 7, 13)
 	-- TRBL --> Top, Right, Bottom, Left edge has wall
 	load_sprite("wall_T__L", 0, 12)
 	load_sprite("wall_T_B_", 1, 12)
@@ -76,6 +75,11 @@ function assets.load_assets()
 	load_sprite("wall__RB_", 2, 14)
 	load_sprite("wall_TRBL", 7, 13)
 	load_sprite("wall_T___", 4, 14)
+
+	--
+	-- Door Tiles
+	--
+	
 end
 
 return assets
