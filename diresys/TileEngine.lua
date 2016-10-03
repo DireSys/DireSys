@@ -15,8 +15,8 @@ function TileEngine:new(options)
 
 	obj.tilemap = {}
 	obj.tilesetBatch = {
-		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
-		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
+		love.graphics.newSpriteBatch(assets.sprite_image, 10000),
+		love.graphics.newSpriteBatch(assets.sprite_image, 10000),
 	}
 
 	return obj

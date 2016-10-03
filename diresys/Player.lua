@@ -12,6 +12,9 @@ function Player:new(parent, physics_world, options)
 	obj.type = "player"
 	obj.init_physics = Player.init_physics
 	obj.update = Player.update
+
+	-- Movement
+	obj.movement.speed = 30
 	
 	-- Animations
 	obj.animation.idle = {

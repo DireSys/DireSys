@@ -8,9 +8,10 @@ local WallTile = {}
 
 function WallTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
-	obj:set_graphic("wall0")
+	obj:set_graphic("wall___B_")
 	obj.type = "walltile"
 	obj.init_physics = WallTile.init_physics
+	obj.updateWall = WallTile.updateWall
 	obj:init_physics()
 	return obj
 end
@@ -25,7 +26,17 @@ function WallTile:init_physics()
 		self.physics.body, self.physics.shape)
 
 	-- body settings
+end
+
+function WallTile:updateWall(walls)
+	local t = walls.top and "T" or "_"
+	local r = walls.right and "R" or "_"
+	local b = walls.bottom and "B" or "_"
+	local l = walls.left and "L" or "_"
 	
+	local key = "wall_" .. t .. r .. b .. l
+
+	self:set_graphic(key)
 end
 
 return WallTile

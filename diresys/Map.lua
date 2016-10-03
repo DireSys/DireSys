@@ -2,6 +2,7 @@
 	Represents a map
 ]]
 config = require "config"
+f = require "diresys/func"
 TileEngine = require "diresys/TileEngine"
 ActorEngine = require "diresys/ActorEngine"
 FloorTile = require "diresys/FloorTile"
@@ -52,6 +53,29 @@ function Map:update(dt)
 	self.tileEngine:update(dt)
 	self.actorEngine:update(dt)
 	self:updateViewport()
+end
+
+function Map:getTileList()
+	return self.tileEngine.tilemap
+end
+
+function Map:getTile(tilex, tiley)
+	local tile = f.find(
+		self:getTileList(),
+		function(t)
+			local dims = t:get_tile_dimensions()
+			if tilex < dims.startx or tilex > dims.endx then
+				return false
+			end
+
+			if tiley < dims.starty or tiley > dims.endy then
+				return false
+			end
+			
+			return true
+	end)
+
+	return tile or nil
 end
 
 function Map:createFloor(tilex, tiley)

@@ -22,8 +22,8 @@ function Tile:new(parent, physics_world, options)
 	-- TODO: add physics fixture
 	obj.physics = {}
 	obj.graphics = {
-		{key = nil}, -- layer 1
-		{key = nil}, -- layer 2
+		{key = nil, offset = {0, 0}}, -- layer 1
+		{key = nil, offset = {0, 0}}, -- layer 2
 	}
 
 	return obj
@@ -35,6 +35,34 @@ end
 
 function Tile:init_physics()
 	return nil
+end
+
+function Tile:get_tile_position()
+	local position = self:get_position()
+	return math.floor(position.x / config.TILE_SIZE),
+	math.floor(position.y / config.TILE_SIZE)
+end
+
+function Tile:get_tile_dimensions()
+	local startx, starty = self:get_tile_position()
+	local width1, height1 = self:get_dimensions(1)
+	width1 = (width1 and math.floor(width1 / config.TILE_SIZE) or 1) - 1
+	width1 = width1 + self.graphics[1].offset[1]
+	height1 = (height1 and math.floor(height1 / config.TILE_SIZE) or 1) - 1
+	height1 = height1 + self.graphics[1].offset[2]
+
+	local width2, height2 = self:get_dimensions(2)
+	width2 = (width2 and math.floor(width2 / config.TILE_SIZE) or 1) - 1
+	width2 = width2 + self.graphics[2].offset[1]
+	height2 = (height2 and math.floor(height2 / config.TILE_SIZE) or 1) - 1
+	height2 = height2 + self.graphics[2].offset[2]
+
+	local width = width1 > width2 and width1 or width2
+	local height = height1 > height2 and height1 or height2
+	return {
+		startx = startx, endx = startx + width,
+		starty = starty, endy = starty + height,
+	}
 end
 
 function Tile:get_position()
@@ -70,8 +98,12 @@ end
 function Tile:get_dimensions(layer)
 	local layer = layer or 1
 	local quad = self:get_graphic(layer)
-	local x, y, w, h = quad:getViewport()
-	return w, h
+	if quad then
+		local x, y, w, h = quad:getViewport()
+		return w, h
+	else
+		return nil
+	end
 end
 
 return Tile
