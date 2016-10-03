@@ -18,11 +18,15 @@ print_table = function(t, indent, embeded)
 	end
 
 	for k,v in pairs(t) do
-		if type(v) ~= "table" then
-			print(sindent .. " " .. k .. " = " .. v)
-		else
+		if type(v) == "table" then
 			io.write(sindent .. " " .. k .. " = ")
 			print_table(v, indent+1, true)
+		elseif type(v) == "userdata" then
+			print(sindent .. " " .. k .. " = <userdata>")
+		elseif type(v) == "function" then
+			print(sindent .. " " .. k .. " = <function>")
+		else
+			print(sindent .. " " .. k .. " = " .. v)
 		end
 	end
 	print(sindent .. "}")

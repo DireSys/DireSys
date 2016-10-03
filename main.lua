@@ -3,6 +3,7 @@
 ]]
 pp = require "diresys/pp"
 f = require "diresys/func"
+TileEngine = require "diresys/tile_engine"
 core = require "diresys/core"
 
 love.load = function(args)
@@ -12,8 +13,9 @@ love.load = function(args)
 			test.run_tests()
 			love.event.quit()
 		else
-			pp.print({x = "123", y = {z = "abc", a = {1,2,3}}})
+			core.load()
+			love.draw = core.draw
+			love.update = core.update
 		end
 	end
 end
-
