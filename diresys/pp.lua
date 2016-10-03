@@ -5,7 +5,7 @@ f = require "diresys/func"
 
 local pp = {}
 
-print_table = function(t, indent, embeded)
+print_table = function(t, indent, embeded, depth, max_depth)
 	local indent = indent or 0
 	local sindent = ""
 
@@ -18,9 +18,11 @@ print_table = function(t, indent, embeded)
 	end
 
 	for k,v in pairs(t) do
-		if type(v) == "table" then
+		if type(v) == "table" and depth >= max_depth then
+			print(sindent .. " " .. k .. " = <table>")
+		elseif type(v) == "table" then
 			io.write(sindent .. " " .. k .. " = ")
-			print_table(v, indent+1, true)
+			print_table(v, indent+1, true, depth+1, max_depth)
 		elseif type(v) == "userdata" then
 			print(sindent .. " " .. k .. " = <userdata>")
 		elseif type(v) == "function" then
@@ -32,9 +34,10 @@ print_table = function(t, indent, embeded)
 	print(sindent .. "}")
 end
 
-pp.print = function(t)
+pp.print = function(t, max_depth)
+	local max_depth = max_depth or 3
 	if type(t) == "table" then
-		print_table(t)
+		print_table(t, 0, false, 1, max_depth)
 	else
 		print(t)
 	end

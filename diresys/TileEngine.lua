@@ -19,23 +19,21 @@ function TileEngine:new(options)
 	return obj
 end
 
-function TileEngine:add_tile(x, y, tile)
-	tile:set_position(x, y)
+function TileEngine:add_tile(tile)
+	tile.parent = self
 	table.insert(self.tilemap, tile)
-	self:reset_tilesetBatch()
+	self:reset()
 end
 
 function TileEngine:remove_tile(tile)
 	self.tilemap = f.filter(self.tilemap, function(i) return i == tile end)
-	self:reset_tilesetBatch()
+	self:reset()
 end
 
-function TileEngine:reset_tilesetBatch()
+function TileEngine:reset()
 	self.tilesetBatch:clear()
 	for _, tile in ipairs(self.tilemap) do
 		local quad = tile:get_graphic()
-		pp.print("Quad: ")
-		pp.print(quad)
 		local position = tile:get_position()
 		self.tilesetBatch:add(quad, position.x, position.y)
 	end

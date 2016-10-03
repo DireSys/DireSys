@@ -3,7 +3,6 @@
 ]]
 pp = require "diresys/pp"
 f = require "diresys/func"
-TileEngine = require "diresys/tile_engine"
 core = require "diresys/core"
 
 love.load = function(args)
@@ -16,6 +15,7 @@ love.load = function(args)
 			core.load()
 			love.draw = core.draw
 			love.update = core.update
+			love.keypressed = core.keypressed
 		end
 	end
 end

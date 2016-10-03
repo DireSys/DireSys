@@ -6,6 +6,8 @@ config = require("config")
 local assets = {}
 
 function load_sprite(sprite_name, tilex, tiley, width, height)
+	local width = width or 4
+	local height = height or 4
 	local image_width = assets.sprite_image:getWidth()
 	local image_height = assets.sprite_image:getHeight()
 	local quad = love.graphics.newQuad(
@@ -26,9 +28,13 @@ function assets.load_assets()
 
 	-- Player
 	load_sprite("player_down0", 0, 4, 8, 8)
-	load_sprite("player_down1", 1, 4, 8, 8)
-	load_sprite("player_down2", 2, 4, 8, 8)
-	load_sprite("player_down3", 3, 4, 8, 8)
+	load_sprite("player_down1", 2, 4, 8, 8)
+	load_sprite("player_down2", 4, 4, 8, 8)
+	load_sprite("player_down3", 6, 4, 8, 8)
+
+	-- Floor Tiles
+	load_sprite("floor0", 0, 3)
+	
 
 end
 
