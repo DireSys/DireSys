@@ -16,16 +16,31 @@ function Map:new(options)
 	self.__index = self
 	
 	obj.currentPlayer = nil
-	
+	obj.viewport = {x=0, y=0}	
+
 	love.physics.setMeter(config.PHYSICS_SCALE)
 	obj.physics_world = love.physics.newWorld(0, 0, true)
 	obj.tileEngine = TileEngine:new(obj.physics_world)
 	obj.actorEngine = ActorEngine:new(obj.physics_world)
-	
 	return obj
 end
 
-function Map:draw(viewx, viewy)
+function Map:updateViewport()
+	local playerPosition = self.currentPlayer:get_position()
+	local playerWidth, playerHeight = self.currentPlayer:get_dimensions()
+	-- viewport needs to be in the center of the player
+	self.viewport.x = (-playerPosition.x +
+						   config.WINDOW_WIDTH/2 - playerWidth/2) *
+		config.WINDOW_SCALE
+	self.viewport.y = (-playerPosition.y +
+						   config.WINDOW_HEIGHT/2 - playerHeight/2) *
+		config.WINDOW_SCALE
+end
+
+function Map:draw()
+	local viewx = self.viewport.x
+	local viewy = self.viewport.y
+
 	self.tileEngine:draw_tiles(viewx, viewy, 1)
 	self.actorEngine:draw_actors(viewx, viewy)
 	self.tileEngine:draw_tiles(viewx, viewy, 2)
@@ -36,6 +51,7 @@ function Map:update(dt)
 	self.physics_world:update(dt)
 	self.tileEngine:update(dt)
 	self.actorEngine:update(dt)
+	self:updateViewport()
 end
 
 function Map:createFloor(tilex, tiley)
