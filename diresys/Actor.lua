@@ -35,6 +35,7 @@ function Actor:new(parent, physics_world, options)
 	obj.animation = {
 		current_interval = 0.0,
 		cycle_interval = 0.4, --ms
+		idle = {},
 		up = {},
 		down = {},
 		left = {},
@@ -73,7 +74,7 @@ end
 function Actor:update_animation(dt)
 	local current_interval = self.animation.current_interval
 	local cycle_interval = self.animation.cycle_interval
-	local animation = self.animation.down
+	local animation = self.animation.idle
 	
 	-- change the animation set based on movement
 	if self.movement.up then
@@ -84,13 +85,19 @@ function Actor:update_animation(dt)
 		animation = self.animation.right
 	elseif self.movement.down then
 		animation = self.animation.down
+	else
+		-- not moving, so reset our interval and use the default
+		-- animation.down
+		-- current_interval = 0.0
 	end
 	
 	-- we have no animations
 	if #animation == 0 then
 		return
+	end
+
 	-- just set the graphic, we don't have a cycle
-	elseif #animation == 1 then
+	if #animation == 1 then
 		self:set_graphic(animation[1])
 		return
 	end
@@ -98,11 +105,10 @@ function Actor:update_animation(dt)
 	local step_interval = cycle_interval / #animation
 	local animation_frame = (
 		math.floor(current_interval / step_interval)) % #animation + 1
-	print("Set Animation Frame: " .. animation_frame)
 	self:set_graphic(animation[animation_frame])
 	
-	if current_interval > cycle_interval then 
-		current_interval = 0
+	if current_interval > cycle_interval then
+		current_interval = 0.0
 	else
 		current_interval = current_interval + dt
 	end

@@ -22,7 +22,8 @@ function Tile:new(parent, physics_world, options)
 	-- TODO: add physics fixture
 	obj.physics = {}
 	obj.graphics = {
-		key = nil,
+		{key = nil}, -- layer 1
+		{key = nil}, -- layer 2
 	}
 
 	return obj
@@ -53,20 +54,22 @@ function Tile:set_position(x, y)
 	return self
 end
 
-function Tile:set_graphic(key)
-	--set a graphic based on asset key in assets
-	self.graphics.key = key
-	if self.parent then self.parent:reset() end
+function Tile:set_graphic(key, layer)
+	local layer = layer or 1
+	self.graphics[layer].key = key
+	if self.parent then self.parent:reset(layer) end
 	return self
 end
 
-function Tile:get_graphic()
-	local key = self.graphics.key
+function Tile:get_graphic(layer)
+	local layer = layer or 1
+	local key = self.graphics[layer].key
 	return assets.get_sprite(key)
 end
 
-function Tile:get_dimensions()
-	local quad = self:get_graphic()
+function Tile:get_dimensions(layer)
+	local layer = layer or 1
+	local quad = self:get_graphic(layer)
 	local x, y, w, h = quad:getViewport()
 	return w, h
 end

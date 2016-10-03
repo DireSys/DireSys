@@ -14,7 +14,10 @@ function TileEngine:new(options)
 	self.__index = self
 
 	obj.tilemap = {}
-	obj.tilesetBatch = love.graphics.newSpriteBatch(assets.sprite_image)
+	obj.tilesetBatch = {
+		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
+		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
+	}
 
 	return obj
 end
@@ -36,18 +39,20 @@ function TileEngine:remove_tile(tile)
 	self:reset()
 end
 
-function TileEngine:reset()
-	self.tilesetBatch:clear()
+function TileEngine:reset(layer)
+	local layer = layer or 1
+	self.tilesetBatch[layer]:clear()
 	for _, tile in ipairs(self.tilemap) do
-		local quad = tile:get_graphic()
+		local quad = tile:get_graphic(layer)
 		local position = tile:get_position()
-		self.tilesetBatch:add(quad, position.x, position.y)
+		self.tilesetBatch[layer]:add(quad, position.x, position.y)
 	end
-	self.tilesetBatch:flush()
+	self.tilesetBatch[layer]:flush()
 end
 
-function TileEngine:draw_tiles(viewx, viewy)
-	love.graphics.draw(self.tilesetBatch, viewx, viewy, 0,
+function TileEngine:draw_tiles(viewx, viewy, layer)
+	local layer = layer or 1
+	love.graphics.draw(self.tilesetBatch[layer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
 

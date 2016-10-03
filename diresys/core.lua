@@ -8,6 +8,7 @@ dbg = require "diresys/dbg"
 TileEngine = require "diresys/TileEngine"
 Tile = require "diresys/Tile"
 Map = require "diresys/Map"
+MapGenerator = require "diresys/MapGenerator"
 
 local core = {}
 
@@ -24,7 +25,8 @@ function core.load()
 	love.window.setTitle("DireSys")
 	assets.load_assets()
 	
-	map = Map:new()
+	map = MapGenerator.load_file("./assets/map0.txt")
+	--[[map = Map:new()
 	for i = 0, 5 do
 		for j = 0, 5 do
 			map:createFloor(i, j)
@@ -36,7 +38,7 @@ function core.load()
 	end
 	
 	map:createPlayer(3, 3)
-	
+	]]
 end
 
 function core.draw()

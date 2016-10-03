@@ -14,18 +14,24 @@ function Player:new(parent, physics_world, options)
 	obj.update = Player.update
 	
 	-- Animations
+	obj.animation.idle = {
+		"player_down0", "player_down1",
+		"player_down2", "player_down3",
+	}
 	obj.animation.up = {
 		"player_up0", "player_up1",
+		"player_up2", "player_up3",
 	}
 	obj.animation.right = {
 		"player_right_down0", "player_right_down1",
+		"player_right_up0", "player_right_up1",
 	}
 	obj.animation.left = {
 		"player_left_down0", "player_left_down1",
+		"player_left_up0", "player_left_up1",
 	}
-	obj.animation.down = {
-		"player_down0", "player_down1",
-	}
+	obj.animation.down = obj.animation.left
+	obj.animation.up = obj.animation.right
 
 	obj:init_physics()
 	return obj
