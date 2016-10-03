@@ -24,7 +24,7 @@ function Player:new(parent, physics_world, options)
 		"player_left_down0", "player_left_down1",
 	}
 	obj.animation.down = {
-		"player_down0", "player_down1"
+		"player_down0", "player_down1",
 	}
 
 	obj:init_physics()
