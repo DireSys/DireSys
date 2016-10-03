@@ -15,16 +15,16 @@ function Player:new(parent, physics_world, options)
 	
 	-- Animations
 	obj.animation.up = {
-		"player_up0",
+		"player_up0", "player_up1",
 	}
 	obj.animation.right = {
-		"player_right_down0",
+		"player_right_down0", "player_right_down1",
 	}
 	obj.animation.left = {
-		"player_left_down0",
+		"player_left_down0", "player_left_down1",
 	}
 	obj.animation.down = {
-		"player_down0",
+		"player_down0", "player_down1"
 	}
 
 	obj:init_physics()

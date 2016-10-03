@@ -96,7 +96,9 @@ function Actor:update_animation(dt)
 	end
 
 	local step_interval = cycle_interval / #animation
-	local animation_frame = math.floor(current_interval / step_interval) + 1
+	local animation_frame = (
+		math.floor(current_interval / step_interval)) % #animation + 1
+	print("Set Animation Frame: " .. animation_frame)
 	self:set_graphic(animation[animation_frame])
 	
 	if current_interval > cycle_interval then 
