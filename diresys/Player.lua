@@ -43,9 +43,15 @@ end
 function Player:init_physics()
 	self.physics.body = love.physics.newBody(self.physics_world, 0, 0, "dynamic")
 	local width, height = self:get_dimensions()
+
+	local rectwidth = width-2
+	local rectheight = height/2
+	local offsetx = rectwidth/2 + 1
+	local offsety = height/2 + rectheight/2
+	
 	self.physics.shape = love.physics.newRectangleShape(
-		width/2, height/2,
-		width, height)
+		offsetx, offsety,
+		rectwidth, rectheight)
 	self.physics.fixture = love.physics.newFixture(
 		self.physics.body, self.physics.shape)
 
