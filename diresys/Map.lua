@@ -26,8 +26,9 @@ function Map:new(options)
 end
 
 function Map:draw(viewx, viewy)
-	self.tileEngine:draw_tiles(viewx, viewy)
+	self.tileEngine:draw_tiles(viewx, viewy, 1)
 	self.actorEngine:draw_actors(viewx, viewy)
+	self.tileEngine:draw_tiles(viewx, viewy, 2)
 	self.tileEngine:draw_shadows(viewx, viewy)
 end
 

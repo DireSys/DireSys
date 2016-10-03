@@ -45,7 +45,9 @@ function TileEngine:reset(layer)
 	for _, tile in ipairs(self.tilemap) do
 		local quad = tile:get_graphic(layer)
 		local position = tile:get_position()
-		self.tilesetBatch[layer]:add(quad, position.x, position.y)
+		if quad then
+			self.tilesetBatch[layer]:add(quad, position.x, position.y)
+		end
 	end
 	self.tilesetBatch[layer]:flush()
 end
