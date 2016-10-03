@@ -45,6 +45,7 @@ function ActorEngine:reset()
 end
 
 function ActorEngine:draw_actors(viewx, viewy)
+	self:reset()
 	love.graphics.draw(self.actorBatch, viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
