@@ -5,6 +5,7 @@ config = require "config"
 TileEngine = require "diresys/TileEngine"
 ActorEngine = require "diresys/ActorEngine"
 FloorTile = require "diresys/FloorTile"
+WallTile = require "diresys/WallTile"
 Player = require "diresys/Player"
 
 local Map = {}
@@ -17,7 +18,7 @@ function Map:new(options)
 	obj.currentPlayer = nil
 	
 	love.physics.setMeter(config.PHYSICS_SCALE)
-	obj.physics_world = love.physics.newWorld(0, 9.8, true)
+	obj.physics_world = love.physics.newWorld(0, 0, true)
 	obj.tileEngine = TileEngine:new(obj.physics_world)
 	obj.actorEngine = ActorEngine:new(obj.physics_world)
 	
@@ -28,6 +29,12 @@ function Map:draw(viewx, viewy)
 	self.tileEngine:draw_tiles(viewx, viewy)
 	self.actorEngine:draw_actors(viewx, viewy)
 	self.tileEngine:draw_shadows(viewx, viewy)
+end
+
+function Map:update(dt)
+	self.physics_world:update(dt)
+	self.tileEngine:update(dt)
+	self.actorEngine:update(dt)
 end
 
 function Map:createFloor(tilex, tiley)

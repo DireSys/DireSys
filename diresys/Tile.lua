@@ -20,7 +20,7 @@ function Tile:new(parent, physics_world, options)
 	obj.type = "tile"
 
 	-- TODO: add physics fixture
-	obj.physics_body = obj:init_physics()
+	obj.physics = {}
 	obj.graphics = {
 		key = nil,
 	}
@@ -28,20 +28,24 @@ function Tile:new(parent, physics_world, options)
 	return obj
 end
 
+function Tile:update(dt)
+	--nothing here
+end
+
 function Tile:init_physics()
 	return nil
 end
 
 function Tile:get_position()
-	if self.physics_body then
-		return {x=self.physics_body:getX(), y=self.physics_body:getY()}
+	if self.physics.body then
+		return {x=self.physics.body:getX(), y=self.physics.body:getY()}
 	end
 	return self.position
 end
 
 function Tile:set_position(x, y)
-	if self.physics_body then
-		self.physics_body:setPosition(x, y)
+	if self.physics.body then
+		self.physics.body:setPosition(x, y)
 	end
 	self.position.x = x
 	self.position.y = y

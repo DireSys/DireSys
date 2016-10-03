@@ -24,7 +24,87 @@ function Actor:new(parent, physics_world, options)
 		key = nil,
 	}
 
+	obj.movement = {
+		speed = 15,
+		up = false,
+		down = false,
+		left = false,
+		right = false,
+	}
+
+	obj.animation = {
+		current_interval = 0.0,
+		cycle_interval = 0.4, --ms
+		up = {},
+		down = {},
+		left = {},
+		right = {},
+	}
+
 	return obj
+end
+
+function Actor:update(dt)
+	self:update_animation(dt)
+	
+	local speed = self.movement.speed
+
+	local vx = 0
+	local vy = 0
+	if self.movement.up then
+		vy = vy - speed
+	end
+	
+	if self.movement.down then
+		vy = vy + speed
+	end
+	
+	if self.movement.right then
+		vx = vx + speed
+	end
+	
+	if self.movement.left then
+		vx = vx - speed
+	end
+	
+	self:move(vx, vy)
+end
+
+function Actor:update_animation(dt)
+	local current_interval = self.animation.current_interval
+	local cycle_interval = self.animation.cycle_interval
+	local animation = self.animation.down
+	
+	-- change the animation set based on movement
+	if self.movement.up then
+		animation = self.animation.up
+	elseif self.movement.left then
+		animation = self.animation.left
+	elseif self.movement.right then
+		animation = self.animation.right
+	elseif self.movement.down then
+		animation = self.animation.down
+	end
+	
+	-- we have no animations
+	if #animation == 0 then
+		return
+	-- just set the graphic, we don't have a cycle
+	elseif #animation == 1 then
+		self:set_graphic(animation[1])
+		return
+	end
+
+	local step_interval = cycle_interval / #animation
+	local animation_frame = math.floor(current_interval / step_interval) + 1
+	self:set_graphic(animation[animation_frame])
+	
+	if current_interval > cycle_interval then 
+		current_interval = 0
+	else
+		current_interval = current_interval + dt
+	end
+	self.animation.current_interval = current_interval
 end
 
 function Actor:get_position()
@@ -60,6 +140,12 @@ function Actor:get_dimensions()
 	local quad = self:get_graphic()
 	local x, y, w, h = quad:getViewport()
 	return w, h
+end
+
+function Actor:move(x, y)
+	if self.physics.body then
+		self.physics.body:setLinearVelocity(x, y)
+	end
 end
 
 return Actor

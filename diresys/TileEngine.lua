@@ -19,6 +19,12 @@ function TileEngine:new(options)
 	return obj
 end
 
+function TileEngine:update(dt)
+	for _, tile in ipairs(self.tilemap) do
+		tile:update(dt)
+	end
+end
+
 function TileEngine:add_tile(tile)
 	tile.parent = self
 	table.insert(self.tilemap, tile)

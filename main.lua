@@ -16,6 +16,7 @@ love.load = function(args)
 			love.draw = core.draw
 			love.update = core.update
 			love.keypressed = core.keypressed
+			love.keyreleased = core.keyreleased
 		end
 	end
 end

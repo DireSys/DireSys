@@ -30,7 +30,13 @@ function core.load()
 			map:createFloor(i, j)
 		end
 	end
+	
+	for i = 0, 5 do
+		map:createWall(i, 6)
+	end
+	
 	map:createPlayer(3, 3)
+	
 end
 
 function core.draw()
@@ -39,14 +45,32 @@ function core.draw()
 end
 
 function core.update(dt)
-	map.physics_world:update(dt)
+	map:update(dt)
 end
 
 function core.keypressed(key)
 	dbg.print("Key Pressed: " .. key)
-	if key == "space" then
-
+	if key == "up" then
+		map.currentPlayer.movement.up = true
+	elseif key == "down" then
+		map.currentPlayer.movement.down = true
+	elseif key == "left" then
+		map.currentPlayer.movement.left = true
+	elseif key == "right" then
+		map.currentPlayer.movement.right = true
 	end
 end
 
+function core.keyreleased(key)
+	dbg.print("Key Released: " .. key)
+	if key == "up" then
+		map.currentPlayer.movement.up = false
+	elseif key == "down" then
+		map.currentPlayer.movement.down = false
+	elseif key == "left" then
+		map.currentPlayer.movement.left = false
+	elseif key == "right" then
+		map.currentPlayer.movement.right = false
+	end
+end
 return core

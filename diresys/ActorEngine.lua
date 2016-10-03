@@ -23,15 +23,19 @@ function ActorEngine:new(physics_world, options)
 	return obj
 end
 
+function ActorEngine:update(dt)
+	for _, actor in ipairs(self.actorList) do
+		actor:update(dt)
+	end
+end
+
 function ActorEngine:add_actor(actor)
 	actor.parent = self
 	table.insert(self.actorList, actor)
-	self:reset()
 end
 
 function ActorEngine:remove_actor(actor)
 	self.actorList = f.filter(self.actorList, function(i) return i == actor end)
-	self:reset()
 end
 
 function ActorEngine:reset()
@@ -45,6 +49,7 @@ function ActorEngine:reset()
 end
 
 function ActorEngine:draw_actors(viewx, viewy)
+	-- need to refresh all actors every frame, since they are dynamic
 	self:reset()
 	love.graphics.draw(self.actorBatch, viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
