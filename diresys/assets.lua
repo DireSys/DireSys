@@ -31,7 +31,7 @@ function assets.load_assets()
 	--
 
     -- idle - down-left
-	load_sprite("player_idle_DL_0", 4, 4, 8, 8)
+	load_sprite("player_idle_DL_0", 0, 4, 8, 8)
 	load_sprite("player_idle_DL_1", 6, 4, 8, 8)
     -- idle - down-right
 	load_sprite("player_idle_DR_0", 0, 4, 8, 8)
@@ -69,13 +69,13 @@ function assets.load_assets()
 	load_sprite("wall_T__L", 0, 12)
 	load_sprite("wall_T_B_", 1, 12)
 	load_sprite("wall_TR__", 2, 12)
-	load_sprite("wall___B_", 4, 12)
+	load_sprite("wall___B_", 1, 16)
 	load_sprite("wall__R_L", 0, 13)
 	load_sprite("wall__R__", 3, 13)
 	load_sprite("wall_____", 4, 13)
 	load_sprite("wall____L", 5, 13)
-	load_sprite("wall___BL", 0, 14)
-	load_sprite("wall__RB_", 2, 14)
+	load_sprite("wall___BL", 0, 16)
+	load_sprite("wall__RB_", 2, 16)
 	load_sprite("wall_TRBL", 7, 13)
 	load_sprite("wall_T___", 4, 14)
 

@@ -23,9 +23,9 @@ function DoorTile:init_physics()
 	local width, height = self:get_dimensions()
 	local width, height = 12, 8
 
-	local rectwidth = width-2
+	local rectwidth = width
 	local rectheight = height/2
-	local offsetx = rectwidth/2 + 1
+	local offsetx = rectwidth/2
 	local offsety = height/2 + rectheight/2
 
 	self.physics.shape = love.physics.newRectangleShape(
