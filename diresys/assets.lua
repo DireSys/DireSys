@@ -31,7 +31,7 @@ function assets.load_assets()
 	--
 
     -- idle - down-left
-	load_sprite("player_idle_DL_0", 0, 4, 8, 8)
+	load_sprite("player_idle_DL_0", 4, 4, 8, 8)
 	load_sprite("player_idle_DL_1", 6, 4, 8, 8)
     -- idle - down-right
 	load_sprite("player_idle_DR_0", 0, 4, 8, 8)
