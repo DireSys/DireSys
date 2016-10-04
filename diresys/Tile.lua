@@ -19,7 +19,6 @@ function Tile:new(parent, physics_world, options)
 	obj.position = position or {x=0, y=0}
 	obj.type = "tile"
 
-	-- TODO: add physics fixture
 	obj.physics = {}
 	obj.graphics = {
 		{key = nil, offset = {0, 0}}, -- layer 1
@@ -30,20 +29,37 @@ function Tile:new(parent, physics_world, options)
 end
 
 function Tile:update(dt)
-	--nothing here
+	--Runs in love.update(dt)
 end
 
 function Tile:init_physics()
+	--Should be called in order to initialize any physics body with
+	--fixtures
 	return nil
 end
 
 function Tile:get_tile_position()
+	--Returns the tilex, tiley location of the current tile
 	local position = self:get_position()
 	return math.floor(position.x / config.TILE_SIZE),
 	math.floor(position.y / config.TILE_SIZE)
 end
 
 function Tile:get_tile_dimensions()
+	--[[ 
+
+		Similar to get_tile_position, except it also takes into
+		account the entire deimensions of the tile if it inherits
+		multiple tiles. Useful for tiles that make up more than a 1 by
+		1 tile.
+
+		Also works with respect to a multi-layer tile
+	
+		Returns a dictionary with keys 'startx', 'endx', 'starty',
+		'endy'
+
+		]]
+
 	local startx, starty = self:get_tile_position()
 	local width1, height1 = self:get_dimensions(1)
 	width1 = (width1 and math.floor(width1 / config.TILE_SIZE) or 1) - 1
@@ -66,6 +82,12 @@ function Tile:get_tile_dimensions()
 end
 
 function Tile:get_position()
+	--[[
+
+		Returns the position. Note that position can be dependent on
+		the self.physics.body, if it exists.
+
+	]]
 	if self.physics.body then
 		return {x=self.physics.body:getX(), y=self.physics.body:getY()}
 	end
@@ -82,9 +104,18 @@ function Tile:set_position(x, y)
 	return self
 end
 
-function Tile:set_graphic(key, layer)
+function Tile:set_graphic(key, layer, offset)
+	--[[
+
+		Set the graphics key on the given layer. Setting to nil won't
+		show a graphic on the given layer.
+
+	]]
 	local layer = layer or 1
 	self.graphics[layer].key = key
+	if offset then
+		self.graphics[layer].offset = offset
+	end
 	if self.parent then self.parent:reset(layer) end
 	return self
 end

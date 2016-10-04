@@ -45,8 +45,14 @@ function TileEngine:reset(layer)
 	for _, tile in ipairs(self.tilemap) do
 		local quad = tile:get_graphic(layer)
 		local position = tile:get_position()
+		local tileOffset = tile.graphics[layer].offset
+		local offsetx = config.TILE_SIZE * tileOffset[1]
+		local offsety = config.TILE_SIZE * tileOffset[2]
+		
 		if quad then
-			self.tilesetBatch[layer]:add(quad, position.x, position.y)
+			self.tilesetBatch[layer]:add(quad,
+										 position.x + offsetx,
+										 position.y + offsety)
 		end
 	end
 	self.tilesetBatch[layer]:flush()
