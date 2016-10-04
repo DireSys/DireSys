@@ -4,6 +4,7 @@
 config = require "config"
 pp = require "diresys/pp"
 Map = require "diresys/Map"
+perf = require "diresys/perf"
 
 local MapGenerator = {}
 
@@ -15,6 +16,7 @@ function lines(str)
 end
 
 function MapGenerator.load(lines)
+	perf.step("MapGenerator.load")
 	local map = Map:new()
 	for j = 1, #lines do
 		local line = lines[j]
@@ -33,26 +35,33 @@ function MapGenerator.load(lines)
 		end
 	end
 	MapGenerator.process_map_intermediate(map)
+	map:refreshTiles()
+	perf.step("MapGenerator.load")
 	return map
 end
 
 function MapGenerator.load_string(mapString)
-	return MapGenerator.load(lines(mapString))
+	perf.step("MapGenerator.load_string")
+	local mapLines = lines(mapString)
+	perf.step("MapGenerator.load_string")
+	return MapGenerator.load(mapLines)
 end
 
 function MapGenerator.load_file(filename)
-	local f = assert(io.open(filename, "r"))
+	local f = assert(io.open(filename, "r")); perf.step("MapGenerator.load_file")
 	local s = f:read("*all")
-	f:close()
+	f:close(); perf.step("MapGenerator.load_file")
 	return MapGenerator.load_string(s)
 end
 
 function MapGenerator.process_map_intermediate(map)
-	for _, tile in ipairs(map:getTileList()) do
+	perf.step("MapGenerator.process_map_intermediate")
+	for _, tile in pairs(map:getTileList()) do
 		if tile.type == "walltile" then
 			MapGenerator.process_wallTile(map, tile)
 		end
 	end
+	perf.step("MapGenerator.process_map_intermediate")
 end
 
 function MapGenerator.process_wallTile(map, tile)

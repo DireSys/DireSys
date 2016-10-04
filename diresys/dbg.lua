@@ -8,7 +8,6 @@ local dbg = {}
 
 function dbg.print(s)
 	_buffer = tostring(s)
-	print(s)
 end
 
 function dbg.draw()

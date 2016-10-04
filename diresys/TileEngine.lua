@@ -23,26 +23,26 @@ function TileEngine:new(options)
 end
 
 function TileEngine:update(dt)
-	for _, tile in ipairs(self.tilemap) do
+	for _, tile in pairs(self.tilemap) do
 		tile:update(dt)
 	end
 end
 
-function TileEngine:add_tile(tile)
+function TileEngine:add_tile(tile, x, y)
+	local index = x .. "," .. y
 	tile.parent = self
-	table.insert(self.tilemap, tile)
-	self:reset()
+	self.tilemap[index] = tile
 end
 
-function TileEngine:remove_tile(tile)
-	self.tilemap = f.filter(self.tilemap, function(i) return i == tile end)
-	self:reset()
+function TileEngine:get_tile(x, y)
+	local index = x .. "," .. y
+	return self.tilemap[index]
 end
 
 function TileEngine:reset(layer)
 	local layer = layer or 1
 	self.tilesetBatch[layer]:clear()
-	for _, tile in ipairs(self.tilemap) do
+	for _, tile in pairs(self.tilemap) do
 		local quad = tile:get_graphic(layer)
 		local position = tile:get_position()
 		local tileOffset = tile.graphics[layer].offset

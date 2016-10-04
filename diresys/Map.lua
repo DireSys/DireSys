@@ -63,42 +63,31 @@ function Map:getTileList()
 end
 
 function Map:getTile(tilex, tiley)
-	local tile = f.find(
-		self:getTileList(),
-		function(t)
-			local dims = t:get_tile_dimensions()
-			if tilex < dims.startx or tilex > dims.endx then
-				return false
-			end
+	return self.tileEngine:get_tile(tilex, tiley)
+end
 
-			if tiley < dims.starty or tiley > dims.endy then
-				return false
-			end
-			
-			return true
-	end)
-
-	return tile or nil
+function Map:refreshTiles()
+	self.tileEngine:reset()
 end
 
 function Map:createFloor(tilex, tiley)
 	local floorTile = FloorTile:new(self.tileEngine, self.physics_world)
 	floorTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
-	self.tileEngine:add_tile(floorTile)
+	self.tileEngine:add_tile(floorTile, tilex, tiley)
 	return floorTile
 end
 
 function Map:createDoor(tilex, tiley)
 	local doorTile = DoorTile:new(self.tileEngine, self.physics_world)
 	doorTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
-	self.tileEngine:add_tile(doorTile)
+	self.tileEngine:add_tile(doorTile, tilex, tiley)
 	return doorTile
 end
 
 function Map:createWall(tilex, tiley)
 	local wallTile = WallTile:new(self.tileEngine, self.physics_world)
 	wallTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
-	self.tileEngine:add_tile(wallTile)
+	self.tileEngine:add_tile(wallTile, tilex, tiley)
 	return wallTile
 end
 
@@ -111,8 +100,6 @@ function Map:createPlayer(tilex, tiley)
 end
 
 function Map.physicsContactBegin(fixtureA, fixtureB)
-	print("collision!")
-	
 	local objecta = fixtureA:getUserData() or nil
 	local objectb = fixtureB:getUserData() or nil
 	
@@ -126,7 +113,6 @@ function Map.physicsContactBegin(fixtureA, fixtureB)
 end
 
 function Map.physicsContactEnd(fixtureA, fixtureB)
-	print("stopped collisiont!")
 	local objecta = fixtureA:getUserData() or nil
 	local objectb = fixtureB:getUserData() or nil
 	

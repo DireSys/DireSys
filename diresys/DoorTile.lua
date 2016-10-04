@@ -131,7 +131,6 @@ function DoorTile:toggleDoor()
 end
 
 function DoorTile:action_use()
-	print("Using door")
 	self:toggleDoor()
 end
 
