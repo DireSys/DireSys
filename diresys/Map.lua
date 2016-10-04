@@ -22,6 +22,8 @@ function Map:new(options)
 
 	love.physics.setMeter(config.PHYSICS_SCALE)
 	obj.physics_world = love.physics.newWorld(0, 0, true)
+	obj.physics_world:setCallbacks(obj.physicsContactBegin,
+								   obj.physicsContactEnd)
 	obj.tileEngine = TileEngine:new(obj.physics_world)
 	obj.actorEngine = ActorEngine:new(obj.physics_world)
 	return obj
@@ -106,6 +108,35 @@ function Map:createPlayer(tilex, tiley)
 	self.actorEngine:add_actor(player)
 	self.currentPlayer = player
 	return player
+end
+
+function Map.physicsContactBegin(fixtureA, fixtureB)
+	print("collision!")
+	
+	local objecta = fixtureA:getUserData() or nil
+	local objectb = fixtureB:getUserData() or nil
+	
+	-- setUserData in tiles or actors that you want to collide
+	if not objecta or not objectb then
+		return
+	end
+
+	objecta:action_proximity_in(objectb)
+	objectb:action_proximity_in(objecta)
+end
+
+function Map.physicsContactEnd(fixtureA, fixtureB)
+	print("stopped collisiont!")
+	local objecta = fixtureA:getUserData() or nil
+	local objectb = fixtureB:getUserData() or nil
+	
+	-- setUserData in tiles or actors that you want to collide
+	if not objecta or not objectb then
+		return
+	end
+
+	objecta:action_proximity_out(objectb)
+	objectb:action_proximity_out(objecta)
 end
 
 return Map

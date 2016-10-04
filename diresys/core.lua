@@ -60,6 +60,8 @@ function core.keypressed(key)
 		map.currentPlayer.movement.left = true
 	elseif key == "right" then
 		map.currentPlayer.movement.right = true
+	elseif key == "space" then
+		map.currentPlayer:use_proximity()
 	end
 end
 

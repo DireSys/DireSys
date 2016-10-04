@@ -1,8 +1,8 @@
 --[[
 	Represents an actor on the screen, that can move.
 ]]
-
 config = require "config"
+f = require "diresys/func"
 assets = require "diresys/assets"
 
 local Actor = {
@@ -18,6 +18,7 @@ function Actor:new(parent, physics_world, options)
 	obj.parent = parent
 	obj.physics_world = physics_world
 	obj.position = position or {x=0, y=0}
+	obj.parent_type = "actor"
 	obj.type = "actor"
 	obj.physics = {}
 	obj.graphics = {
@@ -41,6 +42,9 @@ function Actor:new(parent, physics_world, options)
 		left = {},
 		right = {},
 	}
+
+	-- Proximity of other actors or useable tiles
+	obj.proximity = {}
 
 	return obj
 end
@@ -153,6 +157,29 @@ end
 function Actor:move(x, y)
 	if self.physics.body then
 		self.physics.body:setLinearVelocity(x, y)
+	end
+end
+
+function Actor:action_proximity_in(actor)
+	-- fill proximity
+	if not f.find(self.proximity, function(i) return i == actor end) then
+		table.insert(self.proximity, actor)
+	end
+end
+
+function Actor:action_proximity_out(actor)
+	-- remove actor from proximity
+	self.proximity = f.filter(self.proximity, function(i) return i ~= actor end)
+end
+
+function Actor:action_use()
+	-- pass, nothing can use an actor
+end
+
+function Actor:use_proximity()
+	-- use a tile that is within proximity
+	for _, tile in ipairs(self.proximity) do
+		tile:action_use()
 	end
 end
 

@@ -25,8 +25,6 @@ function WallTile:init_physics()
 		width, height)
 	self.physics.fixture = love.physics.newFixture(
 		self.physics.body, self.physics.shape)
-
-	-- body settings
 end
 
 function WallTile:updateWall(walls)

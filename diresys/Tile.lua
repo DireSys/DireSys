@@ -2,6 +2,7 @@
 	Tile object, which is drawn to the screen
 ]]
 config = require "config"
+f = require "diresys/func"
 assets = require "diresys/assets"
 
 local Tile = {
@@ -17,6 +18,7 @@ function Tile:new(parent, physics_world, options)
 	obj.parent = parent
 	obj.physics_world = physics_world
 	obj.position = position or {x=0, y=0}
+	obj.parent_type = "tile"
 	obj.type = "tile"
 
 	obj.physics = {}
@@ -24,6 +26,9 @@ function Tile:new(parent, physics_world, options)
 		{key = nil, offset = {0, 0}}, -- layer 1
 		{key = nil, offset = {0, 0}}, -- layer 2
 	}
+
+	-- list of actors in proximity
+	obj.proximity = {}
 
 	return obj
 end
@@ -135,6 +140,20 @@ function Tile:get_dimensions(layer)
 	else
 		return nil
 	end
+end
+
+function Tile:action_proximity_in(actor)
+	if not f.find(self.proximity, function(i) return i == actor end) then
+		table.insert(self.proximity, actor)
+	end
+end
+
+function Tile:action_proximity_out(actor)
+	self.proximity = f.filter(self.proximity, function(i) return i ~= actor end)
+end
+
+function Tile:action_use()
+	-- if the tile is useable by an actor, it should overload this.
 end
 
 return Tile

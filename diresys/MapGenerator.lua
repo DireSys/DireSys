@@ -67,25 +67,29 @@ function MapGenerator.process_wallTile(map, tile)
 	-- check what parts of the wall tile need edges
 	-- top
 	local tile_top = map:getTile(dims.startx, dims.starty-1)
-	if tile_top and tile_top.type == "walltile" then
+	if not tile_top 
+	    or tile_top.type == "walltile" or tile_top.type == "doortile" then
 		wall_edges.top = false
 	end
 
 	-- right
 	local tile_right = map:getTile(dims.endx+1, dims.starty)
-	if tile_right and tile_right.type == "walltile" then
+	if not tile_right
+	    or tile_right.type == "walltile" or tile_right.type == "doortile" then
 		wall_edges.right = false
 	end
 
 	-- bottom
 	local tile_bottom = map:getTile(dims.startx, dims.endy+1)
-	if tile_bottom and tile_bottom.type == "walltile" then
+	if not tile_bottom
+		or tile_bottom.type == "walltile" or tile_bottom.type == "doortile" then
 		wall_edges.bottom = false
 	end
 
 	-- left
 	local tile_left = map:getTile(dims.startx-1, dims.endy)
-	if tile_left and tile_left.type == "walltile" then
+	if not tile_left
+	    or tile_left.type == "walltile" or tile_left.type == "doortile" then
 		wall_edges.left = false
 	end
 	

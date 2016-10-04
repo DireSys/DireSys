@@ -86,10 +86,12 @@ function assets.load_assets()
 	load_sprite("hdoor_upper1", 12, 15, 12, 4)
 	load_sprite("hdoor_upper2", 15, 15, 12, 4)
 	load_sprite("hdoor_upper3", 18, 15, 12, 4)
+	load_sprite("hdoor_upper4", 21, 15, 12, 4)
 	load_sprite("hdoor_lower0", 9, 16, 12, 4)
 	load_sprite("hdoor_lower1", 12, 16, 12, 4)
 	load_sprite("hdoor_lower2", 15, 16, 12, 4)
 	load_sprite("hdoor_lower3", 18, 16, 12, 4)
+	load_sprite("hdoor_lower4", 21, 16, 12, 4)
 end
 
 return assets

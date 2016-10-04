@@ -85,6 +85,7 @@ function Player:init_physics()
 		rectwidth, rectheight)
 	self.physics.fixture = love.physics.newFixture(
 		self.physics.body, self.physics.shape)
+	self.physics.fixture:setUserData(self)
 
 	-- body settings
 	self.physics.body:setMassData(self.physics.shape:computeMass(1))
