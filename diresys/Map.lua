@@ -7,6 +7,7 @@ TileEngine = require "diresys/TileEngine"
 ActorEngine = require "diresys/ActorEngine"
 FloorTile = require "diresys/FloorTile"
 WallTile = require "diresys/WallTile"
+DoorTile = require "diresys/DoorTile"
 Player = require "diresys/Player"
 
 local Map = {}
@@ -83,6 +84,13 @@ function Map:createFloor(tilex, tiley)
 	floorTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
 	self.tileEngine:add_tile(floorTile)
 	return floorTile
+end
+
+function Map:createDoor(tilex, tiley)
+	local doorTile = DoorTile:new(self.tileEngine, self.physics_world)
+	doorTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
+	self.tileEngine:add_tile(doorTile)
+	return doorTile
 end
 
 function Map:createWall(tilex, tiley)

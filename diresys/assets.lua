@@ -79,7 +79,10 @@ function assets.load_assets()
 	--
 	-- Door Tiles
 	--
-	
+	load_sprite("door0", 9, 15, 12, 8)
+	load_sprite("door1", 12, 15, 12, 8)
+	load_sprite("door2", 15, 15, 12, 8)
+	load_sprite("door3", 18, 15, 12, 8)
 end
 
 return assets

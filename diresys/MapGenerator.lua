@@ -27,6 +27,8 @@ function MapGenerator.load(lines)
 			elseif character == "@" then
 				map:createFloor(i-1, j-1)
 				map:createPlayer(i-1, j-1)
+			elseif character == "D" then
+				map:createDoor(i-1, j-1)
 			end
 		end
 	end
@@ -41,6 +43,7 @@ end
 function MapGenerator.load_file(filename)
 	local f = assert(io.open(filename, "r"))
 	local s = f:read("*all")
+	f:close()
 	return MapGenerator.load_string(s)
 end
 
