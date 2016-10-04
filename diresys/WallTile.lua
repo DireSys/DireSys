@@ -61,6 +61,7 @@ function WallTile:fixTopBounds()
 		rectwidth, rectheight)
 	self.physics.fixture = love.physics.newFixture(
 		self.physics.body, self.physics.shape)
+    self.physics.body:setActive(false)
 end
 
 return WallTile
