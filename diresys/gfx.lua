@@ -27,8 +27,8 @@ function TileGraphics:new(parent, tileEngine)
 	obj.parent = parent
 	obj.tileEngine = tileEngine
 	obj.graphics = {
-		{tag="foreground", key=nil, layer=2, offset={0, 0}, index=1},
-		{tag="background", key=nil, layer=1, offset={0, 0}, index=1},
+		{tag="foreground", key=nil, layer=2, offset={0, 0}, index=2},
+		{tag="background", key=nil, layer=1, offset={0, 0}, index=2},
 	}
 
 	return obj

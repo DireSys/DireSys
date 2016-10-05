@@ -13,6 +13,15 @@ function DoorTile:new(parent, physics_world, options)
 	obj.options = options or {}
 	obj.graphics:setForeground({key="hdoor_upper0"})
 	obj.graphics:setBackground({key="hdoor_lower0", offset={0, 1}})
+
+	-- set several floor tiles under the door
+	obj.graphics:set("tile00", {key="floor0", offset={0,0}})
+	obj.graphics:set("tile01", {key="floor0", offset={0,1}})
+	obj.graphics:set("tile10", {key="floor0", offset={1,0}})
+	obj.graphics:set("tile11", {key="floor0", offset={1,1}})
+	obj.graphics:set("tile20", {key="floor0", offset={2,0}})
+	obj.graphics:set("tile21", {key="floor0", offset={2,1}})
+
 	obj.type = "doortile"
 	obj.init_physics = DoorTile.init_physics
 	obj.update = DoorTile.update
@@ -83,16 +92,12 @@ function DoorTile:updateDoor(dt)
 	if current_interval > cycle_interval and state == "opening" then
 		self.animation.door_state = "open"
 		self.physics.fixture:setSensor(true)
-		--self:set_graphic(self.animation.door_open[1], {layer=2, offset={0, 0}})
-		--self:set_graphic(self.animation.door_open[2], {layer=1, offset={0, 1}})
 		self.graphics:setForeground({key=self.animation.door_open[1]})
 		self.graphics:setBackground({key=self.animation.door_open[2]})
 		return
 	elseif current_interval > cycle_interval and state == "closing" then
 		self.animation.door_state = "closed"
 		self.physics.fixture:setSensor(false)
-		--self:set_graphic(self.animation.door_close[1], {layer=2, offset={0, 0}})
-		--self:set_graphic(self.animation.door_close[2], {layer=1, offset={0, 1}})
 		self.graphics:setForeground({key=self.animation.door_close[1]})
 		self.graphics:setBackground({key=self.animation.door_close[2]})
 		return
@@ -108,8 +113,6 @@ function DoorTile:updateDoor(dt)
 	local anim1_frame = math.floor(current_interval/anim1_step) + 1
 	local anim2_frame = math.floor(current_interval/anim2_step) + 1
 
-	--self:set_graphic(animation_loop1[anim1_frame], {layer=2, offset={0, 0}})
-	--self:set_graphic(animation_loop2[anim1_frame], {layer=1, offset={0, 1}})
 	self.graphics:setForeground({key=animation_loop1[anim1_frame]})
 	self.graphics:setBackground({key=animation_loop2[anim2_frame]})
 
