@@ -15,6 +15,7 @@ function TileEngine:new(options)
 
 	obj.type = "tileengine"
 	obj.tilemap = {}
+	obj.resetDirtyFlag = {false, false}
 	obj.tilesetBatch = {
 		love.graphics.newSpriteBatch(assets.sprite_image, 10000),
 		love.graphics.newSpriteBatch(assets.sprite_image, 10000),
@@ -42,25 +43,33 @@ end
 
 function TileEngine:reset(layer)
 	local layer = layer or 1
+	self.resetDirtyFlag[layer] = true
+end
+
+function TileEngine:redraw(layer)
+	local layer = layer or 1
 	self.tilesetBatch[layer]:clear()
 	for _, tile in pairs(self.tilemap) do
-		local quad = tile:get_graphic(layer)
-		local position = tile:get_position()
-		local tileOffset = tile.graphics[layer].offset
-		local offsetx = config.TILE_SIZE * tileOffset[1]
-		local offsety = config.TILE_SIZE * tileOffset[2]
-		
-		if quad then
-			self.tilesetBatch[layer]:add(quad,
-										 position.x + offsetx,
-										 position.y + offsety)
+		for _, tileGraphic in ipairs(tile.graphics:getAll(layer)) do
+			local spriteQuad = assets.get_sprite(tileGraphic.key)
+			if spriteQuad then
+				local spritePosition = tile.graphics:getPosition(tileGraphic.tag)
+				self.tilesetBatch[layer]:add(spriteQuad, spritePosition.x, spritePosition.y)
+			end
+			
 		end
 	end
-	self.tilesetBatch[layer]:flush()
+	self.tilesetBatch[layer]:flush()	
 end
 
 function TileEngine:draw_tiles(viewx, viewy, layer)
 	local layer = layer or 1
+
+	if self.resetDirtyFlag[layer] then
+		self:redraw(layer)
+		self.resetDirtyFlag[layer] = false
+	end
+
 	love.graphics.draw(self.tilesetBatch[layer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end

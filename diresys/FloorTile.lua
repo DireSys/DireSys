@@ -9,7 +9,7 @@ local FloorTile = {}
 function FloorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.options = options or {}
-	obj:set_graphic("floor0", {redraw=false})
+	obj.graphics:setBackground({key="floor0", redraw=false})
 	obj.type = "floortile"
 	obj.updateFloorGraphics = FloorTile.updateFloorGraphics
 

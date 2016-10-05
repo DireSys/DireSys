@@ -4,6 +4,7 @@
 config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"
+gfx = require "diresys/gfx"
 
 local Tile = {
 	
@@ -17,15 +18,12 @@ function Tile:new(parent, physics_world, options)
 
 	obj.parent = parent
 	obj.physics_world = physics_world
-	obj.position = position or {x=0, y=0}
+	obj.position = options.position or {x=0, y=0}
 	obj.parent_type = "tile"
 	obj.type = "tile"
 
 	obj.physics = {}
-	obj.graphics = {
-		{key = nil, offset = {0, 0}}, -- layer 1
-		{key = nil, offset = {0, 0}}, -- layer 2
-	}
+	obj.graphics = gfx.TileGraphics:new(obj, parent)
 
 	-- list of actors in proximity
 	obj.proximity = {}
@@ -63,8 +61,11 @@ function Tile:get_tile_dimensions()
 		Returns a dictionary with keys 'startx', 'endx', 'starty',
 		'endy'
 
+		FIXME: *BROKEN* since change to gfx.TileGraphics
+
 		]]
 
+	--[[
 	local startx, starty = self:get_tile_position()
 	local width1, height1 = self:get_dimensions(1)
 	width1 = (width1 and math.floor(width1 / config.TILE_SIZE) or 1) - 1
@@ -84,6 +85,7 @@ function Tile:get_tile_dimensions()
 		startx = startx, endx = startx + width,
 		starty = starty, endy = starty + height,
 	}
+	]]
 end
 
 function Tile:get_position()
@@ -93,6 +95,13 @@ function Tile:get_position()
 		the self.physics.body, if it exists.
 
 	]]
+	if self.physics.body then
+		return {x=self.physics.body:getX(), y=self.physics.body:getY()}
+	end
+	return self.position
+end
+
+function Tile:getPosition()
 	if self.physics.body then
 		return {x=self.physics.body:getX(), y=self.physics.body:getY()}
 	end
@@ -109,56 +118,10 @@ function Tile:set_position(x, y)
 	return self
 end
 
-function Tile:set_graphic(key, options)
-	--[[
-
-		Set the graphics key on the given layer. Setting to nil won't
-		show a graphic on the given layer.
-
-		Options:
-
-		layer - the layer to draw the graphic [default:1]
-
-		offset - the offset of the graphic. does not change the offset
-		if it is not specified.
-
-		redraw - determines whether the tiles should be redrawn after
-		being set [default:true]
-
-	]]
-	local options = options or {}
-	local redraw = options.redraw == nil and true or options.redraw
-	local layer = options.layer or 1
-	local offset = options.offset
-
-	self.graphics[layer].key = key
-
-	if offset then
-		self.graphics[layer].offset = offset
-	end
-
-	if self.parent and redraw then
-		self.parent:reset(layer)
-	end
-
-	return self
-end
-
-function Tile:get_graphic(layer)
-	local layer = layer or 1
-	local key = self.graphics[layer].key
-	return assets.get_sprite(key)
-end
-
-function Tile:get_dimensions(layer)
-	local layer = layer or 1
-	local quad = self:get_graphic(layer)
-	if quad then
-		local x, y, w, h = quad:getViewport()
-		return w, h
-	else
-		return nil
-	end
+function Tile:getDimensions()
+	--TODO: determine a tile's dimensions from the accumulation of
+	--graphics quads
+	return self.graphics:getDimensions("background")
 end
 
 function Tile:action_proximity_in(actor)
