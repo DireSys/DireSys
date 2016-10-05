@@ -71,29 +71,45 @@ function Map:refreshTiles()
 end
 
 function Map:createFloor(tilex, tiley)
-	local floorTile = FloorTile:new(self.tileEngine, self.physics_world)
-	floorTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
+	local position = {
+		x = tilex*config.TILE_SIZE,
+		y = tiley*config.TILE_SIZE
+	}
+	local floorTile = FloorTile:new(self.tileEngine, self.physics_world,
+									{position=position})
 	self.tileEngine:add_tile(floorTile, tilex, tiley)
 	return floorTile
 end
 
 function Map:createDoor(tilex, tiley)
-	local doorTile = DoorTile:new(self.tileEngine, self.physics_world)
-	doorTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
+	local position = {
+		x = tilex*config.TILE_SIZE,
+		y = tiley*config.TILE_SIZE
+	}
+	local doorTile = DoorTile:new(self.tileEngine, self.physics_world,
+								  {position=position})
 	self.tileEngine:add_tile(doorTile, tilex, tiley)
 	return doorTile
 end
 
 function Map:createWall(tilex, tiley)
-	local wallTile = WallTile:new(self.tileEngine, self.physics_world)
-	wallTile:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
+	local position = {
+		x = tilex*config.TILE_SIZE,
+		y = tiley*config.TILE_SIZE
+	}
+	local wallTile = WallTile:new(self.tileEngine, self.physics_world,
+								  {position=position})
 	self.tileEngine:add_tile(wallTile, tilex, tiley)
 	return wallTile
 end
 
 function Map:createPlayer(tilex, tiley)
-	local player = Player:new(self.actorEngine, self.physics_world)
-	player:set_position(tilex*config.TILE_SIZE, tiley*config.TILE_SIZE)
+	local position = {
+		x = tilex*config.TILE_SIZE,
+		y = tiley*config.TILE_SIZE
+	}
+	local player = Player:new(self.actorEngine, self.physics_world,
+							  {position=position})
 	self.actorEngine:add_actor(player)
 	self.currentPlayer = player
 	return player

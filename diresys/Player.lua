@@ -8,6 +8,7 @@ local Player = {}
 
 function Player:new(parent, physics_world, options)
 	local obj = Actor:new(parent, physics_world, options)
+	obj.options = options or {}
 	obj:set_graphic("player_idle_DR_0")
 	obj.type = "player"
 	obj.init_physics = Player.init_physics
@@ -72,7 +73,8 @@ function Player:new(parent, physics_world, options)
 end
 
 function Player:init_physics()
-	self.physics.body = love.physics.newBody(self.physics_world, 0, 0, "dynamic")
+	local position = self.options.position or {x=0, y=0}
+	self.physics.body = love.physics.newBody(self.physics_world, position.x, position.y, "dynamic")
 	local width, height = self:get_dimensions()
 
 	local rectwidth = width-2

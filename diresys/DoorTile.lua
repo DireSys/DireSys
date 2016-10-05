@@ -9,6 +9,8 @@ local DoorTile = {}
 
 function DoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
+
+	obj.options = options or {}
 	obj:set_graphic("hdoor_upper0", 2, {0, 0})
 	obj:set_graphic("hdoor_lower0", 1, {0, 1})
 	obj.type = "doortile"
@@ -48,7 +50,8 @@ function DoorTile:new(parent, physics_world, options)
 end
 
 function DoorTile:init_physics()
-	self.physics.body = love.physics.newBody(self.physics_world, 0, 0, "static")
+	local position = self.options.position or {x=0, y=0}
+	self.physics.body = love.physics.newBody(self.physics_world, position.x, position.y, "static")
 	local width, height = self:get_dimensions()
 	local width, height = 12, 8
 

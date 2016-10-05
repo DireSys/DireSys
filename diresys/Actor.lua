@@ -173,7 +173,7 @@ function Actor:action_proximity_out(actor)
 end
 
 function Actor:action_use()
-	-- pass, nothing can use an actor
+	-- pass
 end
 
 function Actor:use_proximity()

@@ -8,6 +8,7 @@ local WallTile = {}
 
 function WallTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
+	obj.options = options or {}
 	obj:set_graphic("wall_____")
 	obj.type = "walltile"
 	obj.init_physics = WallTile.init_physics
@@ -18,7 +19,8 @@ function WallTile:new(parent, physics_world, options)
 end
 
 function WallTile:init_physics()
-	self.physics.body = love.physics.newBody(self.physics_world, 0, 0, "static")
+	local position = self.options.position or {x=0, y=0}
+	self.physics.body = love.physics.newBody(self.physics_world, position.x, position.y, "static")
 	local width, height = self:get_dimensions()
 	self.physics.shape = love.physics.newRectangleShape(
 		width/2, height/2,
@@ -47,6 +49,7 @@ function WallTile:updateWall(walls)
 end
 
 function WallTile:fixTopBounds()
+	--[[
 	local width, height = self:get_dimensions()
 	local rectwidth = width
 	local rectheight = height-2
@@ -59,6 +62,7 @@ function WallTile:fixTopBounds()
 		rectwidth, rectheight)
 	self.physics.fixture = love.physics.newFixture(
 		self.physics.body, self.physics.shape)
+	]]
     self.physics.body:setActive(false)
 end
 
