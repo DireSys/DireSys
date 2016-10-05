@@ -27,8 +27,8 @@ function TileGraphics:new(parent, tileEngine)
 	obj.parent = parent
 	obj.tileEngine = tileEngine
 	obj.graphics = {
-		{tag="background", key=nil, layer=1, offset={0, 0}, index=1},
 		{tag="foreground", key=nil, layer=2, offset={0, 0}, index=1},
+		{tag="background", key=nil, layer=1, offset={0, 0}, index=1},
 	}
 
 	return obj
@@ -70,7 +70,7 @@ function TileGraphics:set(tag, options)
 		graphic.layer = options.layer == nil and graphic.layer or options.layer
 		graphic.offset = options.offset == nil and graphic.offset or options.offset
 		graphic.index = options.index == nil and graphic.index or options.index
-		resetLayer = resetLayer or 1
+		resetLayer = graphic.layer
 	else
 		local newGraphic = {
 			tag=tag,
