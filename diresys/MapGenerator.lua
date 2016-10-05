@@ -70,7 +70,7 @@ end
 function MapGenerator.process_wallTile(map, tile)
 	-- We know wall tiles are 1x1
 	-- local dims = tile:get_tile_dimensions()
-	local tilex, tiley = tile:get_tile_position()
+	local tilex, tiley = tile:getTilePosition()
 	local wall_edges = {
 		top = true,
 		right = true,

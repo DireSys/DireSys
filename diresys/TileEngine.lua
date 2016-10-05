@@ -50,7 +50,7 @@ function TileEngine:redraw(layer)
 	local layer = layer or 1
 	self.tilesetBatch[layer]:clear()
 	for _, tile in pairs(self.tilemap) do
-		for _, tileGraphic in ipairs(tile.graphics:getAll(layer)) do
+		for _, tileGraphic in ipairs(tile.graphics:getLayer(layer)) do
 			local spriteQuad = assets.get_sprite(tileGraphic.key)
 			if spriteQuad then
 				local spritePosition = tile.graphics:getPosition(tileGraphic.tag)

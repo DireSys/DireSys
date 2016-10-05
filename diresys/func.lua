@@ -149,4 +149,11 @@ func.sortby = function(t, key)
 	return resultTable
 end
 
+func.declass = function(f, obj)
+	return function(...)
+		local obj = obj
+		return f(obj, unpack(arg)) 
+	end
+end
+
 return func

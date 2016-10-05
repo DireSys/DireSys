@@ -1,6 +1,7 @@
 --[[
 	Tile object, which is drawn to the screen
 ]]
+require "diresys/utils"
 config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"
@@ -16,6 +17,7 @@ function Tile:new(parent, physics_world, options)
 	setmetatable(obj, self)
 	self.__index = self
 
+	obj.options = options or {}
 	obj.parent = parent
 	obj.physics_world = physics_world
 	obj.position = options.position or {x=0, y=0}
@@ -41,64 +43,10 @@ function Tile:init_physics()
 	return nil
 end
 
-function Tile:get_tile_position()
+function Tile:getTilePosition()
 	--Returns the tilex, tiley location of the current tile
-	local position = self:get_position()
-	return math.floor(position.x / config.TILE_SIZE),
-	math.floor(position.y / config.TILE_SIZE)
-end
-
-function Tile:get_tile_dimensions()
-	--[[ 
-
-		Similar to get_tile_position, except it also takes into
-		account the entire deimensions of the tile if it inherits
-		multiple tiles. Useful for tiles that make up more than a 1 by
-		1 tile.
-
-		Also works with respect to a multi-layer tile
-	
-		Returns a dictionary with keys 'startx', 'endx', 'starty',
-		'endy'
-
-		FIXME: *BROKEN* since change to gfx.TileGraphics
-
-		]]
-
-	--[[
-	local startx, starty = self:get_tile_position()
-	local width1, height1 = self:get_dimensions(1)
-	width1 = (width1 and math.floor(width1 / config.TILE_SIZE) or 1) - 1
-	width1 = width1 + self.graphics[1].offset[1]
-	height1 = (height1 and math.floor(height1 / config.TILE_SIZE) or 1) - 1
-	height1 = height1 + self.graphics[1].offset[2]
-
-	local width2, height2 = self:get_dimensions(2)
-	width2 = (width2 and math.floor(width2 / config.TILE_SIZE) or 1) - 1
-	width2 = width2 + self.graphics[2].offset[1]
-	height2 = (height2 and math.floor(height2 / config.TILE_SIZE) or 1) - 1
-	height2 = height2 + self.graphics[2].offset[2]
-
-	local width = width1 > width2 and width1 or width2
-	local height = height1 > height2 and height1 or height2
-	return {
-		startx = startx, endx = startx + width,
-		starty = starty, endy = starty + height,
-	}
-	]]
-end
-
-function Tile:get_position()
-	--[[
-
-		Returns the position. Note that position can be dependent on
-		the self.physics.body, if it exists.
-
-	]]
-	if self.physics.body then
-		return {x=self.physics.body:getX(), y=self.physics.body:getY()}
-	end
-	return self.position
+	local position = self:getPosition()
+	return TILE_UNIT(position.x), TILE_UNIT(position.y)
 end
 
 function Tile:getPosition()
@@ -108,7 +56,7 @@ function Tile:getPosition()
 	return self.position
 end
 
-function Tile:set_position(x, y)
+function Tile:setPosition(x, y)
 	if self.physics.body then
 		self.physics.body:setPosition(x, y)
 	end
@@ -121,7 +69,46 @@ end
 function Tile:getDimensions()
 	--TODO: determine a tile's dimensions from the accumulation of
 	--graphics quads
-	return self.graphics:getDimensions("background")
+	local startx = nil
+	local endx = nil
+	local starty = nil
+	local endy = nil
+	local tags = f.pluck(self.graphics:getAll(), "tag")
+	for _, tag in ipairs(tags) do
+		local dim = self.graphics:getDimensions(tag)
+		if startx == nil or dim.x < startx then
+			startx = dim.x
+		end
+
+		if starty == nil or dim.y < starty then
+			starty = dim.y
+		end
+
+		if endx == nil or (dim.x + dim.w) > endx then
+			endx = (dim.x + dim.w)
+		end
+
+		if endy == nil or (dim.y + dim.h) > endy then
+			endy = (dim.y + dim.h)
+		end
+	end
+
+	return {
+		x = startx,
+		y = starty,
+		w = endx - startx,
+		h = endy - starty,
+	}
+end
+
+function Tile:getTileDimensions()
+	local dims = self:getDimensions()
+	return {
+		x = TILE_UNIT(dims.x),
+		y = TILE_UNIT(dims.y),
+		w = TILE_UNIT(dims.w),
+		h = TILE_UNIT(dims.h),
+	}
 end
 
 function Tile:action_proximity_in(actor)

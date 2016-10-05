@@ -19,9 +19,10 @@ function WallTile:new(parent, physics_world, options)
 end
 
 function WallTile:init_physics()
-	local position = self.options.position or {x=0, y=0}
+	local position = self:getPosition()
 	self.physics.body = love.physics.newBody(self.physics_world, position.x, position.y, "static")
-	local width, height = self:getDimensions()
+	local dims = self:getDimensions()
+	local width, height = dims.w, dims.h
 	self.physics.shape = love.physics.newRectangleShape(
 		width/2, height/2,
 		width, height)
@@ -42,7 +43,6 @@ function WallTile:updateWall(wall_edges, front_facing)
 		layer = 2
 		self:fixTopBounds()
 	end
-	local layer = wall_edges.top and 2 or 1
 
     local key = "wall_" .. front .. t .. r .. b .. l
 

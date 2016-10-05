@@ -4,6 +4,7 @@
 	manage graphics resources effectively.
 
 ]]
+require "diresys/utils"
 config = require "config"
 pp = require "diresys/pp"
 f = require "diresys/func"
@@ -18,7 +19,9 @@ function TileGraphics:new(parent, tileEngine)
 
 		Keyword Arguments:
 
-		parent -- a TileEngine instance
+		parent -- a Tile instance
+
+		tileEngine -- a TileEngine instance
 
 	]]
 	local obj = {}
@@ -120,7 +123,7 @@ function TileGraphics:setIndex(tag, index)
 	graphic.index = index
 end
 
-function TileGraphics:getAll(layer)
+function TileGraphics:getLayer(layer)
 	local layer = layer or 1
 
 	-- sort by index
@@ -141,12 +144,48 @@ function TileGraphics:getAll(layer)
 	return layerGraphics
 end
 
+function TileGraphics:getAll()
+	return f.filter(self.graphics, function(g) return g.key ~= nil end)
+end
+
 function TileGraphics:getDimensions(tag)
 	local graphic = self:get(tag)
+	local graphicPosition = self:getPosition(tag)
 	if graphic then
 		local quad = assets.get_sprite(graphic.key)
 		local x, y, w, h = quad:getViewport()
-		return w, h
+		return {
+			-- width / height
+			w = w,
+			h = h,
+			-- x position / y position in world coordinates
+			x = graphicPosition.x,
+			y = graphicPosition.y,
+			-- offset in world units wrt parent tile
+			ox = WORLD_UNIT(graphic.offset[1]),
+			oy = WORLD_UNIT(graphic.offset[2]),
+		}
+	else
+		return nil
+	end
+end
+
+function TileGraphics:getTileDimensions(tag)
+	local graphic = self:get(tag)
+	local graphicPosition = self:getPosition(tag)
+	local w, h = self:getDimensions(tag)
+	if graphic then
+		return {
+			-- tile width / tile height
+			w = TILE_UNIT(w),
+			h = TILE_UNIT(h),
+			-- tile x position / tile y position in world tile coordinates
+			x = TILE_UNIT(graphicPosition.x),
+			y = TILE_UNIT(graphicPosition.y),
+			-- tile offset wrt parent tile
+			ox = graphic.offset[1],
+			oy = graphic.offset[2],
+		}
 	else
 		return nil
 	end
@@ -155,11 +194,15 @@ end
 function TileGraphics:getPosition(tag)
 	local graphic = self:get(tag)
 	local tilePosition = self.parent:getPosition()
-	local position = {
-		x = config.TILE_SIZE * graphic.offset[1] + tilePosition.x,
-		y = config.TILE_SIZE * graphic.offset[2] + tilePosition.y,
-	}
-	return position
+	if graphic then
+		local position = {
+			x = WORLD_UNIT(graphic.offset[1]) + tilePosition.x,
+			y = WORLD_UNIT(graphic.offset[2]) + tilePosition.y,
+		}
+		return position
+	else
+		return nil
+	end
 end
 
 return gfx
