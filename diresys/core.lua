@@ -18,7 +18,7 @@ local viewport = {
 }
 
 function core.load()
-	love.graphics.setFont(love.graphics.newFont(10))
+	love.graphics.setFont(love.graphics.newFont("assets/gameboy.ttf",10))
 	love.window.setMode(config.WINDOW_WIDTH * config.WINDOW_SCALE,
 						config.WINDOW_HEIGHT * config.WINDOW_SCALE,
 						{})
