@@ -98,6 +98,10 @@ function Player:update(dt)
     if self.movement.up or self.movement.down then
         self.facing.up = self.movement.up
         self.facing.down = self.movement.down
+    elseif self.movement.left or self.movement.right then
+        -- face down if moving purely left/right
+        self.facing.up = false
+        self.facing.down = true
     end
 
     if self.movement.left or self.movement.right then
