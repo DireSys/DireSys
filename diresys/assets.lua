@@ -66,18 +66,31 @@ function assets.load_assets()
 	-- Wall Tiles
 	--
 	-- TRBL --> Top, Right, Bottom, Left edge has wall
-	load_sprite("wall_T__L", 0, 12)
-	load_sprite("wall_T_B_", 1, 12)
-	load_sprite("wall_TR__", 2, 12)
-	load_sprite("wall___B_", 1, 16)
-	load_sprite("wall__R_L", 0, 13)
-	load_sprite("wall__R__", 3, 13)
+    -- cutaway portions of walls
 	load_sprite("wall_____", 4, 13)
-	load_sprite("wall____L", 5, 13)
-	load_sprite("wall___BL", 0, 16)
-	load_sprite("wall__RB_", 2, 16)
-	load_sprite("wall_TRBL", 7, 13)
 	load_sprite("wall_T___", 4, 14)
+	load_sprite("wall__R__", 3, 13)
+    load_sprite("wall___B_", 4, 12)
+    load_sprite("wall____L", 5, 13)
+	load_sprite("wall_TR__", 2, 12)
+	load_sprite("wall_T_B_", 1, 12)
+	load_sprite("wall_T__L", 0, 12)
+    load_sprite("wall__RB_", 2, 14)
+	load_sprite("wall__R_L", 0, 13)
+	load_sprite("wall___BL", 0, 14)
+	load_sprite("wall_TRB_", 5, 12)
+	load_sprite("wall_TR_L", 3, 14)
+	load_sprite("wall_T_BL", 3, 12)
+	load_sprite("wall__RBL", 5, 14)
+	load_sprite("wall_TRBL", 6, 12)
+
+    -- front-facing portion of walls
+	load_sprite("wall_front_____", 1, 13)
+    load_sprite("wall_front__RB_", 2, 16)
+	load_sprite("wall_front___BL", 0, 16)
+	load_sprite("wall_front____L", 0, 15)
+	load_sprite("wall_front__R__", 2, 15)
+	load_sprite("wall_front___B_", 1, 16)
 
 	--
 	-- Door Tiles

@@ -29,20 +29,22 @@ function WallTile:init_physics()
 		self.physics.body, self.physics.shape)
 end
 
-function WallTile:updateWall(walls)
-	local t = walls.top and "T" or "_"
-	local r = walls.right and "R" or "_"
-	local b = walls.bottom and "B" or "_"
-	local l = walls.left and "L" or "_"
+function WallTile:updateWall(wall_edges, front_facing)
+	local t = wall_edges.top and "T" or "_"
+	local r = wall_edges.right and "R" or "_"
+	local b = wall_edges.bottom and "B" or "_"
+	local l = wall_edges.left and "L" or "_"
 	
+    local front = front_facing and "front_" or ""
+
 	local layer = 1
-	if walls.top then
+	if wall_edges.top then
 		layer = 2
 		self:fixTopBounds()
 	end
-	local layer = walls.top and 2 or 1
+	local layer = wall_edges.top and 2 or 1
 
-	local key = "wall_" .. t .. r .. b .. l
+    local key = "wall_" .. front .. t .. r .. b .. l
 	self:set_graphic(nil, {layer=1, redraw=false})
 	self:set_graphic(nil, {layer=2, redraw=false})
 	self:set_graphic(key, {layer=layer, redraw=false})

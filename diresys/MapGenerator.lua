@@ -75,36 +75,78 @@ function MapGenerator.process_wallTile(map, tile)
 		left = true,
 	}
 
+    local front_facing = false
+
 	-- check what parts of the wall tile need edges
 	-- top
 	local tile_top = map:getTile(tilex, tiley-1)
 	if not tile_top 
-	    or tile_top.type == "walltile" or tile_top.type == "doortile" then
+	    or tile_top.type == "walltile" then
 		wall_edges.top = false
 	end
 
 	-- right
 	local tile_right = map:getTile(tilex+1, tiley)
 	if not tile_right
-	    or tile_right.type == "walltile" or tile_right.type == "doortile" then
+	    or tile_right.type == "walltile" then
 		wall_edges.right = false
 	end
 
 	-- bottom
 	local tile_bottom = map:getTile(tilex, tiley+1)
 	if not tile_bottom
-		or tile_bottom.type == "walltile" or tile_bottom.type == "doortile" then
+		or tile_bottom.type == "walltile" then
 		wall_edges.bottom = false
 	end
 
 	-- left
 	local tile_left = map:getTile(tilex-1, tiley)
 	if not tile_left
-	    or tile_left.type == "walltile" or tile_left.type == "doortile" then
+	    or tile_left.type == "walltile" then
 		wall_edges.left = false
 	end
 	
-	tile:updateWall(wall_edges)
+    -- check whether bottom of tile meets with floor, or two down meets with floor
+    local tile_bottom_2 = map:getTile(tilex, tiley+2)
+
+    if (tile_bottom and tile_bottom.type == "floortile")
+        or (tile_bottom and tile_bottom.type == "walltile" and tile_bottom_2 and tile_bottom_2.type == "floortile")
+    then
+        front_facing = true
+    end
+        
+    -- check whether tile to the left meets the "front_facing" criteria
+    local tile_left_bottom = map:getTile(tilex-1, tiley+1)
+    local tile_left_bottom_2 = map:getTile(tilex-1, tiley+2)
+
+    if not front_facing and
+       ((tile_left_bottom and tile_left_bottom.type == "floortile")
+        or (tile_left_bottom and tile_left_bottom.type == "walltile" and tile_left_bottom_2 and tile_left_bottom_2.type == "floortile"))
+    then
+        wall_edges.left = true
+    end
+
+    -- check whether tile to the left meets the "front_facing" criteria
+    local tile_right_bottom = map:getTile(tilex+1, tiley+1)
+    local tile_right_bottom_2 = map:getTile(tilex+1, tiley+2)
+
+    if not front_facing and
+        ((tile_right_bottom and tile_right_bottom.type == "floortile")
+        or (tile_right_bottom and tile_right_bottom.type == "walltile" and tile_right_bottom_2 and tile_right_bottom_2.type == "floortile"))
+    then
+        wall_edges.right = true
+    end
+
+    -- check whether tile to below meets the "front_facing" criteria
+    local tile_bottom_3 = map:getTile(tilex, tiley+3)
+
+    if not front_facing and
+        (tile_bottom_2 and tile_bottom_2.type == "walltile" and tile_bottom_3 and tile_bottom_3.type == "floortile")
+    then
+        wall_edges.bottom = true
+    end
+
+	tile:updateWall(wall_edges, front_facing)
 end
 
 return MapGenerator
