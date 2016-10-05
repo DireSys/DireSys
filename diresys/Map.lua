@@ -1,8 +1,10 @@
 --[[
 	Represents a map
 ]]
+pp = require "diresys/pp"
 config = require "config"
 f = require "diresys/func"
+assets = require "diresys/assets"
 TileEngine = require "diresys/TileEngine"
 ActorEngine = require "diresys/ActorEngine"
 FloorTile = require "diresys/FloorTile"
@@ -26,6 +28,9 @@ function Map:new(options)
 								   obj.physicsContactEnd)
 	obj.tileEngine = TileEngine:new(obj.physics_world)
 	obj.actorEngine = ActorEngine:new(obj.physics_world)
+
+    obj.backgroundMusic = nil 
+
 	return obj
 end
 
@@ -44,6 +49,10 @@ end
 function Map:draw()
 	local viewx = self.viewport.x
 	local viewy = self.viewport.y
+
+    if self.backgroundMusic and not self.backgroundMusic:isPlaying() then
+        self.backgroundMusic:play()
+    end
 
 	self.tileEngine:draw_tiles(viewx, viewy, 1)
 	self.actorEngine:draw_actors(viewx, viewy)
@@ -140,6 +149,12 @@ function Map.physicsContactEnd(fixtureA, fixtureB)
 
 	objecta:action_proximity_out(objectb)
 	objectb:action_proximity_out(objecta)
+end
+
+function Map:setBackgroundMusic(asset_name)
+
+    self.backgroundMusic = assets.get_music(asset_name)
+
 end
 
 return Map

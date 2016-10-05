@@ -115,6 +115,11 @@ function DoorTile:openDoor()
 	if self.animation.door_state == "closed" then
 		self.animation.door_state = "opening"
 		self.animation.current_interval = 0.0
+
+        local sfx = assets.get_sound("door_open")
+        if sfx then
+            sfx:play()
+        end
 	end
 end
 
@@ -122,6 +127,11 @@ function DoorTile:closeDoor()
 	if self.animation.door_state == "open" then
 		self.animation.door_state = "closing"
 		self.animation.current_interval = 0.0
+
+        local sfx = assets.get_sound("door_open")
+        if sfx then
+            sfx:play()
+        end
 	end
 end
 

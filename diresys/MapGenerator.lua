@@ -37,6 +37,9 @@ function MapGenerator.load(lines)
 	MapGenerator.process_map_intermediate(map)
 	map:refreshTiles()
 	perf.step("MapGenerator.load")
+
+    map:setBackgroundMusic("ambient_safe") -- default background music?
+
 	return map
 end
 

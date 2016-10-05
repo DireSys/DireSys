@@ -1,9 +1,15 @@
 --[[
-	Used to retrieve the sprites from the spritesheet
+	Used to retrieve the sprites from the sprite_image
 ]]
 config = require("config")
+pp = require("diresys/pp")
 
-local assets = {}
+local assets = {
+    sprite_image = nil,
+    sprites = {},
+    sounds = {},
+    music = {}
+}
 
 function load_sprite(sprite_name, tilex, tiley, width, height)
 	local width = width or 4
@@ -15,11 +21,34 @@ function load_sprite(sprite_name, tilex, tiley, width, height)
 		tiley * config.TILE_SIZE,
 		width, height,
 		image_width, image_height)
-	assets[sprite_name] = quad
+	assets.sprites[sprite_name] = quad
 end
 
 function assets.get_sprite(sprite_name)
-	return assets[sprite_name]
+	return assets.sprites[sprite_name]
+end
+
+function load_music(asset_name, path, loop)
+
+    local music = love.audio.newSource(path)
+    music:setLooping(loop)
+    assets.music[asset_name] = music
+
+end
+
+function assets.get_music(asset_name)
+    return assets.music[asset_name]
+end
+
+function load_sound(asset_name, path)
+
+    local sound = love.audio.newSource(path, "static")
+    assets.sounds[asset_name] = sound
+
+end
+
+function assets.get_sound(asset_name)
+    return assets.sounds[asset_name]
 end
 
 function assets.load_assets()
@@ -105,6 +134,13 @@ function assets.load_assets()
 	load_sprite("hdoor_lower2", 15, 16, 12, 4)
 	load_sprite("hdoor_lower3", 18, 16, 12, 4)
 	load_sprite("hdoor_lower4", 21, 16, 12, 4)
+
+
+    -- Background music
+    load_music("ambient_safe", "assets/ambient_safe.ogg", true)
+
+    -- Load sounds
+    load_sound("door_open", "assets/door_open_move.ogg")
 end
 
 return assets
