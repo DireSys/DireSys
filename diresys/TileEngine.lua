@@ -16,9 +16,10 @@ function TileEngine:new(options)
 	obj.type = "tileengine"
 	obj.tilemap = {}
 	obj.resetDirtyFlag = {false, false}
+	obj.redrawTiles = {}
 	obj.tilesetBatch = {
-		love.graphics.newSpriteBatch(assets.sprite_image, 10000),
-		love.graphics.newSpriteBatch(assets.sprite_image, 10000),
+		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
+		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
 	}
 
 	return obj
@@ -41,9 +42,27 @@ function TileEngine:get_tile(x, y)
 	return self.tilemap[index]
 end
 
-function TileEngine:reset(layer)
-	local layer = layer or 1
-	self.resetDirtyFlag[layer] = true
+function TileEngine:reset()
+	self.resetDirtyFlag[1] = true
+	self.resetDirtyFlag[2] = true
+end
+
+function TileEngine:redrawTile(tile)
+	for _, tileGraphic in ipairs(tile.graphics:getAll()) do
+		local tilesetBatch = self.tilesetBatch[tileGraphic.layer]
+		local spriteQuad = assets.get_sprite(tileGraphic.key)
+		if spriteQuad then
+			local spritePosition = tile.graphics:getPosition(tileGraphic.tag)
+			local id = tileGraphic.id
+			if id ~= nil then
+				tilesetBatch:set(
+					id, spriteQuad, spritePosition.x, spritePosition.y)
+			else
+				tileGraphic.id = tilesetBatch:add(
+					spriteQuad, spritePosition.x, spritePosition.y)
+			end
+		end
+	end
 end
 
 function TileEngine:redraw(layer)
@@ -54,7 +73,9 @@ function TileEngine:redraw(layer)
 			local spriteQuad = assets.get_sprite(tileGraphic.key)
 			if spriteQuad then
 				local spritePosition = tile.graphics:getPosition(tileGraphic.tag)
-				self.tilesetBatch[layer]:add(spriteQuad, spritePosition.x, spritePosition.y)
+				local id = self.tilesetBatch[layer]:add(
+					spriteQuad, spritePosition.x, spritePosition.y)
+				tileGraphic.id = id
 			end
 			
 		end

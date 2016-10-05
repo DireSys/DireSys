@@ -30,8 +30,8 @@ function TileGraphics:new(parent, tileEngine)
 	obj.parent = parent
 	obj.tileEngine = tileEngine
 	obj.graphics = {
-		{tag="foreground", key=nil, layer=2, offset={0, 0}, index=2},
-		{tag="background", key=nil, layer=1, offset={0, 0}, index=2},
+		{tag="foreground", key=nil, layer=2, offset={0, 0}, index=2, id=nil},
+		{tag="background", key=nil, layer=1, offset={0, 0}, index=2, id=nil},
 	}
 
 	return obj
@@ -67,7 +67,6 @@ function TileGraphics:set(tag, options)
 	]]
 	local options = options or {}
 	local graphic = self:get(tag)
-	local resetLayer = options.layer or 1
 	if graphic then
 		graphic.key = options.key == nil and graphic.key or options.key
 		graphic.layer = options.layer == nil and graphic.layer or options.layer
@@ -84,7 +83,11 @@ function TileGraphics:set(tag, options)
 		table.insert(self.graphics, newGraphic)
 	end
 
-	self.tileEngine:reset(resetLayer)
+	self:redraw()
+end
+
+function TileGraphics:redraw()
+	self.tileEngine:redrawTile(self.parent)
 end
 
 function TileGraphics:setBackground(options)

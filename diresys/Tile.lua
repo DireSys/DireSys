@@ -62,13 +62,15 @@ function Tile:setPosition(x, y)
 	end
 	self.position.x = x
 	self.position.y = y
-	if self.parent then self.parent:reset() end
+	self:redraw()
 	return self
 end
 
+function Tile:redraw()
+	self.graphics:redraw()
+end
+
 function Tile:getDimensions()
-	--TODO: determine a tile's dimensions from the accumulation of
-	--graphics quads
 	local startx = nil
 	local endx = nil
 	local starty = nil
