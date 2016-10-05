@@ -26,19 +26,6 @@ function core.load()
 	assets.load_assets()
 	
 	map = MapGenerator.load_file("./assets/map0.txt")
-	--[[map = Map:new()
-	for i = 0, 5 do
-		for j = 0, 5 do
-			map:createFloor(i, j)
-		end
-	end
-	
-	for i = 0, 5 do
-		map:createWall(i, 6)
-	end
-	
-	map:createPlayer(3, 3)
-	]]
 end
 
 function core.draw()
