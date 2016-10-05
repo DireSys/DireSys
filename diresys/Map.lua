@@ -67,7 +67,8 @@ function Map:getTile(tilex, tiley)
 end
 
 function Map:refreshTiles()
-	self.tileEngine:reset()
+	self.tileEngine:reset(1)
+	self.tileEngine:reset(2)
 end
 
 function Map:createFloor(tilex, tiley)

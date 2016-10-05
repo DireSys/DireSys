@@ -109,19 +109,38 @@ function Tile:set_position(x, y)
 	return self
 end
 
-function Tile:set_graphic(key, layer, offset)
+function Tile:set_graphic(key, options)
 	--[[
 
 		Set the graphics key on the given layer. Setting to nil won't
 		show a graphic on the given layer.
 
+		Options:
+
+		layer - the layer to draw the graphic [default:1]
+
+		offset - the offset of the graphic. does not change the offset
+		if it is not specified.
+
+		redraw - determines whether the tiles should be redrawn after
+		being set [default:true]
+
 	]]
-	local layer = layer or 1
+	local options = options or {}
+	local redraw = options.redraw == nil and true or options.redraw
+	local layer = options.layer or 1
+	local offset = options.offset
+
 	self.graphics[layer].key = key
+
 	if offset then
 		self.graphics[layer].offset = offset
 	end
-	if self.parent then self.parent:reset(layer) end
+
+	if self.parent and redraw then
+		self.parent:reset(layer)
+	end
+
 	return self
 end
 

@@ -11,8 +11,8 @@ function DoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 
 	obj.options = options or {}
-	obj:set_graphic("hdoor_upper0", 2, {0, 0})
-	obj:set_graphic("hdoor_lower0", 1, {0, 1})
+	obj:set_graphic("hdoor_upper0", {layer=2, offset={0, 0}, redraw=false})
+	obj:set_graphic("hdoor_lower0", {layer=1, offset={0, 1}, redraw=false})
 	obj.type = "doortile"
 	obj.init_physics = DoorTile.init_physics
 	obj.update = DoorTile.update
@@ -84,14 +84,14 @@ function DoorTile:updateDoor(dt)
 	if current_interval > cycle_interval and state == "opening" then
 		self.animation.door_state = "open"
 		self.physics.fixture:setSensor(true)
-		self:set_graphic(self.animation.door_open[1], 2, {0, 0})
-		self:set_graphic(self.animation.door_open[2], 1, {0, 1})
+		self:set_graphic(self.animation.door_open[1], {layer=2, offset={0, 0}})
+		self:set_graphic(self.animation.door_open[2], {layer=1, offset={0, 1}})
 		return
 	elseif current_interval > cycle_interval and state == "closing" then
 		self.animation.door_state = "closed"
 		self.physics.fixture:setSensor(false)
-		self:set_graphic(self.animation.door_close[1], 2, {0, 0})
-		self:set_graphic(self.animation.door_close[2], 1, {0, 1})
+		self:set_graphic(self.animation.door_close[1], {layer=2, offset={0, 0}})
+		self:set_graphic(self.animation.door_close[2], {layer=1, offset={0, 1}})
 		return
 	end
 	
@@ -105,8 +105,8 @@ function DoorTile:updateDoor(dt)
 	local anim1_frame = math.floor(current_interval/anim1_step) + 1
 	local anim2_frame = math.floor(current_interval/anim2_step) + 1
 
-	self:set_graphic(animation_loop1[anim1_frame], 2, {0, 0})
-	self:set_graphic(animation_loop2[anim1_frame], 1, {0, 1})
+	self:set_graphic(animation_loop1[anim1_frame], {layer=2, offset={0, 0}})
+	self:set_graphic(animation_loop2[anim1_frame], {layer=1, offset={0, 1}})
 
 	self.animation.current_interval = current_interval + dt
 end

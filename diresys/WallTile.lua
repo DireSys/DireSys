@@ -9,7 +9,7 @@ local WallTile = {}
 function WallTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.options = options or {}
-	obj:set_graphic("wall_____")
+	obj:set_graphic("wall_____", {redraw=false})
 	obj.type = "walltile"
 	obj.init_physics = WallTile.init_physics
 	obj.updateWall = WallTile.updateWall
@@ -43,9 +43,9 @@ function WallTile:updateWall(walls)
 	local layer = walls.top and 2 or 1
 
 	local key = "wall_" .. t .. r .. b .. l
-	self:set_graphic(nil, 1)
-	self:set_graphic(nil, 2)
-	self:set_graphic(key, layer)
+	self:set_graphic(nil, {layer=1, redraw=false})
+	self:set_graphic(nil, {layer=2, redraw=false})
+	self:set_graphic(key, {layer=layer, redraw=false})
 end
 
 function WallTile:fixTopBounds()
