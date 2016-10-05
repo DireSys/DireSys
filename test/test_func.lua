@@ -1,4 +1,5 @@
 test = require "test/test"
+pp = require "diresys/pp"
 f = require "diresys/func"
 
 local test_func = {}
@@ -103,6 +104,29 @@ end
 test_func.test_has = function()
 	local x = {x = "123", y = "456"}
 	test.assert(f.has(x, "123") and f.has(x, "456"), "test has")
+end
+
+test_func.test_pluck = function()
+	local x = {
+		{index=0, key="test"},
+		{index=2, key="test2"},
+		{index=4, key="test3"},
+	}
+	local index = f.pluck(x, "index")
+	test.assert(#index == 3, "test pluck has right number of values")
+	test.assert(index[1] == 0 and index[2] == 2, "test pluck right values returned")
+end
+
+test_func.test_sortby = function()
+	local x = {
+		{index=4},
+		{index=1},
+		{index=2},
+	}
+	local sorted = f.sortby(x, "index")
+	test.assert(#sorted == 3, "test sorted returns right number")
+	test.assert(sorted[1].index == 1 and sorted[2].index == 2, "test sorted returns right order")
+	test.assert(x ~= sorted, "test sorted make sure we retain immutability")
 end
 
 return test_func

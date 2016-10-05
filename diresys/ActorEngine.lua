@@ -16,6 +16,7 @@ function ActorEngine:new(physics_world, options)
 	setmetatable(obj, self)
 	self.__index = self
 
+	obj.type = "actorengine"
 	obj.physics_world = physics_world
 	obj.actorList = {}
 	obj.actorBatch = love.graphics.newSpriteBatch(assets.sprite_image)

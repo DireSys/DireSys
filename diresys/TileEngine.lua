@@ -13,6 +13,7 @@ function TileEngine:new(options)
 	setmetatable(obj, self)
 	self.__index = self
 
+	obj.type = "tileengine"
 	obj.tilemap = {}
 	obj.tilesetBatch = {
 		love.graphics.newSpriteBatch(assets.sprite_image, 10000),

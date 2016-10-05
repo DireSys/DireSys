@@ -124,4 +124,29 @@ func.has = function(t, val)
 	return false
 end
 
+func.pluck = function(t, key)
+	local resultTable = {}
+	for i,v in ipairs(t) do
+		table.insert(resultTable, v[key])
+	end
+	return resultTable
+end
+
+func.identity = function(i)
+	return i
+end
+
+func.sortby = function(t, key)
+	local resultTable = func.map(t, func.identity)
+	local orderFunc = function(i, j)
+		if i[key] < j[key] then
+			return true
+		end
+		return false
+	end
+
+	table.sort(resultTable, orderFunc)
+	return resultTable
+end
+
 return func
