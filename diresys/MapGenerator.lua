@@ -37,6 +37,8 @@ function MapGenerator.load(lines)
 				map:createTable(i-1, j-1)
 			elseif character == "P" then
 				map:createPlant(i-1, j-1)
+			elseif character == "C" then
+				map:createCloset(i-1, j-1)
 			end
 		end
 	end

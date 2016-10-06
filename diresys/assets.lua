@@ -172,6 +172,13 @@ function assets.load_assets()
 	load_sprite("plant_lower0", 20, 9, 8, 4)
 	load_sprite("plant_lower1", 22, 9, 8, 4)
 
+	--
+	-- Closet Tiles
+	--
+	load_sprite("closet_upper0", 19, 18, 8, 8)
+	load_sprite("closet_lower0", 19, 20, 8, 4)
+	
+
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)
 
