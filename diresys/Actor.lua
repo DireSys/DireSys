@@ -1,6 +1,7 @@
 --[[
 	Represents an actor on the screen, that can move.
 ]]
+require "diresys/utils"
 config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"

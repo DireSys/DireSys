@@ -33,6 +33,8 @@ function MapGenerator.load(lines)
 				map:createDoor(i-1, j-1)
 			elseif character == "V" then
 				map:createVerticalDoor(i-1, j-1)
+			elseif character == "T" then
+				map:createTable(i-1, j-1)
 			end
 		end
 	end

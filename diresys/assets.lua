@@ -156,6 +156,12 @@ function assets.load_assets()
 	load_sprite("vdoor_lower2", 11, 19, 4, 4)
 	load_sprite("vdoor_lower3", 12, 19, 4, 4)
 
+	--
+	-- Table Tiles
+	--
+	load_sprite("table0", 28, 18, 12, 12)
+	load_sprite("table1", 25, 18, 12, 12)
+
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)
 
