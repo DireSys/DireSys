@@ -78,20 +78,22 @@ function Tile:getDimensions()
 	local tags = f.pluck(self.graphics:getAll(), "tag")
 	for _, tag in ipairs(tags) do
 		local dim = self.graphics:getDimensions(tag)
-		if startx == nil or dim.x < startx then
-			startx = dim.x
-		end
+		if dim ~= nil then
+			if startx == nil or dim.x < startx then
+				startx = dim.x
+			end
 
-		if starty == nil or dim.y < starty then
-			starty = dim.y
-		end
+			if starty == nil or dim.y < starty then
+				starty = dim.y
+			end
 
-		if endx == nil or (dim.x + dim.w) > endx then
-			endx = (dim.x + dim.w)
-		end
+			if endx == nil or (dim.x + dim.w-1) > endx then
+				endx = (dim.x + dim.w-1)
+			end
 
-		if endy == nil or (dim.y + dim.h) > endy then
-			endy = (dim.y + dim.h)
+			if endy == nil or (dim.y + dim.h-1) > endy then
+				endy = (dim.y + dim.h-1)
+			end
 		end
 	end
 
@@ -125,6 +127,25 @@ end
 
 function Tile:action_use()
 	-- if the tile is useable by an actor, it should overload this.
+end
+
+function Tile:checkPoint(x, y)
+	-- checks if the given world coordinate point is within the tile
+	local dims = self:getDimensions()
+	if x < dims.x or x > (dims.x + dims.w) then
+		return false
+	end
+
+	if y < dims.y or x > (dims.x + dims.h) then
+		return false
+	end
+
+	return true
+end
+
+function Tile:checkTilePoint(tilex, tiley)
+	-- same as Tile:checkPoint, but in tile units
+	return self:checkPoint(WORLD_UNIT(tilex), WORLD_UNIT(tiley))
 end
 
 return Tile

@@ -153,38 +153,40 @@ end
 
 function TileGraphics:getDimensions(tag)
 	local graphic = self:get(tag)
+	if not graphic then return nil end
+
 	local graphicPosition = self:getPosition(tag)
-	if graphic then
-		local quad = assets.get_sprite(graphic.key)
-		local x, y, w, h = quad:getViewport()
-		return {
-			-- width / height
-			w = w,
-			h = h,
-			-- x position / y position in world coordinates
-			x = graphicPosition.x,
-			y = graphicPosition.y,
-			-- offset in world units wrt parent tile
-			ox = WORLD_UNIT(graphic.offset[1]),
-			oy = WORLD_UNIT(graphic.offset[2]),
-		}
-	else
+		
+	local quad = assets.get_sprite(graphic.key)
+	if not quad then
 		return nil
 	end
+	
+	local x, y, w, h = quad:getViewport()
+	return {
+		-- width / height
+		w = w,
+		h = h,
+		-- x position / y position in world coordinates
+		x = graphicPosition.x,
+		y = graphicPosition.y,
+		-- offset in world units wrt parent tile
+		ox = WORLD_UNIT(graphic.offset[1]),
+		oy = WORLD_UNIT(graphic.offset[2]),
+	}
 end
 
 function TileGraphics:getTileDimensions(tag)
 	local graphic = self:get(tag)
-	local graphicPosition = self:getPosition(tag)
-	local w, h = self:getDimensions(tag)
+	local dims = self:getDimensions(tag)
 	if graphic then
 		return {
 			-- tile width / tile height
-			w = TILE_UNIT(w),
-			h = TILE_UNIT(h),
+			w = TILE_UNIT(dims.w),
+			h = TILE_UNIT(dims.h),
 			-- tile x position / tile y position in world tile coordinates
-			x = TILE_UNIT(graphicPosition.x),
-			y = TILE_UNIT(graphicPosition.y),
+			x = TILE_UNIT(dims.x),
+			y = TILE_UNIT(dims.y),
 			-- tile offset wrt parent tile
 			ox = graphic.offset[1],
 			oy = graphic.offset[2],

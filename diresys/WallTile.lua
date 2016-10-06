@@ -46,8 +46,13 @@ function WallTile:updateWall(wall_edges, front_facing)
 
     local key = "wall_" .. front .. t .. r .. b .. l
 
-	self.graphics:setKey("foreground", nil)
-	self.graphics:setKey("background", nil)
+	if layer == 1 then
+		self.graphics:setBackground({key=key})
+	else
+		self.graphics:setKey("background", nil)
+		self.graphics:setForeground({key=key})
+	end
+
 	self.graphics:set("floor", {key=key, layer=layer})
 end
 

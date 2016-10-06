@@ -25,7 +25,13 @@ function load_sprite(sprite_name, tilex, tiley, width, height)
 end
 
 function assets.get_sprite(sprite_name)
-	return assets.sprites[sprite_name]
+	local sprite = assets.sprites[sprite_name]
+	if not sprite then
+		print("Warning: Unable to get sprite '" ..
+				  sprite_name .. "', returning default sprite")
+		return assets.sprites["default"]
+	end
+	return sprite
 end
 
 function load_music(asset_name, path, loop)
@@ -54,6 +60,9 @@ end
 function assets.load_assets()
 	assets.sprite_image = love.graphics.newImage(config.SPRITESHEET_FILENAME)
 	assets.sprite_image:setFilter("nearest", "nearest")
+
+	-- Default Sprite, when the one asked for isn't found
+	load_sprite("default", 0, 18)
 
 	--
 	-- Player

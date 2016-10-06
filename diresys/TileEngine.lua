@@ -1,6 +1,7 @@
 --[[
 	The tiling engine
 ]]
+require "diresys/utils"
 config = require "config"
 assets = require "diresys/assets"
 f = require "diresys/func"
@@ -32,14 +33,27 @@ function TileEngine:update(dt)
 end
 
 function TileEngine:add_tile(tile, x, y)
-	local index = x .. "," .. y
 	tile.parent = self
-	self.tilemap[index] = tile
+	self.tilemap[_I(x,y)] = tile
+end
+
+function TileEngine:has_tile(x, y)
+	return self.tilemap[_I(x,y)] ~= nil
 end
 
 function TileEngine:get_tile(x, y)
-	local index = x .. "," .. y
-	return self.tilemap[index]
+	if x < 0 or y < 0 then return nil end
+
+	local tile = self.tilemap[_I(x,y)]
+	if tile and tile:checkTilePoint(x, y) then
+		return tile
+	else
+		return nil
+	end
+	
+	-- if there are tiles above us and to the left of us, we need to
+	-- check if either one is the tile we want.
+	return self:get_tile(x-1, y) or self:get_tile(x, y-1)
 end
 
 function TileEngine:reset()
