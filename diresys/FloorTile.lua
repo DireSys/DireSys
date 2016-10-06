@@ -8,14 +8,15 @@ local FloorTile = {}
 
 function FloorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
-	obj.graphics:setBackground({key="floor0", redraw=false})
-	obj.type = "floortile"
-	obj.updateFloorGraphics = FloorTile.updateFloorGraphics
-	return obj
-end
+	obj.type = "floortile"	
 
-function FloorTile:updateFloorGraphics(walls)
-	--pass
+	-- Graphics
+	obj.graphics:setBackground({key="floor0"})
+	
+	-- Physics
+	obj.physics:setEnabled(false)
+
+	return obj
 end
 
 return FloorTile

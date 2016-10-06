@@ -31,21 +31,14 @@ function TilePhysics:new(parent, physicsWorld)
 	obj.physicsWorld = physicsWorld
 	
 	obj.body = nil
+	obj.bounds = nil
 	obj.shape = nil
 	obj.fixture = nil
 
 	obj.bodytype = "static"
 	obj.enabled = true
-	obj.collidable = false
+	obj.collidable = true
 	obj.useable = false
-
-	local dims = obj.parent:getDimensions()
-	obj.bounds = {
-		ox = dims.w/2,
-		oy = dims.h/2,
-		w = dims.w,
-		h = dims.h,
-	}
 
 	return obj
 end
@@ -57,6 +50,43 @@ function TilePhysics:init()
 		self.body = love.physics.newBody(
 			self.physicsWorld, position.x, position.y, self.bodytype)
 		
+		local dims = self.parent:getDimensions()
+		self.bounds = self.bounds or {ox = dims.w/2,
+									  oy = dims.h/2,
+									  w = dims.w,
+									  h = dims.h}
+
+		self.shape = love.physics.newRectangleShape(
+			self.bounds.ox, self.bounds.oy,
+			self.bounds.w, self.bounds.h)
+
+		self.fixture = love.physics.newFixture(
+			self.body, self.shape)
+		self.fixture:setSensor(not self.collidable)
+		self.fixture:setUserData(self.useable and self.parent or nil)
+	end
+end
+
+function TilePhysics:setEnabled(bool)
+	self.enabled = bool == nil and true or bool
+	self:init()
+	if self.body then
+		self.body:setActive(self.enabled)
+	end
+end
+
+function TilePhysics:setCollidable(bool)
+	self.collidable = bool == nil and true or bool
+	if self.fixture then
+		self.fixture:setSensor(self.collidable)
+	end
+end
+
+function TilePhysics:setMainBounds(ox, oy, w, h)
+	self.bounds = {ox=ox, oy=oy, w=w, h=h}
+	if self.body and self.fixture then
+		self.fixture:destroy()
+		
 		self.shape = love.physics.newRectangleShape(
 			self.bounds.ox, self.bounds.oy,
 			self.bounds.w, self.bounds.h)
@@ -66,29 +96,10 @@ function TilePhysics:init()
 	end
 end
 
-function TilePhysics:setCollidable(bool)
-	self.collidable = bool == nil and true or bool
-	self.fixture:setSensor(self.collidable)
-end
-
-function TilePhysics:setMainBounds(ox, oy, w, h)
-	self.bounds = {ox=ox, oy=oy, w=w, h=h}
-	self.fixture:destroy()
-	
-	self.shape = love.physics.newRectangleShape(
-		self.bounds.ox, self.bounds.oy,
-		self.bounds.w, self.bounds.h)
-
-	self.fixture = love.physics.newFixture(
-		self.body, self.shape)
-end
-
 function TilePhysics:setUseable(bool)
 	self.useable = bool == nil and true or bool
-	if self.useable then
-		self.fixture:setUserData(self.parent)
-	else
-		self.fixture:setUserData(nil)
+	if self.body and self.fixture then
+		self.fixture:setUserData(self.useable and self.parent or nil)
 	end
 end
 
@@ -100,3 +111,5 @@ function TilePhysics:destroy()
 		self.shape = nil
 	end
 end
+
+return phys

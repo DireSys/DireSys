@@ -57,8 +57,6 @@ function DoorTile:new(parent, physics_world, options)
 end
 
 function DoorTile:init_physics()
-	local position = self:getPosition()
-	self.physics.body = love.physics.newBody(self.physics_world, position.x, position.y, "static")
 	local dims = self:getDimensions()
 	local width, height = dims.w, dims.h
 
@@ -66,13 +64,11 @@ function DoorTile:init_physics()
 	local rectheight = height/2
 	local offsetx = rectwidth/2
 	local offsety = height/2 + rectheight/2
-
-	self.physics.shape = love.physics.newRectangleShape(
-		offsetx, offsety,
-		rectwidth, rectheight)
-	self.physics.fixture = love.physics.newFixture(
-		self.physics.body, self.physics.shape)
-	self.physics.fixture:setUserData(self)
+	
+	self.physics:setUseable(true)
+	self.physics:setCollidable(true)
+	self.physics:setMainBounds(offsetx, offsety, rectwidth, rectheight)
+	self.physics:init()
 end
 
 function DoorTile:update(dt)

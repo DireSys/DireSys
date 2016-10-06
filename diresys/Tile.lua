@@ -6,12 +6,12 @@ config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"
 gfx = require "diresys/gfx"
-
+phys = require "diresys/phys"
 local Tile = {
 	
 }
 
-function Tile:new(parent, physics_world, options)
+function Tile:new(parent, physicsWorld, options)
 	local options = options or {}
 	local obj = {}
 	setmetatable(obj, self)
@@ -19,12 +19,12 @@ function Tile:new(parent, physics_world, options)
 
 	obj.options = options or {}
 	obj.parent = parent
-	obj.physics_world = physics_world
+	obj.physics_world = physicsWorld
 	obj.position = options.position or {x=0, y=0}
 	obj.parent_type = "tile"
 	obj.type = "tile"
 
-	obj.physics = {}
+	obj.physics = phys.TilePhysics:new(obj, physicsWorld)
 	obj.graphics = gfx.TileGraphics:new(obj, parent)
 
 	-- list of actors in proximity
@@ -38,7 +38,7 @@ function Tile:update(dt)
 end
 
 function Tile:init_physics()
-	return nil
+	self.physics:init()
 end
 
 function Tile:getTilePosition()
