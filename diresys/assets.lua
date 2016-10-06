@@ -131,7 +131,7 @@ function assets.load_assets()
 	load_sprite("wall_front___B_", 1, 16)
 
 	--
-	-- Door Tiles
+	-- Door Tiles (Horizontal)
 	--
 	load_sprite("hdoor_upper0", 9, 15, 12, 4)
 	load_sprite("hdoor_upper1", 12, 15, 12, 4)
@@ -144,6 +144,17 @@ function assets.load_assets()
 	load_sprite("hdoor_lower3", 18, 16, 12, 4)
 	load_sprite("hdoor_lower4", 21, 16, 12, 4)
 
+	--
+	-- Door Tiles (Vertical)
+	--
+	load_sprite("vdoor_upper0", 9, 17, 4, 8)
+	load_sprite("vdoor_upper1", 10, 17, 4, 8)
+	load_sprite("vdoor_upper2", 11, 17, 4, 8)
+	load_sprite("vdoor_upper3", 12, 17, 4, 8)
+	load_sprite("vdoor_lower0", 9, 19, 4, 4)
+	load_sprite("vdoor_lower1", 10, 19, 4, 4)
+	load_sprite("vdoor_lower2", 11, 19, 4, 4)
+	load_sprite("vdoor_lower3", 12, 19, 4, 4)
 
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)

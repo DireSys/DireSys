@@ -1,5 +1,5 @@
 --[[
-	Door Tile
+	Horizontal Door Tile
 ]]
 config = require "config"
 f = require "diresys/func"

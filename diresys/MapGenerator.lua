@@ -31,6 +31,8 @@ function MapGenerator.load(lines)
 				map:createPlayer(i-1, j-1)
 			elseif character == "D" then
 				map:createDoor(i-1, j-1)
+			elseif character == "V" then
+				map:createVerticalDoor(i-1, j-1)
 			end
 		end
 	end

@@ -38,8 +38,6 @@ function Tile:update(dt)
 end
 
 function Tile:init_physics()
-	--Should be called in order to initialize any physics body with
-	--fixtures
 	return nil
 end
 
@@ -87,12 +85,12 @@ function Tile:getDimensions()
 				starty = dim.y
 			end
 
-			if endx == nil or (dim.x + dim.w-1) > endx then
-				endx = (dim.x + dim.w-1)
+			if endx == nil or (dim.x + dim.w) > endx then
+				endx = (dim.x + dim.w)
 			end
 
-			if endy == nil or (dim.y + dim.h-1) > endy then
-				endy = (dim.y + dim.h-1)
+			if endy == nil or (dim.y + dim.h) > endy then
+				endy = (dim.y + dim.h)
 			end
 		end
 	end
