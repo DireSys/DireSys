@@ -21,6 +21,7 @@ function Tile:new(parent, physicsWorld, options)
 	obj.parent = parent
 	obj.physics_world = physicsWorld
 	obj.position = options.position or {x=0, y=0}
+	obj.bounds_type = "plain" -- "plain", "wall"
 	obj.parent_type = "tile"
 	obj.type = "tile"
 
@@ -130,11 +131,11 @@ end
 function Tile:checkPoint(x, y)
 	-- checks if the given world coordinate point is within the tile
 	local dims = self:getDimensions()
-	if x < dims.x or x > (dims.x + dims.w) then
+	if x < dims.x or x >= (dims.x + dims.w) then
 		return false
 	end
 
-	if y < dims.y or x > (dims.x + dims.h) then
+	if y < dims.y or x >= (dims.x + dims.h) then
 		return false
 	end
 
@@ -144,6 +145,10 @@ end
 function Tile:checkTilePoint(tilex, tiley)
 	-- same as Tile:checkPoint, but in tile units
 	return self:checkPoint(WORLD_UNIT(tilex), WORLD_UNIT(tiley))
+end
+
+function Tile:updateBounds(walls, front)
+
 end
 
 return Tile

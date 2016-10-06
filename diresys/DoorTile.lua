@@ -9,6 +9,7 @@ local DoorTile = {}
 
 function DoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
+	obj.bounds_type = "wall"
 	obj.graphics:setForeground({key="hdoor_upper0"})
 	obj.graphics:setBackground({key="hdoor_lower0", offset={0, 1}})
 

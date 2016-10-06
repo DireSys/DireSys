@@ -17,7 +17,6 @@ function TileEngine:new(options)
 	obj.type = "tileengine"
 	obj.tilemap = {}
 	obj.resetDirtyFlag = {false, false}
-	obj.redrawTiles = {}
 	obj.tilesetBatch = {
 		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
 		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
@@ -47,7 +46,7 @@ function TileEngine:get_tile(x, y)
 	local tile = self.tilemap[_I(x,y)]
 	if tile and tile:checkTilePoint(x, y) then
 		return tile
-	else
+	elseif tile then
 		return nil
 	end
 	

@@ -10,6 +10,10 @@ function WallTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.options = options or {}
 	obj.type = "walltile"
+	obj.bounds_type = "wall"
+
+	-- Methods
+	obj.updateBounds = WallTile.updateBounds
 
 	-- Graphics
 	obj.graphics:setBackground({key="wall_____", redraw=false})
@@ -19,12 +23,10 @@ function WallTile:new(parent, physics_world, options)
 	obj.physics:setUseable(false)
 	obj.physics:init()
 
-	-- Methods
-	obj.updateWall = WallTile.updateWall
 	return obj
 end
 
-function WallTile:updateWall(wall_edges, front_facing)
+function WallTile:updateBounds(wall_edges, front_facing)
 	local t = wall_edges.top and "T" or "_"
 	local r = wall_edges.right and "R" or "_"
 	local b = wall_edges.bottom and "B" or "_"

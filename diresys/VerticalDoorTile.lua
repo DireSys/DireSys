@@ -12,6 +12,8 @@ local VerticalDoorTile = {}
 function VerticalDoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.type = "doortile"
+	obj.bounds_type = "wall"
+
 	-- Methods
 	obj.update = VerticalDoorTile.update
 	obj.action_use = VerticalDoorTile.action_use
