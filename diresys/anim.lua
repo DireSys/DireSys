@@ -1,12 +1,13 @@
 --[[
 	For Actor and Tile Animations
 ]]
+pp = require "diresys/pp"
 
 local anim = {}
 
 local Animation = {}
 
-function Animation:new(frames, cycleInterval, options)
+function Animation:new(frames, options)
 	--[[
 		
 		Represents a set of sprites (graphics keys in
@@ -16,10 +17,13 @@ function Animation:new(frames, cycleInterval, options)
 
 		frames -- list of sprites (graphics keys) that make up an animation
 
+		Optional Arguments:
+
+		parent -- if it is set, determines the argument passed to the
+		callback
+
 		cycleInterval -- length in time (in seconds) that it will
 		finish showing all of the frames. [default: 0.5 seconds]
-
-		Optional Arguments:
 
 		loop -- If True, will reset the animation loop after it has
 		reached the last frame and continue to cycle through the
@@ -35,14 +39,24 @@ function Animation:new(frames, cycleInterval, options)
 	self.__index = self
 
 	obj.type = "animation"
-	obj.options = options or {loop=loop == nil and true or loop, callback=callback or nil}
-	obj.frames = {}
+	obj.options = options or {}
+	obj.parent = options.parent
+	obj.options.loop = options.loop == nil and true or options.loop
+	obj.frames = frames or {}
 	obj.currentInterval = 0.0
-	obj.cycleInterval = cycleInterval or 0.5 -- seconds
+	obj.cycleInterval = options.cycleInterval or 0.5 -- seconds
 
 	return obj
 end
 anim.Animation = Animation
+
+function Animation:getFirstFrame()
+	return self.frames[1]
+end
+
+function Animation:getLastFrame()
+	return self.frames[#self.frames]
+end
 
 function Animation:getFrame(index)
 	--[[
@@ -72,15 +86,16 @@ function Animation:getFrame(index)
 			self:reset()
 		end
 
-		if options.callback then
-			options.callback()
+		if self.options.callback then
+			self.options.callback(self.parent)
 		end
 
 		return self.frames[#self.frames]
 	end
 
 	local stepInterval = self.cycleInterval / #self.frames
-	local currentFrame = math.floor(self.currentInterval / stepInterval) % #animation + 1
+	local currentFrame = math.floor(self.currentInterval / stepInterval) % 
+		#self.frames + 1
 
 	return self.frames[currentFrame]
 end
@@ -95,18 +110,25 @@ end
 
 local AnimationBatch = {}
 
-function AnimationBatch:new()
+function AnimationBatch:new(parent)
 	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
-	
 	obj.type = "animationbatch"
+	obj.parent = parent
 	obj.animations = {}
+	obj.current = nil
 	obj.currentAnimation = {}
 
 	return obj
 end
 anim.AnimationBatch = AnimationBatch
+
+function AnimationBatch:newAnim(name, frames, options)
+	local animation = Animation:new(frames, options)
+	animation.parent = animation.parent or self.parent
+	self:addAnim(name, animation)
+end
 
 function AnimationBatch:addAnim(name, animation)
 	assert(animation.type == "animation")
@@ -127,9 +149,17 @@ function AnimationBatch:setAnim(name, reset)
 	]]
 	local reset = reset == nil and true or reset
 
+	self.current = name
 	self.currentAnimation = self.animations[name]
 	if reset and self.currentAnimation then
 		self.currentAnimation:reset()
+	end
+end
+
+function AnimationBatch:setCallback(name, callback)
+	local animation = self.animations[name]
+	if animation then
+		animation.callback = callback
 	end
 end
 
@@ -139,6 +169,7 @@ function AnimationBatch:getFrame()
 	if self.currentAnimation then
 		return self.currentAnimation:getFrame()
 	end
+	return "default"
 end
 
 function AnimationBatch:update(dt)

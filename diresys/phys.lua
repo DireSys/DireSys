@@ -78,7 +78,7 @@ end
 function TilePhysics:setCollidable(bool)
 	self.collidable = bool == nil and true or bool
 	if self.fixture then
-		self.fixture:setSensor(self.collidable)
+		self.fixture:setSensor(not self.collidable)
 	end
 end
 
