@@ -23,7 +23,12 @@ function VerticalDoorTile:new(parent, physics_world, options)
 
 	-- Graphics
 	obj.graphics:setBackground({key="vdoor_upper0"})
-	obj.graphics:setForeground({key="vdoor_lower0", offset={0, 2}, layer=1})
+	obj.graphics:setForeground({key="vdoor_lower0", offset={0, 2}})
+	
+	-- Additional Floor tiles
+	obj.graphics:set("tile00", {key="floor0", offset={0,0}})
+	obj.graphics:set("tile01", {key="floor0", offset={0,1}})
+	obj.graphics:set("tile02", {key="floor0", offset={0,2}})
 
 	-- Physics
 	obj.physics:setCollidable(true)
