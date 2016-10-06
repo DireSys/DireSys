@@ -16,8 +16,8 @@ function TableTile:new(parent, physicsWorld, options)
 	obj.action_use = TableTile.action_use
 
 	-- Graphics
-	--obj.graphics:setForeground({key="table0"})
-	obj.graphics:setBackground({key="table0", offset={0, -1}})
+	obj.graphics:setForeground({key="table_upper0", offset={0, -1}})
+	obj.graphics:setBackground({key="table_lower0", offset={0, 0}})
 
 	-- Set several floor tiles under the table
 	obj.graphics:set("tile00", {key="floor0", offset={0,0}})

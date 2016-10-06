@@ -13,6 +13,7 @@ WallTile = require "diresys/WallTile"
 DoorTile = require "diresys/DoorTile"
 VerticalDoorTile = require "diresys/VerticalDoorTile"
 TableTile = require "diresys/TableTile"
+PlantTile = require "diresys/PlantTile"
 Player = require "diresys/Player"
 
 local Map = {}
@@ -148,6 +149,17 @@ function Map:createTable(tilex, tiley)
 									{position=position})
 	self.tileEngine:add_tile(tableTile, tilex, tiley)
 	return tableTile
+end
+
+function Map:createPlant(tilex, tiley)
+	local position = {
+		x = WORLD_UNIT(tilex),
+		y = WORLD_UNIT(tiley)
+	}
+	local plantTile = PlantTile:new(self.tileEngine, self.physics_world,
+									{position=position})
+	self.tileEngine:add_tile(plantTile, tilex, tiley)
+	return plantTile
 end
 
 function Map.physicsContactBegin(fixtureA, fixtureB)

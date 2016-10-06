@@ -159,8 +159,18 @@ function assets.load_assets()
 	--
 	-- Table Tiles
 	--
-	load_sprite("table0", 28, 18, 12, 12)
-	load_sprite("table1", 25, 18, 12, 12)
+	load_sprite("table_upper0", 28, 18, 12, 4)
+	load_sprite("table_upper1", 25, 18, 12, 4)
+	load_sprite("table_lower0", 28, 19, 12, 8)
+	load_sprite("table_lower1", 25, 19, 12, 8)
+
+	--
+	-- Plant Tiles
+	--
+	load_sprite("plant_upper0", 20, 8, 8, 4)
+	load_sprite("plant_upper1", 22, 8, 8, 4)
+	load_sprite("plant_lower0", 20, 9, 8, 4)
+	load_sprite("plant_lower1", 22, 9, 8, 4)
 
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)

@@ -35,6 +35,8 @@ function MapGenerator.load(lines)
 				map:createVerticalDoor(i-1, j-1)
 			elseif character == "T" then
 				map:createTable(i-1, j-1)
+			elseif character == "P" then
+				map:createPlant(i-1, j-1)
 			end
 		end
 	end
