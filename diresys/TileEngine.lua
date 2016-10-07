@@ -60,7 +60,7 @@ function TileEngine:reset()
 	self.resetDirtyFlag[2] = true
 end
 
-function TileEngine:redrawTile(tile)
+function TileEngine:redrawSprite(tile)
 	for _, tileGraphic in ipairs(tile.graphics:getAll()) do
 		local tilesetBatch = self.tilesetBatch[tileGraphic.layer]
 		local spriteQuad = assets.get_sprite(tileGraphic.key)

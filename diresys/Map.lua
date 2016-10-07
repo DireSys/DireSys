@@ -41,15 +41,15 @@ end
 
 function Map:updateViewport()
 	local playerPosition = self.currentPlayer:getPosition()
-	local playerWidth, playerHeight = self.currentPlayer:getDimensions()
+	local playerDims = self.currentPlayer:getDimensions()
 	-- viewport needs to be in the center of the player
 	self.viewport.x = (-playerPosition.x +
-						   config.WINDOW_WIDTH/2 - playerWidth/2) *
+						   config.WINDOW_WIDTH/2 - playerDims.w/2) *
 		config.WINDOW_SCALE
 	self.viewport.x = math.floor(self.viewport.x)
 
 	self.viewport.y = (-playerPosition.y +
-						   config.WINDOW_HEIGHT/2 - playerHeight/2) *
+						   config.WINDOW_HEIGHT/2 - playerDims.h/2) *
 		config.WINDOW_SCALE
 	self.viewport.y = math.floor(self.viewport.y)
 end
@@ -63,7 +63,7 @@ function Map:draw()
     end
 
 	self.tileEngine:draw_tiles(viewx, viewy, 1)
-	self.actorEngine:draw_actors(viewx, viewy)
+	self.actorEngine:draw_actors(viewx, viewy, 1)
 	self.tileEngine:draw_tiles(viewx, viewy, 2)
 	self.tileEngine:draw_shadows(viewx, viewy)
 end

@@ -16,7 +16,7 @@ function Player:new(parent, physicsWorld, options)
 	obj.update = Player.update
 
 	-- Graphics
-	obj:set_graphic("player_idle_DR_0")
+	obj.graphics:setBackground({key="player_idle_DR_0"})
 
 	-- Physics
 	obj:init_physics()
@@ -79,13 +79,11 @@ function Player:new(parent, physicsWorld, options)
 end
 
 function Player:init_physics()
-	local position = self:getPosition()
-
-	local width, height = self:getDimensions()
-	local rectwidth = width-2
-	local rectheight = height/2
+	local dims = self:getDimensions()
+	local rectwidth = dims.w - 2
+	local rectheight = dims.h / 2
 	local offsetx = rectwidth/2 + 1
-	local offsety = height/2 + rectheight/2
+	local offsety = dims.h/2 + rectheight/2
 
 	self.physics:setMainBounds(offsetx, offsety, rectwidth, rectheight)
 	self.physics:init()

@@ -6,6 +6,7 @@ config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"
 phys = require "diresys/phys"
+gfx = require "diresys/gfx"
 
 local Actor = {}
 
@@ -17,15 +18,12 @@ function Actor:new(parent, physicsWorld, options)
 	obj.parent_type = "actor"
 	obj.type = "actor"
 
-	obj.hidden = false
 	obj.parent = parent
 	obj.physicsWorld = physicsWorld
 	obj.position = options.position or {x=0, y=0}
 
 	obj.physics = phys.ActorPhysicsComponent:new(obj, physicsWorld)
-	obj.graphics = {
-		key = nil,
-	}
+	obj.graphics = gfx.ActorGraphicsComponent:new(obj, parent)
 
 	obj.movement = {
 		speed = 15,
@@ -104,14 +102,14 @@ function Actor:update_animation(dt)
 
 	-- just set the graphic, we don't have a cycle
 	if #animation == 1 then
-		self:set_graphic(animation[1])
+		self.graphics:setBackground({key=animation[1]})
 		return
 	end
 
 	local step_interval = cycle_interval / #animation
 	local animation_frame = (
 		math.floor(current_interval / step_interval)) % #animation + 1
-	self:set_graphic(animation[animation_frame])
+	self.graphics:setBackground({key=animation[animation_frame]})
 	
 	if current_interval > cycle_interval then
 		current_interval = 0.0
@@ -134,8 +132,12 @@ function Actor:setPosition(x, y)
 	end
 	self.position.x = x
 	self.position.y = y
-	if self.parent then self.parent:reset() end
+	self:redraw()
 	return self
+end
+
+function Actor:redraw()
+	self.graphics:redraw()
 end
 
 function Actor:set_graphic(key)
@@ -151,9 +153,17 @@ function Actor:get_graphic()
 end
 
 function Actor:getDimensions()
-	local quad = self:get_graphic()
-	local x, y, w, h = quad:getViewport()
-	return w, h
+	return self.graphics:getDimensions()
+end
+
+function Tile:getTileDimensions()
+	local dims = self:getDimensions()
+	return {
+		x = TILE_UNIT(dims.x),
+		y = TILE_UNIT(dims.y),
+		w = TILE_UNIT(dims.w),
+		h = TILE_UNIT(dims.h),
+	}
 end
 
 function Actor:action_proximity_in(actor)
@@ -184,17 +194,17 @@ function Actor:setActive(bool)
 	self.parent:reset()
 end
 
-function Actor:isHidden(bool)
-	return self.hidden
+function Actor:isHidden()
+	return self.graphics:isHidden()
 end
 
 function Actor:setHidden(bool)
-	self.hidden = bool
-	if self.hidden then
-		self.physics.fixture:setSensor(true)
+	self.graphics:setHidden(bool)
+	if self.graphics:isHidden() then
+		self.physics:setCollidable(false)
 		self.physics:setMoveable(false)
 	else
-		self.physics.fixture:setSensor(false)
+		self.physics:setCollidable(true)
 		self.physics:setMoveable(true)
 	end
 end

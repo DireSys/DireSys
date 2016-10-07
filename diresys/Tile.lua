@@ -70,38 +70,7 @@ function Tile:redraw()
 end
 
 function Tile:getDimensions()
-	local startx = nil
-	local endx = nil
-	local starty = nil
-	local endy = nil
-	local tags = f.pluck(self.graphics:getAll(), "tag")
-	for _, tag in ipairs(tags) do
-		local dim = self.graphics:getDimensions(tag)
-		if dim ~= nil then
-			if startx == nil or dim.x < startx then
-				startx = dim.x
-			end
-
-			if starty == nil or dim.y < starty then
-				starty = dim.y
-			end
-
-			if endx == nil or (dim.x + dim.w) > endx then
-				endx = (dim.x + dim.w)
-			end
-
-			if endy == nil or (dim.y + dim.h) > endy then
-				endy = (dim.y + dim.h)
-			end
-		end
-	end
-
-	return {
-		x = startx,
-		y = starty,
-		w = endx - startx,
-		h = endy - starty,
-	}
+	return self.graphics:getDimensions()
 end
 
 function Tile:getTileDimensions()

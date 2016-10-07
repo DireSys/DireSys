@@ -19,21 +19,23 @@ local ActorGraphicsComponent = {}
 gfx.TileGraphicsComponent = TileGraphicsComponent
 gfx.ActorGraphicsComponent = ActorGraphicsComponent
 
-function GraphicsComponent:new(parent, tileEngine)
+function GraphicsComponent:new(parent, gfxEngine)
 	--[[
 
 		Keyword Arguments:
 
 		parent -- a Tile instance
 
-		tileEngine -- a TileEngine instance
+		gfxEngine -- a GfxEngine instance (TileEngine, ActorEngine)
 
 	]]
 	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
+
+	obj.hidden = false
 	obj.parent = parent
-	obj.tileEngine = tileEngine
+	obj.gfxEngine = gfxEngine
 	obj.graphics = {
 		{tag="foreground", key=nil, layer=2, offset={0, 0}, index=2, id=nil},
 		{tag="background", key=nil, layer=1, offset={0, 0}, index=2, id=nil},
@@ -92,7 +94,7 @@ function GraphicsComponent:set(tag, options)
 end
 
 function GraphicsComponent:redraw()
-	self.tileEngine:redrawTile(self.parent)
+	self.gfxEngine:redrawSprite(self.parent)
 end
 
 function GraphicsComponent:setBackground(options)
@@ -157,8 +159,50 @@ function GraphicsComponent:getAll()
 end
 
 function GraphicsComponent:getDimensions(tag)
+	if tag and tag ~= "*all" then
+		return self:getTagDimensions(tag)
+	end
+
+	local startx = nil
+	local endx = nil
+	local starty = nil
+	local endy = nil
+	local tags = f.pluck(self:getAll(), "tag")
+	for _, tag in ipairs(tags) do
+		local dim = self:getTagDimensions(tag)
+		if dim ~= nil then
+			if startx == nil or dim.x < startx then
+				startx = dim.x
+			end
+
+			if starty == nil or dim.y < starty then
+				starty = dim.y
+			end
+
+			if endx == nil or (dim.x + dim.w) > endx then
+				endx = (dim.x + dim.w)
+			end
+
+			if endy == nil or (dim.y + dim.h) > endy then
+				endy = (dim.y + dim.h)
+			end
+		end
+	end
+
+	return {
+		x = startx,
+		y = starty,
+		w = endx - startx,
+		h = endy - starty,
+	}
+end
+
+function GraphicsComponent:getTagDimensions(tag)
 	local graphic = self:get(tag)
-	if not graphic then return nil end
+	if not graphic then
+		print("Failed to find tag " .. tostring(tag))
+		return nil
+	end
 
 	local graphicPosition = self:getPosition(tag)
 		
@@ -213,6 +257,15 @@ function GraphicsComponent:getPosition(tag)
 	else
 		return nil
 	end
+end
+
+function GraphicsComponent:setHidden(bool)
+	self.hidden = bool == nil and false or bool
+	self:redraw()
+end
+
+function GraphicsComponent:isHidden()
+	return self.hidden
 end
 
 function TileGraphicsComponent:new(parent, gfxEngine)
