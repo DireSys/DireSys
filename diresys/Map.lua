@@ -46,9 +46,12 @@ function Map:updateViewport()
 	self.viewport.x = (-playerPosition.x +
 						   config.WINDOW_WIDTH/2 - playerWidth/2) *
 		config.WINDOW_SCALE
+	self.viewport.x = math.floor(self.viewport.x)
+
 	self.viewport.y = (-playerPosition.y +
 						   config.WINDOW_HEIGHT/2 - playerHeight/2) *
 		config.WINDOW_SCALE
+	self.viewport.y = math.floor(self.viewport.y)
 end
 
 function Map:draw()
