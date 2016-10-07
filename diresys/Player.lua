@@ -9,10 +9,18 @@ local Player = {}
 function Player:new(parent, physics_world, options)
 	local obj = Actor:new(parent, physics_world, options)
 	obj.options = options or {}
-	obj:set_graphic("player_idle_DR_0")
 	obj.type = "player"
+	obj.parent_type = "actor"
+
+	-- Methods
 	obj.init_physics = Player.init_physics
 	obj.update = Player.update
+
+	-- Graphics
+	obj:set_graphic("player_idle_DR_0")
+
+	-- Physics
+	obj:init_physics()
 
 	-- Movement
 	obj.movement.speed = 30
@@ -68,7 +76,6 @@ function Player:new(parent, physics_world, options)
     obj.animation.down = obj.animation.run_DR
     obj.animation.right = obj.animation.run_UR
 
-	obj:init_physics()
 	return obj
 end
 

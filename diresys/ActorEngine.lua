@@ -43,8 +43,10 @@ function ActorEngine:reset()
 	self.actorBatch:clear()
 	for _, actor in ipairs(self.actorList) do
 		local quad = actor:get_graphic()
-		local position = actor:get_position()
-		self.actorBatch:add(quad, position.x, position.y)
+		if quad and not actor.hidden then
+			local position = actor:get_position()
+			self.actorBatch:add(quad, position.x, position.y)
+		end
 	end
 	self.actorBatch:flush()
 end

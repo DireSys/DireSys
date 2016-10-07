@@ -12,7 +12,8 @@ local VerticalDoorTile = {}
 function VerticalDoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.type = "doortile"
-	obj.bounds_type = "wall"
+	-- force it to look like empty space
+	obj.bounds_type = "empty"
 
 	-- Methods
 	obj.update = VerticalDoorTile.update

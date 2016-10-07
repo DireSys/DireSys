@@ -40,11 +40,11 @@ function Animation:new(frames, options)
 
 	obj.type = "animation"
 	obj.options = options or {}
-	obj.parent = options.parent
-	obj.options.loop = options.loop == nil and true or options.loop
+	obj.parent = obj.options.parent
+	obj.options.loop = obj.options.loop == nil and true or obj.options.loop
 	obj.frames = frames or {}
 	obj.currentInterval = 0.0
-	obj.cycleInterval = options.cycleInterval or 0.5 -- seconds
+	obj.cycleInterval = obj.options.cycleInterval or 0.5 -- seconds
 
 	return obj
 end

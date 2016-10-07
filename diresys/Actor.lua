@@ -6,9 +6,7 @@ config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"
 
-local Actor = {
-	
-}
+local Actor = {}
 
 function Actor:new(parent, physics_world, options)
 	local options = options or {}
@@ -16,9 +14,11 @@ function Actor:new(parent, physics_world, options)
 	setmetatable(obj, self)
 	self.__index = self
 
+	obj.active = true
+	obj.hidden = false
 	obj.parent = parent
 	obj.physics_world = physics_world
-	obj.position = position or {x=0, y=0}
+	obj.position = options.position or {x=0, y=0}
 	obj.parent_type = "actor"
 	obj.type = "actor"
 	obj.physics = {}
@@ -72,8 +72,12 @@ function Actor:update(dt)
 	if self.movement.left then
 		vx = vx - speed
 	end
-	
-	self:move(vx, vy)
+
+	if self.active then
+		self:move(vx, vy)
+	else
+		self:move(0, 0)
+	end
 end
 
 function Actor:update_animation(dt)
@@ -163,7 +167,7 @@ end
 
 function Actor:action_proximity_in(actor)
 	-- fill proximity
-	if not f.find(self.proximity, function(i) return i == actor end) then
+	if not f.has(self.proximity, actor) then
 		table.insert(self.proximity, actor)
 	end
 end
@@ -180,7 +184,27 @@ end
 function Actor:use_proximity()
 	-- use a tile that is within proximity
 	for _, tile in ipairs(self.proximity) do
-		tile:action_use()
+		tile:action_use(self)
+	end
+end
+
+function Actor:setActive(bool)
+	self.active = bool == nil and true or bool
+	self.parent:reset()
+end
+
+function Actor:isHidden(bool)
+	return self.hidden
+end
+
+function Actor:setHidden(bool)
+	self.hidden = bool
+	if self.hidden then
+		self.physics.fixture:setSensor(true)
+		self:setActive(false)
+	else
+		self.physics.fixture:setSensor(false)
+		self:setActive(true)
 	end
 end
 

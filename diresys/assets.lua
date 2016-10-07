@@ -25,10 +25,11 @@ function load_sprite(sprite_name, tilex, tiley, width, height)
 end
 
 function assets.get_sprite(sprite_name)
+	if not sprite_name then return end
 	local sprite = assets.sprites[sprite_name]
 	if not sprite then
 		print("Warning: Unable to get sprite '" ..
-				  sprite_name .. "', returning default sprite")
+				  tostring(sprite_name) .. "', returning default sprite")
 		return assets.sprites["default"]
 	end
 	return sprite
@@ -175,9 +176,23 @@ function assets.load_assets()
 	--
 	-- Closet Tiles
 	--
+	load_sprite("closet_upper_hiding0", 13, 21, 8, 8)
+	load_sprite("closet_upper_hiding1", 15, 21, 8, 8)
+	load_sprite("closet_upper_hiding2", 17, 21, 8, 8)
+	load_sprite("closet_upper_hiding3", 19, 21, 8, 8)
 	load_sprite("closet_upper0", 19, 18, 8, 8)
+	load_sprite("closet_upper1", 21, 18, 8, 8)
+	load_sprite("closet_upper2", 23, 18, 8, 8)
+
+	load_sprite("closet_lower_hiding0", 13, 23, 8, 4)
+	load_sprite("closet_lower_hiding1", 15, 23, 8, 4)
+	load_sprite("closet_lower_hiding2", 17, 23, 8, 4)
+	load_sprite("closet_lower_hiding3", 19, 23, 8, 4)
 	load_sprite("closet_lower0", 19, 20, 8, 4)
-	
+	load_sprite("closet_lower1", 21, 20, 8, 4)
+	load_sprite("closet_lower2", 23, 20, 8, 4)
+
+
 
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)
