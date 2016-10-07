@@ -181,7 +181,8 @@ function Map.physicsContactBegin(fixtureA, fixtureB)
 	local objecta = fixtureA:getUserData() or nil
 	local objectb = fixtureB:getUserData() or nil
 	
-	-- setUserData in tiles or actors that you want to collide
+	-- self.physics:setUseable(true) in tiles or actors that you want
+	-- to collide
 	if not objecta or not objectb then
 		return
 	end
@@ -194,7 +195,8 @@ function Map.physicsContactEnd(fixtureA, fixtureB)
 	local objecta = fixtureA:getUserData() or nil
 	local objectb = fixtureB:getUserData() or nil
 	
-	-- setUserData in tiles or actors that you want to collide
+	-- self.physics:setUseable(true) in tiles or actors that you want
+	-- to collide
 	if not objecta or not objectb then
 		return
 	end

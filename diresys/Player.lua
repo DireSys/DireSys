@@ -29,7 +29,7 @@ function Player:new(parent, physicsWorld, options)
         up = false,
         down = true,
         left = false,
-        right = true 
+        right = true,
     }
 	
 	-- Animations
