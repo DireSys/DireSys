@@ -203,7 +203,7 @@ end
 function Map:setBackgroundMusic(asset_name)
 
     self.backgroundMusic = assets.get_music(asset_name)
-
+	self.backgroundMusic:setVolume(0.5)
 end
 
 return Map

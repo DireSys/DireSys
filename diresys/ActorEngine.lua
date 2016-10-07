@@ -17,10 +17,11 @@ function ActorEngine:new(physics_world, options)
 	self.__index = self
 
 	obj.type = "actorengine"
+	obj.resetDirtyFlag = false
 	obj.physics_world = physics_world
 	obj.actorList = {}
 	obj.actorBatch = love.graphics.newSpriteBatch(assets.sprite_image)
-
+	
 	return obj
 end
 
@@ -40,6 +41,10 @@ function ActorEngine:remove_actor(actor)
 end
 
 function ActorEngine:reset()
+	self.resetDirtyFlag = true
+end
+
+function ActorEngine:redraw()
 	self.actorBatch:clear()
 	for _, actor in ipairs(self.actorList) do
 		local quad = actor:get_graphic()
@@ -53,7 +58,10 @@ end
 
 function ActorEngine:draw_actors(viewx, viewy)
 	-- need to refresh all actors every frame, since they are dynamic
-	self:reset()
+	if self.resetDirtyFlag then
+		self:redraw()
+		self.resetDirtyFlag = false
+	end
 	love.graphics.draw(self.actorBatch, viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
