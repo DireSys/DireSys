@@ -46,6 +46,7 @@ function PhysicsComponent:new(parent, physicsWorld)
 	obj.enabled = true
 	obj.collidable = true
 	obj.useable = false
+	obj.moveable = false
 
 	return obj
 end
@@ -84,6 +85,13 @@ function PhysicsComponent:setEnabled(bool)
 	end
 end
 
+function PhysicsComponent:setMoveable(bool)
+	self.moveable = bool == nil and true or bool
+	if not self.moveable and self.body then
+		self:setVelocity(0, 0)
+	end
+end
+
 function PhysicsComponent:setCollidable(bool)
 	self.collidable = bool == nil and true or bool
 	if self.fixture then
@@ -114,7 +122,11 @@ end
 
 function PhysicsComponent:setVelocity(vx, vy)
 	if self.body then
-		self.body:setLinearVelocity(vx, vy)
+		if self.moveable then
+			self.body:setLinearVelocity(vx, vy)
+		else
+			self.body:setLinearVelocity(0, 0)
+		end
 	end
 end
 
@@ -152,6 +164,7 @@ function ActorPhysicsComponent:new(parent, physicsWorld)
 	obj.enabled = true
 	obj.collidable = true
 	obj.useable = true
+	obj.moveable = true
 	return obj
 end
 

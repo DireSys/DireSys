@@ -12,9 +12,14 @@ assets = require "diresys/assets"
 
 local gfx = {}
 
-local TileGraphics = {}
+local GraphicsComponent = {}
+local TileGraphicsComponent = {}
+local ActorGraphicsComponent = {}
 
-function TileGraphics:new(parent, tileEngine)
+gfx.TileGraphicsComponent = TileGraphicsComponent
+gfx.ActorGraphicsComponent = ActorGraphicsComponent
+
+function GraphicsComponent:new(parent, tileEngine)
 	--[[
 
 		Keyword Arguments:
@@ -36,22 +41,22 @@ function TileGraphics:new(parent, tileEngine)
 
 	return obj
 end
-gfx.TileGraphics = TileGraphics
 
-function TileGraphics:get(tag)
+
+function GraphicsComponent:get(tag)
 	local graphic = f.find(self.graphics, function(g) return g.tag == tag end)
 	return graphic
 end
 
-function TileGraphics:getBackground()
+function GraphicsComponent:getBackground()
 	return self:get("background")
 end
 
-function TileGraphics:getForeground()
+function GraphicsComponent:getForeground()
 	return self:get("foreground")
 end
 
-function TileGraphics:set(tag, options)
+function GraphicsComponent:set(tag, options)
 	--[[
 
 		Options:
@@ -86,47 +91,47 @@ function TileGraphics:set(tag, options)
 	self:redraw()
 end
 
-function TileGraphics:redraw()
+function GraphicsComponent:redraw()
 	self.tileEngine:redrawTile(self.parent)
 end
 
-function TileGraphics:setBackground(options)
+function GraphicsComponent:setBackground(options)
 	--Same as :set(), except tag = "background"
 	self:set("background", options)
 end
 
-function TileGraphics:setForeground(options)
+function GraphicsComponent:setForeground(options)
 	--Same as :set(), except tag = "foreground"
 	self:set("foreground", options)
 end
 
-function TileGraphics:setKey(tag, key)
+function GraphicsComponent:setKey(tag, key)
 	local graphic = self:get(tag)
 	assert(graphic)
 	graphic.key = key
 end
 
-function TileGraphics:setLayer(tag, layer)
+function GraphicsComponent:setLayer(tag, layer)
 	assert(layer == 1 or layer == 2)
 	local graphic = self:get(tag)
 	assert(graphic)
 	graphic.layer = layer
 end
 
-function TileGraphics:setOffset(tag, offset)
+function GraphicsComponent:setOffset(tag, offset)
 	assert(#offset == 2)
 	local graphic = self:get(tag)
 	assert(graphic)
 	graphic.offset = offset
 end
 
-function TileGraphics:setIndex(tag, index)
+function GraphicsComponent:setIndex(tag, index)
 	assert(index >= 1)
 	local graphic = self:get(tag)
 	graphic.index = index
 end
 
-function TileGraphics:getLayer(layer)
+function GraphicsComponent:getLayer(layer)
 	local layer = layer or 1
 
 	-- sort by index
@@ -147,11 +152,11 @@ function TileGraphics:getLayer(layer)
 	return layerGraphics
 end
 
-function TileGraphics:getAll()
+function GraphicsComponent:getAll()
 	return f.filter(self.graphics, function(g) return g.key ~= nil end)
 end
 
-function TileGraphics:getDimensions(tag)
+function GraphicsComponent:getDimensions(tag)
 	local graphic = self:get(tag)
 	if not graphic then return nil end
 
@@ -176,7 +181,7 @@ function TileGraphics:getDimensions(tag)
 	}
 end
 
-function TileGraphics:getTileDimensions(tag)
+function GraphicsComponent:getTileDimensions(tag)
 	local graphic = self:get(tag)
 	local dims = self:getDimensions(tag)
 	if graphic then
@@ -196,7 +201,7 @@ function TileGraphics:getTileDimensions(tag)
 	end
 end
 
-function TileGraphics:getPosition(tag)
+function GraphicsComponent:getPosition(tag)
 	local graphic = self:get(tag)
 	local tilePosition = self.parent:getPosition()
 	if graphic then
@@ -208,6 +213,16 @@ function TileGraphics:getPosition(tag)
 	else
 		return nil
 	end
+end
+
+function TileGraphicsComponent:new(parent, gfxEngine)
+	local obj = GraphicsComponent:new(parent, gfxEngine)
+	return obj
+end
+
+function ActorGraphicsComponent:new(parent, gfxEngine)
+	local obj = GraphicsComponent:new(parent, gfxEngine)
+	return obj
 end
 
 return gfx

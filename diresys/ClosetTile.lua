@@ -91,7 +91,7 @@ end
 
 function ClosetTile:action_use(player)
 	self.hiddenPlayer = player
-	player:setActive(false)
+	player.physics:setMoveable(false)
 	self:toggleHiding()
 end
 

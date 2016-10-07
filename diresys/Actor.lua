@@ -14,14 +14,14 @@ function Actor:new(parent, physicsWorld, options)
 	setmetatable(obj, self)
 	self.__index = self
 	local options = options or {}
+	obj.parent_type = "actor"
+	obj.type = "actor"
 
-	obj.active = true
 	obj.hidden = false
 	obj.parent = parent
 	obj.physicsWorld = physicsWorld
 	obj.position = options.position or {x=0, y=0}
-	obj.parent_type = "actor"
-	obj.type = "actor"
+
 	obj.physics = phys.ActorPhysicsComponent:new(obj, physicsWorld)
 	obj.graphics = {
 		key = nil,
@@ -74,11 +74,7 @@ function Actor:update(dt)
 		vx = vx - speed
 	end
 
-	if self.active then
-		self:move(vx, vy)
-	else
-		self:move(0, 0)
-	end
+	self.physics:setVelocity(vx, vy)
 end
 
 function Actor:update_animation(dt)
@@ -160,12 +156,6 @@ function Actor:getDimensions()
 	return w, h
 end
 
-function Actor:move(x, y)
-	if self.physics.body then
-		self.physics.body:setLinearVelocity(x, y)
-	end
-end
-
 function Actor:action_proximity_in(actor)
 	-- fill proximity
 	if not f.has(self.proximity, actor) then
@@ -202,10 +192,10 @@ function Actor:setHidden(bool)
 	self.hidden = bool
 	if self.hidden then
 		self.physics.fixture:setSensor(true)
-		self:setActive(false)
+		self.physics:setMoveable(false)
 	else
 		self.physics.fixture:setSensor(false)
-		self:setActive(true)
+		self.physics:setMoveable(true)
 	end
 end
 
