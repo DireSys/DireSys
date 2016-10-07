@@ -49,7 +49,7 @@ function ActorEngine:redraw()
 	for _, actor in ipairs(self.actorList) do
 		local quad = actor:get_graphic()
 		if quad and not actor.hidden then
-			local position = actor:get_position()
+			local position = actor:getPosition()
 			self.actorBatch:add(quad, position.x, position.y)
 		end
 	end

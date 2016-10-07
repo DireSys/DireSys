@@ -6,9 +6,8 @@ Actor = require "diresys/Actor"
 
 local Player = {}
 
-function Player:new(parent, physics_world, options)
-	local obj = Actor:new(parent, physics_world, options)
-	obj.options = options or {}
+function Player:new(parent, physicsWorld, options)
+	local obj = Actor:new(parent, physicsWorld, options)
 	obj.type = "player"
 	obj.parent_type = "actor"
 
@@ -80,26 +79,16 @@ function Player:new(parent, physics_world, options)
 end
 
 function Player:init_physics()
-	local position = self.options.position or {x=0, y=0}
-	self.physics.body = love.physics.newBody(self.physics_world, position.x, position.y, "dynamic")
-	local width, height = self:get_dimensions()
+	local position = self:getPosition()
 
+	local width, height = self:getDimensions()
 	local rectwidth = width-2
 	local rectheight = height/2
 	local offsetx = rectwidth/2 + 1
 	local offsety = height/2 + rectheight/2
-	
-	self.physics.shape = love.physics.newRectangleShape(
-		offsetx, offsety,
-		rectwidth, rectheight)
-	self.physics.fixture = love.physics.newFixture(
-		self.physics.body, self.physics.shape)
-	self.physics.fixture:setUserData(self)
 
-	-- body settings
-	self.physics.body:setMassData(self.physics.shape:computeMass(1))
-	self.physics.body:setFixedRotation(true)
-	self.physics.body:setLinearDamping(0.1)
+	self.physics:setMainBounds(offsetx, offsety, rectwidth, rectheight)
+	self.physics:init()
 end
 
 function Player:update(dt)

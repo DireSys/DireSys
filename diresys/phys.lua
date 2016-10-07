@@ -12,9 +12,14 @@ assets = require "diresys/assets"
 
 local phys = {}
 
-local TilePhysics = {}
+local PhysicsComponent = {}
+local TilePhysicsComponent = {}
+local ActorPhysicsComponent = {}
 
-function TilePhysics:new(parent, physicsWorld)
+phys.TilePhysicsComponent = TilePhysicsComponent
+phys.ActorPhysicsComponent = ActorPhysicsComponent
+
+function PhysicsComponent:new(parent, physicsWorld)
 	--[[
 
 		Keyword Arguments:
@@ -35,6 +40,8 @@ function TilePhysics:new(parent, physicsWorld)
 	obj.shape = nil
 	obj.fixture = nil
 
+	obj.damping = 0.1
+	obj.mass = 1
 	obj.bodytype = "static"
 	obj.enabled = true
 	obj.collidable = true
@@ -42,14 +49,16 @@ function TilePhysics:new(parent, physicsWorld)
 
 	return obj
 end
-phys.TilePhysics = TilePhysics
 
-function TilePhysics:init()
+function PhysicsComponent:init()
 	local position = self.parent:getPosition()
 	if not self.body and self.enabled then
 		self.body = love.physics.newBody(
 			self.physicsWorld, position.x, position.y, self.bodytype)
-		
+		self.body:setFixedRotation(true)
+		self.body:setMass(self.mass)
+		self.body:setLinearDamping(self.damping)
+
 		local dims = self.parent:getDimensions()
 		self.bounds = self.bounds or {ox = dims.w/2,
 									  oy = dims.h/2,
@@ -67,7 +76,7 @@ function TilePhysics:init()
 	end
 end
 
-function TilePhysics:setEnabled(bool)
+function PhysicsComponent:setEnabled(bool)
 	self.enabled = bool == nil and true or bool
 	self:init()
 	if self.body then
@@ -75,14 +84,14 @@ function TilePhysics:setEnabled(bool)
 	end
 end
 
-function TilePhysics:setCollidable(bool)
+function PhysicsComponent:setCollidable(bool)
 	self.collidable = bool == nil and true or bool
 	if self.fixture then
 		self.fixture:setSensor(not self.collidable)
 	end
 end
 
-function TilePhysics:setMainBounds(ox, oy, w, h)
+function PhysicsComponent:setMainBounds(ox, oy, w, h)
 	self.bounds = {ox=ox, oy=oy, w=w, h=h}
 	if self.body and self.fixture then
 		self.fixture:destroy()
@@ -96,20 +105,54 @@ function TilePhysics:setMainBounds(ox, oy, w, h)
 	end
 end
 
-function TilePhysics:setUseable(bool)
+function PhysicsComponent:setUseable(bool)
 	self.useable = bool == nil and true or bool
 	if self.body and self.fixture then
 		self.fixture:setUserData(self.useable and self.parent or nil)
 	end
 end
 
-function TilePhysics:destroy()
+function PhysicsComponent:setVelocity(vx, vy)
+	if self.body then
+		self.body:setLinearVelocity(vx, vy)
+	end
+end
+
+function PhysicsComponent:setDamping(val)
+	self.damping = val
+	if self.body then
+		self.body:setLinearDamping(self.damping)
+	end
+end
+
+function PhysicsComponent:setMass(val)
+	self.mass = val
+	if self.body then
+		self.body:setLinearDamping(self.mass)
+	end
+end
+
+function PhysicsComponent:destroy()
 	if self.body then
 		self.body:destroy()
 		self.body = nil
 		self.fixture = nil
 		self.shape = nil
 	end
+end
+
+function TilePhysicsComponent:new(parent, physicsWorld)
+	local obj = PhysicsComponent:new(parent, physicsWorld)
+	return obj
+end
+
+function ActorPhysicsComponent:new(parent, physicsWorld)
+	local obj = PhysicsComponent:new(parent, physicsWorld)
+	obj.bodytype = "dynamic"
+	obj.enabled = true
+	obj.collidable = true
+	obj.useable = true
+	return obj
 end
 
 return phys

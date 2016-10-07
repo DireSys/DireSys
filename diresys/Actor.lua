@@ -5,23 +5,24 @@ require "diresys/utils"
 config = require "config"
 f = require "diresys/func"
 assets = require "diresys/assets"
+phys = require "diresys/phys"
 
 local Actor = {}
 
-function Actor:new(parent, physics_world, options)
-	local options = options or {}
+function Actor:new(parent, physicsWorld, options)
 	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
+	local options = options or {}
 
 	obj.active = true
 	obj.hidden = false
 	obj.parent = parent
-	obj.physics_world = physics_world
+	obj.physicsWorld = physicsWorld
 	obj.position = options.position or {x=0, y=0}
 	obj.parent_type = "actor"
 	obj.type = "actor"
-	obj.physics = {}
+	obj.physics = phys.ActorPhysicsComponent:new(obj, physicsWorld)
 	obj.graphics = {
 		key = nil,
 	}
@@ -124,14 +125,14 @@ function Actor:update_animation(dt)
 	self.animation.current_interval = current_interval
 end
 
-function Actor:get_position()
+function Actor:getPosition()
 	if self.physics.body then
 		return {x=self.physics.body:getX(), y=self.physics.body:getY()}
 	end
 	return self.position
 end
 
-function Actor:set_position(x, y)
+function Actor:setPosition(x, y)
 	if self.physics.body then
 		self.physics.body:setPosition(x, y)
 	end
@@ -153,7 +154,7 @@ function Actor:get_graphic()
 	return assets.get_sprite(key)
 end
 
-function Actor:get_dimensions()
+function Actor:getDimensions()
 	local quad = self:get_graphic()
 	local x, y, w, h = quad:getViewport()
 	return w, h

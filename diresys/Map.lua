@@ -40,8 +40,8 @@ function Map:new(options)
 end
 
 function Map:updateViewport()
-	local playerPosition = self.currentPlayer:get_position()
-	local playerWidth, playerHeight = self.currentPlayer:get_dimensions()
+	local playerPosition = self.currentPlayer:getPosition()
+	local playerWidth, playerHeight = self.currentPlayer:getDimensions()
 	-- viewport needs to be in the center of the player
 	self.viewport.x = (-playerPosition.x +
 						   config.WINDOW_WIDTH/2 - playerWidth/2) *

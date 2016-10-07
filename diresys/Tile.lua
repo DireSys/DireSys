@@ -25,7 +25,7 @@ function Tile:new(parent, physicsWorld, options)
 	obj.parent_type = "tile"
 	obj.type = "tile"
 
-	obj.physics = phys.TilePhysics:new(obj, physicsWorld)
+	obj.physics = phys.TilePhysicsComponent:new(obj, physicsWorld)
 	obj.graphics = gfx.TileGraphics:new(obj, parent)
 
 	-- list of actors in proximity
