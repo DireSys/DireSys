@@ -226,6 +226,21 @@ function assets.load_assets()
 	-- Light Intensities
 	--
 	load_sprite("light_intensity_0", 0, 0)
+	load_sprite("light_intensity_1", 1, 0)
+	load_sprite("light_intensity_2", 2, 0)
+	load_sprite("light_intensity_3", 3, 0)
+	load_sprite("light_intensity_4", 4, 0)
+	load_sprite("light_intensity_5", 0, 1)
+	load_sprite("light_intensity_6", 1, 1)
+	load_sprite("light_intensity_7", 2, 1)
+	load_sprite("light_intensity_8", 3, 1)
+	load_sprite("light_intensity_9", 4, 1)
+	load_sprite("light_intensity_10", 0, 2)
+	load_sprite("light_intensity_11", 1, 2)
+	load_sprite("light_intensity_12", 2, 2)
+	load_sprite("light_intensity_13", 3, 2)
+	load_sprite("light_intensity_14", 4, 2)
+	load_sprite("light_intensity_15", 0, 3)
 
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)

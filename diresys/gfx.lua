@@ -72,6 +72,7 @@ function GraphicsComponent:set(tag, options)
 		index --  the index for graphics on the same layer
 
 	]]
+	assert(type(tag) == "string")
 	local options = options or {}
 	local graphic = self:get(tag)
 	if graphic then
@@ -114,7 +115,7 @@ function GraphicsComponent:setKey(tag, key)
 end
 
 function GraphicsComponent:setLayer(tag, layer)
-	assert(layer == 1 or layer == 2)
+	assert(layer >= 1 or layer <= 3)
 	local graphic = self:get(tag)
 	assert(graphic)
 	graphic.layer = layer

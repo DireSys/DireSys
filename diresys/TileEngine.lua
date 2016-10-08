@@ -59,6 +59,7 @@ end
 function TileEngine:reset()
 	self.resetDirtyFlag[1] = true
 	self.resetDirtyFlag[2] = true
+	self.resetDirtyFlag[3] = true
 end
 
 function TileEngine:redrawSprite(tile)
@@ -109,8 +110,8 @@ function TileEngine:draw_tiles(viewx, viewy, layer)
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
 
-function TileEngine:draw_shadows(viewx, viewy)
-	local shadowLayer = 3
+function TileEngine:draw_shadows(viewx, viewy, layer)
+	local shadowLayer = layer or 3
 
 	if self.resetDirtyFlag[shadowLayer] then
 		self:redraw(shadowLayer)

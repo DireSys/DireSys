@@ -66,7 +66,7 @@ function Map:draw()
 	self.tileEngine:draw_tiles(viewx, viewy, 1)
 	self.actorEngine:draw_actors(viewx, viewy, 1)
 	self.tileEngine:draw_tiles(viewx, viewy, 2)
-	self.tileEngine:draw_shadows(viewx, viewy)
+	self.tileEngine:draw_shadows(viewx, viewy, 3)
 end
 
 function Map:update(dt)

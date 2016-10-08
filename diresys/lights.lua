@@ -27,21 +27,20 @@ function LightComponent:new(parent, gfxEngine, options)
 
 	obj.parent = parent
 	obj.gfxEngine = gfxEngine
-	obj.intensity = 0
+	obj.intensity = 15
 	
 	return obj
 end
 
 function LightComponent:init()
-	local shadowLayer = 3
 	local tile = self.parent
-	tile.graphics:set({key=self:getIntensitySprite(), layer=3})
-	tile:redraw(shadowLayer)
+	tile.graphics:set("light_00", {key=self:getIntensitySprite(), layer=3})
+	tile:redraw()
 end
 
 function LightComponent:getIntensitySprite()
 	local spriteName = "light_intensity_" .. self.intensity
-	return assets.get_sprite(spriteName)
+	return spriteName
 end
 
 return lights

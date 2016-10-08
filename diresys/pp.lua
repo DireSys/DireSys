@@ -28,7 +28,7 @@ print_table = function(t, indent, embeded, depth, max_depth)
 		elseif type(v) == "function" then
 			print(sindent .. " " .. k .. " = <function>")
 		else
-			print(sindent .. " " .. k .. " = " .. v)
+			print(sindent .. " " .. tostring(k) .. " = " .. tostring(v))
 		end
 	end
 	print(sindent .. "}")
