@@ -2,6 +2,7 @@
 	For controlling light intensities
 ]]
 assets = require "diresys/assets"
+f = require "diresys/func"
 
 local lights = {}
 
@@ -27,20 +28,40 @@ function LightComponent:new(parent, gfxEngine, options)
 
 	obj.parent = parent
 	obj.gfxEngine = gfxEngine
-	obj.intensity = 15
+	obj.intensity = 8
 	
 	return obj
 end
 
 function LightComponent:init()
 	local tile = self.parent
-	tile.graphics:set("light_00", {key=self:getIntensitySprite(), layer=3})
+	local dims = tile:getTileDimensions()
+	for i=0, dims.w-1 do
+		for j=0, dims.h-1 do
+			local tagName = "light_" .. i .. j
+			tile.graphics:set(tagName, {key=self:getIntensitySprite(), layer=3, offset={i, j}})
+		end
+	end
 	tile:redraw()
+end
+
+function LightComponent:getIntensity()
+	return self.intensity
 end
 
 function LightComponent:getIntensitySprite()
 	local spriteName = "light_intensity_" .. self.intensity
 	return spriteName
+end
+
+function LightComponent:setIntensity(val)
+	assert(val >= 0 and val <= 15)
+	local tile = self.parent
+	self.intensity = val
+	for _, lightGraphic in pairs(tile.graphics:getLayer(3)) do
+		lightGraphic.key = self:getIntensitySprite()
+	end
+	tile:redraw()
 end
 
 return lights
