@@ -20,6 +20,7 @@ function TileEngine:new(options)
 	obj.tilesetBatch = {
 		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
 		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
+		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
 	}
 
 	return obj
@@ -96,6 +97,24 @@ function TileEngine:redraw(layer)
 	self.tilesetBatch[layer]:flush()	
 end
 
+function redrawShadows()
+local layer = 3
+	self.tilesetBatch[layer]:clear()
+	for _, tile in pairs(self.tilemap) do
+		for _, tileGraphic in ipairs(tile.graphics:getLayer(layer)) do
+			local spriteQuad = assets.get_sprite(tileGraphic.key)
+			if spriteQuad then
+				local spritePosition = tile.graphics:getPosition(tileGraphic.tag)
+				local id = self.tilesetBatch[layer]:add(
+					spriteQuad, spritePosition.x, spritePosition.y)
+				tileGraphic.id = id
+			end
+			
+		end
+	end
+	self.tilesetBatch[layer]:flush()	
+end
+
 function TileEngine:draw_tiles(viewx, viewy, layer)
 	local layer = layer or 1
 
@@ -103,13 +122,22 @@ function TileEngine:draw_tiles(viewx, viewy, layer)
 		self:redraw(layer)
 		self.resetDirtyFlag[layer] = false
 	end
-
+	love.graphics.setBlendMode("alpha", "alphamultiply")
 	love.graphics.draw(self.tilesetBatch[layer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
 
-function TileEngine:draw_shadows()
+function TileEngine:draw_shadows(viewx, viewy)
+	local layer = 3
 
+	if self.resetDirtyFlag[layer] then
+		self:redraw(layer)
+		self.resetDirtyFlag[layer] = false
+	end
+
+	love.graphics.setBlendMode("darken", "premultiplied")
+	love.graphics.draw(self.tilesetBatch[layer], viewx, viewy, 0,
+					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
 
 return TileEngine

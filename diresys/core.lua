@@ -29,7 +29,8 @@ function core.load()
 end
 
 function core.draw()
-	map:draw(0, 0)
+	love.timer.sleep(1 / config.FRAME_RATE)
+	map:draw()
 	dbg.draw()
 end
 

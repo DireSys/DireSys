@@ -7,9 +7,9 @@ f = require "diresys/func"
 assets = require "diresys/assets"
 gfx = require "diresys/gfx"
 phys = require "diresys/phys"
-local Tile = {
-	
-}
+lights = require "diresys/lights"
+
+local Tile = {}
 
 function Tile:new(parent, physicsWorld, options)
 	local options = options or {}
@@ -27,6 +27,7 @@ function Tile:new(parent, physicsWorld, options)
 
 	obj.physics = phys.TilePhysicsComponent:new(obj, physicsWorld)
 	obj.graphics = gfx.TileGraphicsComponent:new(obj, parent)
+	obj.light = lights.LightComponent:new(obj, parent)
 
 	-- list of actors in proximity
 	obj.proximity = {}

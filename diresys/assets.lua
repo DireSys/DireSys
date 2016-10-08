@@ -222,6 +222,11 @@ function assets.load_assets()
 	load_sprite("alien_run_UR_0", 28, 6, 8, 8)
 	load_sprite("alien_run_UR_1", 30, 6, 8, 8)
 
+	--
+	-- Light Intensities
+	--
+	load_sprite("light_intensity_0", 0, 0)
+
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)
 

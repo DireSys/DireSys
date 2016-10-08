@@ -9,6 +9,7 @@ config.WINDOW_HEIGHT = 144
 config.WINDOW_SCALE = 4
 config.TILE_SIZE = 4
 config.SPRITESHEET_FILENAME = "assets/SpriteSheet-1.png"
+config.FRAME_RATE = 60
 
 config.PHYSICS_SCALE = 2
 
