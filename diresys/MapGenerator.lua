@@ -30,6 +30,9 @@ function MapGenerator.load(lines)
 			elseif character == "@" then
 				map:createFloor(i-1, j-1)
 				map:createPlayer(i-1, j-1)
+			elseif character == "A" then
+				map:createFloor(i-1, j-1)
+				map:createAlien(i-1, j-1)
 			elseif character == "D" then
 				map:createDoor(i-1, j-1)
 			elseif character == "V" then

@@ -192,7 +192,35 @@ function assets.load_assets()
 	load_sprite("closet_lower1", 21, 20, 8, 4)
 	load_sprite("closet_lower2", 23, 20, 8, 4)
 
+	--
+	-- Alien
+	--
 
+	-- idle - down-left
+	load_sprite("alien_idle_DL_0", 24, 4, 8, 8)
+	load_sprite("alien_idle_DL_1", 26, 4, 8, 8)
+    -- idle - down-right
+	load_sprite("alien_idle_DR_0", 20, 4, 8, 8)
+	load_sprite("alien_idle_DR_1", 22, 4, 8, 8)
+    -- idle - up-left
+	load_sprite("alien_idle_UL_0", 32, 4, 8, 8)
+	load_sprite("alien_idle_UL_1", 34, 4, 8, 8)
+    -- idle - up-right
+	load_sprite("alien_idle_UR_0", 28, 4, 8, 8)
+	load_sprite("alien_idle_UR_1", 30, 4, 8, 8)
+
+    -- run - down-left
+	load_sprite("alien_run_DL_0", 24, 6, 8, 8)
+	load_sprite("alien_run_DL_1", 26, 6, 8, 8)
+    -- run - down-right 
+	load_sprite("alien_run_DR_0", 20, 6, 8, 8)
+	load_sprite("alien_run_DR_1", 22, 6, 8, 8)
+    -- run - up-left
+	load_sprite("alien_run_UL_0", 32, 6, 8, 8)
+	load_sprite("alien_run_UL_1", 34, 6, 8, 8)
+    -- run - up-right
+	load_sprite("alien_run_UR_0", 28, 6, 8, 8)
+	load_sprite("alien_run_UR_1", 30, 6, 8, 8)
 
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)

@@ -16,6 +16,7 @@ TableTile = require "diresys/TableTile"
 PlantTile = require "diresys/PlantTile"
 ClosetTile = require "diresys/ClosetTile"
 Player = require "diresys/Player"
+Alien = require "diresys/Alien"
 
 local Map = {}
 
@@ -142,6 +143,17 @@ function Map:createPlayer(tilex, tiley)
 	self.actorEngine:add_actor(player)
 	self.currentPlayer = player
 	return player
+end
+
+function Map:createAlien(tilex, tiley)
+	local position = {
+		x = WORLD_UNIT(tilex),
+		y = WORLD_UNIT(tiley)
+	}
+	local alien = Alien:new(self.actorEngine, self.physicsWorld,
+							{position=position})
+	self.actorEngine:add_actor(alien)
+	return alien
 end
 
 function Map:createTable(tilex, tiley)

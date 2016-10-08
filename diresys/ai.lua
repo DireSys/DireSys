@@ -6,8 +6,6 @@ local ai = {}
 
 local StateMachine = {}
 
-function default_
-
 function StateMachine:new(options)
 	local obj = {}
 	setmetatable(obj, self)
