@@ -95,7 +95,7 @@ function Map:createFloor(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local floorTile = FloorTile:new(self.tileEngine, self.physicsWorld,
-									{position=position})
+									{position=position}):init()
 	self.tileEngine:add_tile(floorTile, tilex, tiley)
 	return floorTile
 end
@@ -106,7 +106,7 @@ function Map:createDoor(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local doorTile = DoorTile:new(self.tileEngine, self.physicsWorld,
-								  {position=position})
+								  {position=position}):init()
 	self.tileEngine:add_tile(doorTile, tilex, tiley)
 	return doorTile
 end
@@ -117,7 +117,7 @@ function Map:createVerticalDoor(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local doorTile = VerticalDoorTile:new(self.tileEngine, self.physicsWorld,
-										  {position=position})
+										  {position=position}):init()
 	self.tileEngine:add_tile(doorTile, tilex, tiley)
 	return doorTile
 end
@@ -128,7 +128,7 @@ function Map:createWall(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local wallTile = WallTile:new(self.tileEngine, self.physicsWorld,
-								  {position=position})
+								  {position=position}):init()
 	self.tileEngine:add_tile(wallTile, tilex, tiley)
 	return wallTile
 end
@@ -139,7 +139,7 @@ function Map:createPlayer(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local player = Player:new(self.actorEngine, self.physicsWorld,
-							  {position=position})
+							  {position=position}):init()
 	self.actorEngine:add_actor(player)
 	self.currentPlayer = player
 	return player
@@ -151,7 +151,7 @@ function Map:createAlien(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local alien = Alien:new(self.actorEngine, self.physicsWorld,
-							{position=position})
+							{position=position}):init()
 	self.actorEngine:add_actor(alien)
 	return alien
 end
@@ -162,7 +162,7 @@ function Map:createTable(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local tableTile = TableTile:new(self.tileEngine, self.physicsWorld,
-									{position=position})
+									{position=position}):init()
 	self.tileEngine:add_tile(tableTile, tilex, tiley)
 	return tableTile
 end
@@ -173,7 +173,7 @@ function Map:createPlant(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local plantTile = PlantTile:new(self.tileEngine, self.physicsWorld,
-									{position=position})
+									{position=position}):init()
 	self.tileEngine:add_tile(plantTile, tilex, tiley)
 	return plantTile
 end
@@ -184,7 +184,7 @@ function Map:createCloset(tilex, tiley)
 		y = WORLD_UNIT(tiley)
 	}
 	local closetTile = ClosetTile:new(self.tileEngine, self.physicsWorld,
-									{position=position})
+									{position=position}):init()
 	self.tileEngine:add_tile(closetTile, tilex, tiley)
 	return closetTile
 end

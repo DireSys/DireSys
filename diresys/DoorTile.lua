@@ -53,7 +53,6 @@ function DoorTile:new(parent, physics_world, options)
 		door_open = {"hdoor_upper4", "hdoor_lower4"},
 	}
 
-	obj:init_physics()
 	return obj
 end
 

@@ -39,6 +39,16 @@ function Tile:update(dt)
 	--Runs in love.update(dt)
 end
 
+function Tile:init()
+	self:init_light()
+	self:init_physics()
+	return self
+end
+
+function Tile:init_light()
+	self.light:init()
+end
+
 function Tile:init_physics()
 	self.physics:init()
 end

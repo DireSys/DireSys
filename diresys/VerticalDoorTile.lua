@@ -36,7 +36,6 @@ function VerticalDoorTile:new(parent, physics_world, options)
 	-- Physics
 	obj.physics:setCollidable(true)
 	obj.physics:setUseable(true)
-	obj.physics:init()
 
 	-- Animations
 	obj.animationUpper = anim.AnimationBatch:new(obj)

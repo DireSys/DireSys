@@ -18,9 +18,6 @@ function Alien:new(parent, physicsWorld, options)
 	-- Graphics
 	obj.graphics:setBackground({key="alien_idle_DR_0"})
 
-	-- Physics
-	obj:init_physics()
-
 	-- Movement
 	obj.movement.speed = 40
 

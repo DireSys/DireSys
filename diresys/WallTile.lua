@@ -21,7 +21,6 @@ function WallTile:new(parent, physics_world, options)
 	-- Physics
 	obj.physics:setCollidable(true)
 	obj.physics:setUseable(false)
-	obj.physics:init()
 
 	return obj
 end

@@ -49,6 +49,15 @@ function Actor:new(parent, physicsWorld, options)
 	return obj
 end
 
+function Actor:init()
+	self:init_physics()
+	return self
+end
+
+function Actor:init_physics()
+	self.physics:init()
+end
+
 function Actor:update(dt)
 	self:update_animation(dt)
 	

@@ -34,7 +34,6 @@ function ClosetTile:new(parent, physicsWorld, options)
 	obj.physics:setCollidable(true)
 	obj.physics:setUseable(true)
 	obj.physics:setMainBounds(4, 2, 8, 4)
-	obj.physics:init()
 
 	-- Animations
 	obj.animationUpper = anim.AnimationBatch:new(obj)

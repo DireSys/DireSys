@@ -16,7 +16,7 @@ function TileEngine:new(options)
 
 	obj.type = "tileengine"
 	obj.tilemap = {}
-	obj.resetDirtyFlag = {false, false}
+	obj.resetDirtyFlag = {false, false, false}
 	obj.tilesetBatch = {
 		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
 		love.graphics.newSpriteBatch(assets.sprite_image, 5000),
@@ -97,24 +97,6 @@ function TileEngine:redraw(layer)
 	self.tilesetBatch[layer]:flush()	
 end
 
-function redrawShadows()
-local layer = 3
-	self.tilesetBatch[layer]:clear()
-	for _, tile in pairs(self.tilemap) do
-		for _, tileGraphic in ipairs(tile.graphics:getLayer(layer)) do
-			local spriteQuad = assets.get_sprite(tileGraphic.key)
-			if spriteQuad then
-				local spritePosition = tile.graphics:getPosition(tileGraphic.tag)
-				local id = self.tilesetBatch[layer]:add(
-					spriteQuad, spritePosition.x, spritePosition.y)
-				tileGraphic.id = id
-			end
-			
-		end
-	end
-	self.tilesetBatch[layer]:flush()	
-end
-
 function TileEngine:draw_tiles(viewx, viewy, layer)
 	local layer = layer or 1
 
@@ -128,15 +110,15 @@ function TileEngine:draw_tiles(viewx, viewy, layer)
 end
 
 function TileEngine:draw_shadows(viewx, viewy)
-	local layer = 3
+	local shadowLayer = 3
 
-	if self.resetDirtyFlag[layer] then
-		self:redraw(layer)
-		self.resetDirtyFlag[layer] = false
+	if self.resetDirtyFlag[shadowLayer] then
+		self:redraw(shadowLayer)
+		self.resetDirtyFlag[shadowLayer] = false
 	end
 
 	love.graphics.setBlendMode("darken", "premultiplied")
-	love.graphics.draw(self.tilesetBatch[layer], viewx, viewy, 0,
+	love.graphics.draw(self.tilesetBatch[shadowLayer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
 

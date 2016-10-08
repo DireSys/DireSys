@@ -31,7 +31,6 @@ function TableTile:new(parent, physicsWorld, options)
 	obj.physics:setCollidable(true)
 	obj.physics:setUseable(true)
 	obj.physics:setMainBounds(6, 4, 12, 8)
-	obj.physics:init()
 
 	return obj
 end

@@ -18,9 +18,6 @@ function Player:new(parent, physicsWorld, options)
 	-- Graphics
 	obj.graphics:setBackground({key="player_idle_DR_0"})
 
-	-- Physics
-	obj:init_physics()
-
 	-- Movement
 	obj.movement.speed = 30
 
