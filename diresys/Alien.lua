@@ -156,15 +156,22 @@ function Alien:checkPlayerProximity()
 		return
 	end
 
+	local aliendims = self:getDimensions()
 	local alienpos = self:getPosition()
+	alienpos.x = alienpos.x + aliendims.w/2
+	alienpos.y = alienpos.y + aliendims.h/2
+
+	local playerdims = self.activePlayer:getDimensions()
 	local playerpos = self.activePlayer:getPosition()
-	if pathfinding.inProximity(alienpos, playerpos, 16) then
+	playerpos.x = playerpos.x + playerdims.w/2
+	playerpos.y = playerpos.y + playerdims.h/2
+
+	if pathfinding.inProximity(alienpos, playerpos, 12) then
 		self.ai.currentState = "chase"
 	end
 end
 
 function Alien:state_idle(sm)
-	print("Idling...")
 	local look_direction = random.getRandDist({
 			{1, {"up", "left"}},
 			{1, {"up", "right"}},
@@ -184,7 +191,6 @@ function Alien:state_idle(sm)
 end
 
 function Alien:state_wander(sm)
-	print("Wandering...")
 	local movement_direction = random.getRandDist({
 			{1, {"up"}},
 			{1, {"up", "left"}},
@@ -204,12 +210,10 @@ function Alien:state_wander(sm)
 end
 
 function Alien:state_patrol(sm)
-	print("Patroling")
-	return "chase"
+	return "idle"
 end
 
 function Alien:state_chase(sm)
-	print("Chasing...")
 	if not self.activePlayer then
 		return "idle"
 	end
@@ -235,11 +239,10 @@ function Alien:state_chase(sm)
 		self.movement.up = true
 	end
 
-	return "return"
+	return "idle"
 end
 
 function Alien:state_return(sm)
-	print("Returning...")
 	return "idle"
 end
 
