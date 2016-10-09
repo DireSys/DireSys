@@ -13,6 +13,8 @@ function DoorTile:new(parent, physics_world, options)
 	obj.graphics:setForeground({key="hdoor_upper0"})
 	obj.graphics:setBackground({key="hdoor_lower0", offset={0, 1}})
 
+    obj.light:setObstructsView(true)
+
 	-- set several floor tiles under the door
 	obj.graphics:set("tile00", {key="floor0", offset={0,0}})
 	obj.graphics:set("tile01", {key="floor0", offset={0,1}})
@@ -123,6 +125,8 @@ function DoorTile:openDoor()
         if sfx then
             sfx:play()
         end
+
+        self.light:setObstructsView(false)
 	end
 end
 
@@ -135,6 +139,8 @@ function DoorTile:closeDoor()
         if sfx then
             sfx:play()
         end
+
+        self.light:setObstructsView(true)
 	end
 end
 

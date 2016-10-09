@@ -151,6 +151,7 @@ function Map:createPlayer(tilex, tiley)
 							  {position=position}):init()
 	self.actorEngine:add_actor(player)
 	self.currentPlayer = player
+
 	return player
 end
 

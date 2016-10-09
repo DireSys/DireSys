@@ -11,6 +11,11 @@ function Player:new(parent, physicsWorld, options)
 	obj.type = "player"
 	obj.parent_type = "actor"
 
+
+    -- Vision
+    obj.setLight = Player.setLight 
+    obj.light = nil
+
 	-- Methods
 	obj.init_physics = Player.init_physics
 	obj.update = Player.update
@@ -28,7 +33,8 @@ function Player:new(parent, physicsWorld, options)
         left = false,
         right = true,
     }
-	
+    
+
 	-- Animations
     
     -- .. idle
@@ -122,6 +128,15 @@ function Player:update(dt)
 
     -- Call base
 	Actor.update(self, dt)
+
+    -- Move light with player
+    if self.light then
+        self.light:setPosition(self.position)
+    end
+end
+
+function Player:setLight(light)
+    self.light = light
 end
 
 return Player

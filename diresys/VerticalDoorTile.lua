@@ -12,6 +12,9 @@ local VerticalDoorTile = {}
 function VerticalDoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.type = "doortile"
+
+    obj.light:setObstructsView(true)
+
 	-- force it to look like empty space
 	obj.bounds_type = "empty"
 
@@ -110,6 +113,8 @@ function VerticalDoorTile:openDoor()
         if sfx then
             sfx:play()
         end
+
+        self.light:setObstructsView(false)
 	end
 end
 
@@ -123,6 +128,8 @@ function VerticalDoorTile:closeDoor()
         if sfx then
             sfx:play()
         end
+
+        self.light:setObstructsView(true)
 	end
 end
 

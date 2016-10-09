@@ -22,6 +22,9 @@ function WallTile:new(parent, physics_world, options)
 	obj.physics:setCollidable(true)
 	obj.physics:setUseable(false)
 
+    -- Light
+    obj.light:setObstructsView(true) -- will block light
+
 	return obj
 end
 
