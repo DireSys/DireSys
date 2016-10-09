@@ -37,7 +37,7 @@ function Map:new(options)
 	obj.actorEngine = ActorEngine:new(obj.physicsWorld)
 	obj.lightSourceList = {}
 
-    obj.backgroundMusic = nil 
+    obj.backgroundMusic = nil
 
 	return obj
 end

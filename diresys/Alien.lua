@@ -3,6 +3,7 @@
 ]]
 config = require "config"
 Actor = require "diresys/Actor"
+ai = require "diresys/ai"
 
 local Alien = {}
 
@@ -71,6 +72,10 @@ function Alien:new(parent, physicsWorld, options)
     obj.animation.left = obj.animation.run_DL
     obj.animation.down = obj.animation.run_DR
     obj.animation.right = obj.animation.run_UR
+
+	-- AI
+	obj.ai = ai.StateMachine:new()
+	
 
 	return obj
 end

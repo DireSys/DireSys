@@ -12,7 +12,7 @@ function StateMachine:new(options)
 	self.__index = self
 
 	obj.options = options or {}
-	obj.currentState = options.initstate or "stalled"
+	obj.currentState = obj.options.initstate or "stalled"
 	obj.states = {
 		stalled={
 			-- the state will get called every 1 seconds, until it
