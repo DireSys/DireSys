@@ -38,14 +38,14 @@ test.run_tests = function()
 				func()
 			end
 		end
-		if num_errors == 0 then
-			print("\nSuccess!!")
-		else
-			print("\nFail!!")
-		end
-		print ("  Number Passes: " .. num_passes)
-		print ("  Number Fails:  " .. num_errors)
 	end
+	if num_errors == 0 then
+		print("\nSuccess!!")
+	else
+		print("\nFail!!")
+	end
+	print ("  Number Passes: " .. num_passes)
+	print ("  Number Fails:  " .. num_errors)
 end
 
 return test

@@ -4,6 +4,10 @@
 config = require "config"
 Actor = require "diresys/Actor"
 ai = require "diresys/ai"
+random = require "diresys/random"
+pp = require "diresys/pp"
+f = require "diresys/func"
+pathfinding = require "diresys/pathfinding"
 
 local Alien = {}
 
@@ -15,6 +19,7 @@ function Alien:new(parent, physicsWorld, options)
 	-- Methods
 	obj.init_physics = Alien.init_physics
 	obj.update = Alien.update
+	obj.checkPlayerProximity = Alien.checkPlayerProximity
 
 	-- Graphics
 	obj.graphics:setBackground({key="alien_idle_DR_0"})
@@ -74,8 +79,13 @@ function Alien:new(parent, physicsWorld, options)
     obj.animation.right = obj.animation.run_UR
 
 	-- AI
-	obj.ai = ai.StateMachine:new()
-	
+	obj.ai = ai.StateMachine:new(obj)
+	obj.ai:addState("idle", Alien.state_idle, nil, 0.3)
+	obj.ai:addState("wander", Alien.state_wander, nil, 0.1)
+	obj.ai:addState("patrol", Alien.state_patrol, nil, 1.0)
+	obj.ai:addState("chase", Alien.state_chase, nil, 0.3)
+	obj.ai:addState("return", Alien.state_return, nil, 1.0)
+	obj.ai.currentState = "idle"
 
 	return obj
 end
@@ -127,6 +137,110 @@ function Alien:update(dt)
 
     -- Call base
 	Actor.update(self, dt)
+	
+	-- Check if the alien is close to the player, will automatically
+	-- set it to 'chasing' state.
+	self:checkPlayerProximity()
+
+	self.ai:update(dt)
+end
+
+function Alien:checkPlayerProximity()
+	if not self.activePlayer then
+		self.activePlayer = f.find(self.parent.actorList,
+								   function(i) return i.type == "player" end)
+	end
+
+	-- don't attempt chase if the player is hidden
+	if self.activePlayer:isHidden() then
+		return
+	end
+
+	local alienpos = self:getPosition()
+	local playerpos = self.activePlayer:getPosition()
+	if pathfinding.inProximity(alienpos, playerpos, 16) then
+		self.ai.currentState = "chase"
+	end
+end
+
+function Alien:state_idle(sm)
+	print("Idling...")
+	local look_direction = random.getRandDist({
+			{1, {"up", "left"}},
+			{1, {"up", "right"}},
+			{1, {"down", "left"}},
+			{1, {"down", "right"}},
+		})
+	self.movement = {speed=40}
+
+	self.facing = {up=false, right=false, down=false, left=false}
+	self.facing[look_direction[1]] = true
+	self.facing[look_direction[2]] = true
+
+	return random.getRandDist({
+			{15, "wander"},
+			{85, "idle"},
+	})
+end
+
+function Alien:state_wander(sm)
+	print("Wandering...")
+	local movement_direction = random.getRandDist({
+			{1, {"up"}},
+			{1, {"up", "left"}},
+			{1, {"up", "right"}},
+			{1, {"down"}},
+			{1, {"down", "left"}},
+			{1, {"down", "right"}},
+			{1, {"left"}},
+			{1, {"right"}},
+	})
+	self.movement = {speed=30}
+	for _, v in ipairs(movement_direction) do
+		self.movement[v] = true
+	end
+	
+	return "idle"
+end
+
+function Alien:state_patrol(sm)
+	print("Patroling")
+	return "chase"
+end
+
+function Alien:state_chase(sm)
+	print("Chasing...")
+	if not self.activePlayer then
+		return "idle"
+	end
+	local epsilon = 4.0
+
+	local playerPos = self.activePlayer:getPosition()
+	local alienPos = self:getPosition()
+
+	local pos = {}
+	pos.x = playerPos.x - alienPos.x
+	pos.y = playerPos.y - alienPos.y
+
+	self.movement = {speed=40}
+	if pos.x > epsilon then
+		self.movement.right = true
+	elseif pos.x < -epsilon then
+		self.movement.left = true
+	end
+	
+	if pos.y > epsilon then
+		self.movement.down = true
+	elseif pos.y < -epsilon then
+		self.movement.up = true
+	end
+
+	return "return"
+end
+
+function Alien:state_return(sm)
+	print("Returning...")
+	return "idle"
 end
 
 return Alien	

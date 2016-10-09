@@ -6,11 +6,12 @@ local ai = {}
 
 local StateMachine = {}
 
-function StateMachine:new(options)
+function StateMachine:new(parent, options)
 	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
 
+	obj.parent = parent
 	obj.options = options or {}
 	obj.currentState = obj.options.initstate or "stalled"
 	obj.states = {
@@ -20,8 +21,8 @@ function StateMachine:new(options)
 			current_interval = 0.0, --seconds
 			state_interval = 1.0, -- seconds a state transition is
 			-- performed by returning which state to transition to.
-			mainCallback = function(sm) return sm.currentState end,
-			transitionCallback = function(sm, nextState) return nil end,
+			mainCallback = function(parent, sm) return sm.currentState end,
+			transitionCallback = function(parent, sm, nextState) return nil end,
 		},
 	}
 	return obj
@@ -32,9 +33,10 @@ function StateMachine:addState(name, mainCallback,
 							   transitionCallback,
 							   state_interval)
 	self.states[name] = {
-		mainCallback = mainCallback or function(sm) return sm.currentState end,
+		mainCallback = mainCallback or function(parent, sm)
+			return sm.currentState end,
 		transitionCallback = transitionCallback or
-			function(sm, nextState)
+			function(parent, sm, nextState)
 				return nil end,
 		state_interval = state_interval or 1.0,
 		current_interval = 0.0,
@@ -55,8 +57,8 @@ function StateMachine:update(dt)
 	state.current_interval = 0.0
 
 	-- Call the transition
-	state.transitionCallback(self, state.currentState)
-	self.currentState = state.mainCallback(self) or self.currentState
+	state.transitionCallback(self.parent, self, state.currentState)
+	self.currentState = state.mainCallback(self.parent, self) or self.currentState
 end
 
 return ai
