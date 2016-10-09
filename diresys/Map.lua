@@ -17,6 +17,7 @@ PlantTile = require "diresys/PlantTile"
 ClosetTile = require "diresys/ClosetTile"
 Player = require "diresys/Player"
 Alien = require "diresys/Alien"
+lights = require "diresys/lights"
 
 local Map = {}
 
@@ -34,6 +35,7 @@ function Map:new(options)
 								   obj.physicsContactEnd)
 	obj.tileEngine = TileEngine:new(obj.physicsWorld)
 	obj.actorEngine = ActorEngine:new(obj.physicsWorld)
+	obj.lightSourceList = {}
 
     obj.backgroundMusic = nil 
 
@@ -74,6 +76,13 @@ function Map:update(dt)
 	self.tileEngine:update(dt)
 	self.actorEngine:update(dt)
 	self:updateViewport()
+	self:updateLightSources(dt)
+end
+
+function Map:updateLightSources(dt)
+	for _, lightSource in ipairs(self.lightSourceList) do
+		lightSource:update(dt)
+	end
 end
 
 function Map:getTileList()
@@ -187,6 +196,16 @@ function Map:createCloset(tilex, tiley)
 									{position=position}):init()
 	self.tileEngine:add_tile(closetTile, tilex, tiley)
 	return closetTile
+end
+
+function Map:createOmniLight(tilex, tiley)
+	local position = {
+		x = WORLD_UNIT(tilex),
+		y = WORLD_UNIT(tiley)
+	}
+	local omniLight = lights.OmniLightSource:new(self.tileEngine, {position=position})
+	table.insert(self.lightSourceList, omniLight)
+	return omniLight
 end
 
 function Map.physicsContactBegin(fixtureA, fixtureB)

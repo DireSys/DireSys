@@ -7,7 +7,11 @@ f = require "diresys/func"
 local lights = {}
 
 local LightSource = {}
+local OmniLightSource = {}
+local DirectionalLightSource = {}
 lights.LightSource = LightSource
+lights.OmniLightSource = OmniLightSource
+lights.DirectionalLightSource = DirectionalLightSource
 local LightComponent = {}
 lights.LightComponent = LightComponent
 
@@ -17,9 +21,49 @@ function LightSource:new(gfxEngine, options)
 	self.__index = self
 	obj.options = options or {}
 	obj.position = obj.options or {x=0.0, y=0.0}
-	
+
+	obj.lightType = "static" -- "dynamic or static"
+	obj.lightDistance = options.lightDistance or 8
+	obj.lightFallOff = options.lightFallOff or 4
+
 	return obj
 end
+
+function LightSource:update(dt)
+	
+end
+
+--
+-- Light Sources
+--
+
+function OmniLightSource:new(gfxEngine, options)
+	local obj = LightSource:new(gfxEngine, options)
+	obj.update = OmniLightSource.update
+
+	return obj
+end
+
+function OmniLightSource:update(dt)
+
+end
+
+
+
+function DirectionalLightSource:new(gfxEngine, options)
+	local obj = LightSource:new(gfxEngine, options)
+	obj.Update = DirectionalLightSource.update
+
+	return obj
+end
+
+function DirectionalLightSource:update(dt)
+	
+end
+
+--
+-- Tile Component
+--
 
 function LightComponent:new(parent, gfxEngine, options)
 	local obj = {}

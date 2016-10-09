@@ -43,6 +43,9 @@ function MapGenerator.load(lines)
 				map:createPlant(i-1, j-1)
 			elseif character == "C" then
 				map:createCloset(i-1, j-1)
+			elseif character == "L" then
+				map:createFloor(i-1, j-1)
+				map:createOmniLight(i-1, j-1)
 			end
 		end
 	end
