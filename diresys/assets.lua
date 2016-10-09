@@ -244,9 +244,23 @@ function assets.load_assets()
 
     -- Background music
     load_music("ambient_safe", "assets/ambient_safe.ogg", true)
+    load_music("ambient_hazard_0", "assets/ambient_hazard_0.ogg")
+    load_music("ambient_hazard_1", "assets/ambient_hazard_1.ogg")
+    load_music("ambient_hazard_2", "assets/ambient_hazard_2.ogg")
 
     -- Load sounds
-    load_sound("door_open", "assets/door_open_move.ogg")
+    load_sound("alarm_0", "assets/alarm_0.ogg")
+    load_sound("alarm_1", "assets/alarm_1.ogg")
+    load_sound("door_disengaged", "assets/door_disengaged.ogg")
+    load_sound("door_open", "assets/door_open.ogg")
+    load_sound("hero_footstep", "assets/hero_footstep.ogg")
+    load_sound("locker_close", "assets/locker_close.ogg")
+    load_sound("locker_open", "assets/locker_open.ogg")
+    load_sound("monster_footstep", "assets/monster_footstep.ogg")
+    load_sound("motion_sensor_beep", "assets/motion_sensor_beep.ogg")
+    load_sound("motion_sensor_blip_0", "assets/motion_sensor_blip_0.ogg")
+    load_sound("motion_sensor_blip_1", "assets/motion_sensor_blip_1.ogg")
+    load_sound("motion_sensor_blip_2", "assets/motion_sensor_blip_2.ogg")
 end
 
 return assets
