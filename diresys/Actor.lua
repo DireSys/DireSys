@@ -60,28 +60,7 @@ end
 
 function Actor:update(dt)
 	self:update_animation(dt)
-	
-	local speed = self.movement.speed
-
-	local vx = 0
-	local vy = 0
-	if self.movement.up then
-		vy = vy - speed
-	end
-	
-	if self.movement.down then
-		vy = vy + speed
-	end
-	
-	if self.movement.right then
-		vx = vx + speed
-	end
-	
-	if self.movement.left then
-		vx = vx - speed
-	end
-
-	self.physics:setVelocity(vx, vy)
+	self:move()
 end
 
 function Actor:update_animation(dt)
@@ -165,7 +144,7 @@ function Actor:getDimensions()
 	return self.graphics:getDimensions()
 end
 
-function Tile:getTileDimensions()
+function Actor:getTileDimensions()
 	local dims = self:getDimensions()
 	return {
 		x = TILE_UNIT(dims.x),
@@ -216,6 +195,31 @@ function Actor:setHidden(bool)
 		self.physics:setCollidable(true)
 		self.physics:setMoveable(true)
 	end
+end
+
+function Actor:move()
+	local speed = self.movement.speed
+
+	local vx = 0
+	local vy = 0
+	if self.movement.up then
+		vy = vy - speed
+	end
+	
+	if self.movement.down then
+		vy = vy + speed
+	end
+	
+	if self.movement.right then
+		vx = vx + speed
+	end
+	
+	if self.movement.left then
+		vx = vx - speed
+	end
+
+	self.physics:setVelocity(vx, vy)
+
 end
 
 return Actor
