@@ -105,6 +105,7 @@ function TileEngine:draw_tiles(viewx, viewy, layer)
 		self:redraw(layer)
 		self.resetDirtyFlag[layer] = false
 	end
+	--love.graphics.setColor(0, 0, 0)
 	love.graphics.setBlendMode("alpha", "alphamultiply")
 	love.graphics.draw(self.tilesetBatch[layer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
@@ -118,6 +119,7 @@ function TileEngine:draw_shadows(viewx, viewy, layer)
 		self.resetDirtyFlag[shadowLayer] = false
 	end
 
+	--love.graphics.setColor(0, 0, 0)
 	love.graphics.setBlendMode("darken", "premultiplied")
 	love.graphics.draw(self.tilesetBatch[shadowLayer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)

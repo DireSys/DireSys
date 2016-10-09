@@ -24,7 +24,7 @@ function LightSource:new(gfxEngine, options)
 	obj.position = obj.options.position or {x=0.0, y=0.0}
 
 	obj.lightType = "static" -- "dynamic" or "static"
-	obj.lightDistance = options.lightDistance or 16
+	obj.lightDistance = options.lightDistance or 12
 	obj.lightFallOff = options.lightFallOff or 2
 
     obj.setPosition = LightSource.setPosition

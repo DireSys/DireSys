@@ -18,6 +18,7 @@ ClosetTile = require "diresys/ClosetTile"
 Player = require "diresys/Player"
 Alien = require "diresys/Alien"
 lights = require "diresys/lights"
+hud = require "diresys/hud"
 
 local Map = {}
 
@@ -69,6 +70,7 @@ function Map:draw()
 	self.actorEngine:draw_actors(viewx, viewy, 1)
 	self.tileEngine:draw_tiles(viewx, viewy, 2)
 	self.tileEngine:draw_shadows(viewx, viewy, 3)
+	hud.draw()
 end
 
 function Map:update(dt)

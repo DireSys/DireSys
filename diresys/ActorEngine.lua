@@ -100,6 +100,7 @@ function ActorEngine:draw_actors(viewx, viewy, layer)
 		self:redraw(layer)
 		self.resetDirtyFlag[layer] = false
 	end
+	--love.graphics.setColor(0, 0, 0, 0)
 	love.graphics.draw(self.actorBatch[layer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
