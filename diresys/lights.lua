@@ -24,7 +24,7 @@ function LightSource:new(gfxEngine, options)
 	obj.position = obj.options.position or {x=0.0, y=0.0}
 
 	obj.lightType = "static" -- "dynamic" or "static"
-	obj.lightDistance = options.lightDistance or 64
+	obj.lightDistance = options.lightDistance or 32
 	obj.lightFallOff = options.lightFallOff or 2
 
     obj.setPosition = LightSource.setPosition
@@ -101,14 +101,13 @@ function OmniLightSource:update(dt)
 
     local lightPosition = self.position
 
-    lightPosition.x = lightPosition.x
-    lightPosition.y = lightPosition.y
+    lightPosition.x = lightPosition.x + WORLD_UNIT(1.0) / 2
+    lightPosition.y = lightPosition.y + WORLD_UNIT(1.0) / 2
 
     -- 2. compute light on each tile
     for tileIndex, tileCoords in pairs(toVisit) do
 
         if visited[tileIndex] then break end -- skip if already visited
-
 
         local tilePosition = {
             x = WORLD_UNIT(tileCoords.x),
@@ -117,6 +116,7 @@ function OmniLightSource:update(dt)
 
         -- Is the path to the light obstructed?
         local isObstructed = false
+
         local tile = self.tileEngine:get_tile(tileCoords.x, tileCoords.y)
 
         if not tile or not tile.light then break end -- no light component

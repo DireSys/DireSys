@@ -31,42 +31,62 @@ function LINE_SEGMENT_INTERSECTS_BOX(a, b, c, h, w)
     -- a and b make up line segment
     -- c is top-left position of box
     -- h and w are the height and width of the box
-    local epsilon = 0.001
+
+    local bounds = {
+        xmin = math.min(a.x, b.x),
+        xmax = math.max(a.x, b.x),
+        ymin = math.min(a.y, b.y),
+        ymax = math.max(a.y, b.y),
+    }
+
+    local box = {
+        x0 = c.x,
+        x1 = c.x + w,
+        y0 = c.y,
+        y1 = c.y + h,
+    }
 
     -- Trivial cases
-    if math.abs(a.x - b.x) < epsilon then
+    if a.x == b.x then
         -- trivial case: vertical line
         -- check x bounds on box
-        return c.x < a.x and c.x + w > a.x and (c.y > math.min(a.y, b.y) or c.y + h < math.max(a.y, b.y))
-    elseif math.abs(a.y - b.y) < epsilon then
+        return (box.x0 < a.x and box.x1 > a.x) and
+               ((box.y0 > bounds.ymin and box.y0 < bounds.ymax) or
+                (box.y1 > bounds.ymin and box.y1 < bounds.ymax))
+    elseif a.y == b.y then
         -- trivial case: horizontal line
         -- check y bounds on box
-        return c.y < a.y and c.y + h > a.y and (c.x > math.min(a.x, b.x) or c.x + w < math.max(a.x, b.x))
+        return (box.y0 < a.y and box.y1 > a.y) and
+               ((box.x0 > bounds.xmin and box.x0 < bounds.xmax) or
+                (box.x1 > bounds.xmin and box.x1 < bounds.xmax))
     end
 
     -- Make sure box is partially overlapping line segment bounds
-    if c.x < math.min(a.x, b.x) or
-       c.x + w > math.max(a.x, b.x) or
-       c.y < math.min(a.y, b.y) or
-       c.y + h > math.max(a.y, b.y)
+    if (box.x0 > bounds.xmin and box.x0 < bounds.xmax)
+       or (box.x1 > bounds.xmin and box.x1 < bounds.xmax)
+       or (box.y0 > bounds.ymin and box.y0 < bounds.ymax)
+       or (box.y1 > bounds.ymin and box.y1 < bounds.ymax)
     then
+        -- pass: in bounds
+    else
         return false -- box not in bounds of line segment
     end
 
     -- non-trivial case: sloped line
     -- check that all corners are on the same side of line
+    -- make all points relative to "a" because I'm doing this in my head...
 
     local m = (b.y - a.y) / (b.x - a.x)
 
     -- y values of line at x values of box
-    local y0 = m * (c.x - a.x) 
-    local y1 = m * (c.x + w - a.x)
+    local y0 = m * (box.x0 - a.x) 
+    local y1 = m * (box.x1 - a.x)
 
     local sideOfFirstPoint = ((c.y - a.y) > y0)
 
-    if (c.y - a.y) > y1 ~= sideOfFirstPoint or
-       (c.y + h - a.y) > y0 ~= sideOfFirstPoint or
-       (c.y + h - a.y) > y1 ~= sideOfFirstPoint
+    if (box.y0 - a.y) > y1 ~= sideOfFirstPoint or
+       (box.y1 - a.y) > y0 ~= sideOfFirstPoint or
+       (box.y1 - a.y) > y1 ~= sideOfFirstPoint
     then
         return true -- one point is not on the same side of the line as the others 
     end
