@@ -108,6 +108,11 @@ function ClosetTile:goIntoHiding()
 	if current == "closed" then
 		self.animationUpper:setAnim("opening")
 		self.animationLower:setAnim("opening")
+
+        local sfx = assets.get_sound("locker_open")
+        if sfx then
+            sfx:play()
+        end
 	end
 end
 
@@ -116,6 +121,11 @@ function ClosetTile:getOutOfHiding()
 	if current == "hidden" then
 		self.animationUpper:setAnim("opening")
 		self.animationLower:setAnim("opening")
+
+        local sfx = assets.get_sound("locker_open")
+        if sfx then
+            sfx:play()
+        end
 	end
 end
 

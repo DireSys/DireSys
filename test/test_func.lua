@@ -129,4 +129,8 @@ test_func.test_sortby = function()
 	test.assert(x ~= sorted, "test sorted make sure we retain immutability")
 end
 
+test_func.test_lineIntersect = function()
+
+end
+
 return test_func

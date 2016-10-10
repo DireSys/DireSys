@@ -24,7 +24,7 @@ function LightSource:new(gfxEngine, options)
 	obj.position = obj.options.position or {x=0.0, y=0.0}
 
 	obj.lightType = "static" -- "dynamic" or "static"
-	obj.lightDistance = options.lightDistance or 12
+	obj.lightDistance = options.lightDistance or 64
 	obj.lightFallOff = options.lightFallOff or 2
 
     obj.setPosition = LightSource.setPosition
@@ -69,8 +69,6 @@ function OmniLightSource:new(gfxEngine, options)
 	obj.update = OmniLightSource.update
     obj.calculateIntensity = OmniLightSource.calculateIntensity
 
-    obj.rays = OmniLightSource.generateRays(WORLD_UNIT(obj.lightDistance))
-
     --obj.lightType = "dynamic"
     
 	return obj
@@ -82,71 +80,108 @@ function OmniLightSource:update(dt)
         return
     end
 
+    local toVisit = OmniLightSource.getTilesToVisit(self.position, self.lightDistance) 
     local visited = {}
+    local obstructions = {}
 
-    for _, ray in pairs(self.rays) do
-        for _, p in pairs(ray) do
+    -- 1. find obstructions
+    for tileIndex, tileCoords in pairs(toVisit) do
 
-            -- map to tile 
-            local tile_x = TILE_UNIT(self.position.x + p.x)
-            local tile_y = TILE_UNIT(self.position.y + p.y)
-            local tileIndex = _I(tile_x, tile_y)
+        local tile = self.tileEngine:get_tile(tileCoords.x, tileCoords.y)
+        
+        if tile and tile.light and tile.light:getObstructsView() then
+            
+            obstructions[tileIndex] = {
+                x = WORLD_UNIT(tileCoords.x),
+                y = WORLD_UNIT(tileCoords.y)
+            }
 
-            -- apply lighting to tile if not visited
-            if not visited[tileIndex] then
-                visited[tileIndex] = true -- it's now visited
+        end
+    end
 
-                -- get tile
-                local tile = self.tileEngine:get_tile(tile_x, tile_y)
+    local lightPosition = self.position
 
-                if tile and tile.light then
-                    -- calculate light intensity on tile from this source
-                    local thisIntensity = self:calculateIntensity(p.x, p.y)
+    lightPosition.x = lightPosition.x
+    lightPosition.y = lightPosition.y
 
-                    -- add calculated light to tile
-                    if self.lightType == "static" then
-                        tile.light:addStaticIntensity(thisIntensity)
-                        self.staticDirtyFlag = false 
-                    else -- "dynamic"
-                        tile.light:addDynamicIntensity(thisIntensity)
-                    end
+    -- 2. compute light on each tile
+    for tileIndex, tileCoords in pairs(toVisit) do
 
-                    if tile.light:getObstructsView() then
-                        break -- do not continue with this ray
-                    end
+        if visited[tileIndex] then break end -- skip if already visited
 
-                end
+
+        local tilePosition = {
+            x = WORLD_UNIT(tileCoords.x),
+            y = WORLD_UNIT(tileCoords.y)
+        }
+
+        -- Is the path to the light obstructed?
+        local isObstructed = false
+        local tile = self.tileEngine:get_tile(tileCoords.x, tileCoords.y)
+
+        if not tile or not tile.light then break end -- no light component
+
+        for obstructionIndex, obstructionPosition in pairs(obstructions) do
+
+            -- Does the ray cross through obstruction?
+            isObstructed = LINE_SEGMENT_INTERSECTS_BOX(lightPosition, tilePosition, obstructionPosition, 4.0, 4.0)
+
+            if isObstructed then break end
+        end
+
+        -- Add light if not obstructed
+        if not isObstructed then
+
+            local lightIntensity = self:calculateIntensity(tilePosition)
+
+            if self.lightType == "static" then
+                tile.light:addStaticIntensity(lightIntensity)
+            else -- "dynamic"
+                tile.light:addDynamicIntensity(lightIntensity)
+            end
+
+        end
+
+        visited[tileIndex] = true
+
+    end
+
+    -- Do not render static light until staticDirtyFlag is true
+    if self.lightType == "static" then
+        self.staticDirtyFlag = false
+    end
+
+end
+
+function OmniLightSource.getTilesToVisit(origin, radius)
+
+    local toVisit = {}
+
+    local radius2 = radius * radius
+
+    for x = -radius, radius do
+        for y = -radius, radius do
+            
+            if x * x + y * y <= radius2 then
+
+                local tile_x = TILE_UNIT(math.floor(origin.x + x))
+                local tile_y = TILE_UNIT(math.floor(origin.y + y))
+                local tile_index = _I(tile_x, tile_y)
+
+                toVisit[tile_index] = {x = tile_x, y = tile_y} 
+
             end
         end
+
     end
 
+    return toVisit
 end
 
-function OmniLightSource.generateRays(radius)
-    local rays = {}
+function OmniLightSource:calculateIntensity(position)
 
-    local dRadius = 1.0 
-    local dAngle = 1.0 / radius 
-    local rayCount = 2.0 * 3.14159 / dAngle
-
-    -- Generate a bunch of rays around a point, angles between 0 and 2*pi
-    -- Generate each ray as a set of points from r=dRadius to r=maxRadius
-    for i = 0, rayCount-1 do
-        local a = i * dAngle
-        rays[a] = {}
-
-        for r = dRadius, radius, dRadius do
-            rays[a][r] = {
-                x = r * math.cos(a),
-                y = r * math.sin(a) 
-            }
-        end
-    end
-
-    return rays
-end
-
-function OmniLightSource:calculateIntensity(xrel, yrel)
+    local xrel = position.x - self.position.x
+    local yrel = position.y - self.position.y
 
     local maxIntensity = 15 -- TODO constant?
     local zero2 = WORLD_UNIT(self.lightDistance) * WORLD_UNIT(self.lightDistance)
