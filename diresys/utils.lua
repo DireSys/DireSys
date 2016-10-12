@@ -50,22 +50,20 @@ function LINE_SEGMENT_INTERSECTS_BOX(a, b, c, h, w)
     if a.x == b.x then
         -- trivial case: vertical line
         -- check x bounds on box
-        return (box.x0 < a.x and box.x1 > a.x) and
-               ((box.y0 > bounds.ymin and box.y0 < bounds.ymax) or
+        return (box.x0 < a.x and box.x1 > a.x) and                 -- a.x is between x0 and x1 and
+               ((box.y0 > bounds.ymin and box.y0 < bounds.ymax) or -- y0 or y1 is in bounds
                 (box.y1 > bounds.ymin and box.y1 < bounds.ymax))
     elseif a.y == b.y then
         -- trivial case: horizontal line
         -- check y bounds on box
-        return (box.y0 < a.y and box.y1 > a.y) and
-               ((box.x0 > bounds.xmin and box.x0 < bounds.xmax) or
+        return (box.y0 < a.y and box.y1 > a.y) and                 -- a.y is between y0 and y1 and
+               ((box.x0 > bounds.xmin and box.x0 < bounds.xmax) or -- x0 or x1 is in bounds
                 (box.x1 > bounds.xmin and box.x1 < bounds.xmax))
     end
 
     -- Make sure box is partially overlapping line segment bounds
-    if (box.x0 > bounds.xmin and box.x0 < bounds.xmax)
-       or (box.x1 > bounds.xmin and box.x1 < bounds.xmax)
-       or (box.y0 > bounds.ymin and box.y0 < bounds.ymax)
-       or (box.y1 > bounds.ymin and box.y1 < bounds.ymax)
+    if ((box.x0 > bounds.xmin and box.x0 < bounds.xmax) or (box.x1 > bounds.xmin and box.x1 < bounds.xmax)) and -- one vertical edge is in bounds and
+       ((box.y0 > bounds.ymin and box.y0 < bounds.ymax) or (box.y1 > bounds.ymin and box.y1 < bounds.ymax))     -- one horizontal edge is in bounds
     then
         -- pass: in bounds
     else
@@ -74,7 +72,7 @@ function LINE_SEGMENT_INTERSECTS_BOX(a, b, c, h, w)
 
     -- non-trivial case: sloped line
     -- check that all corners are on the same side of line
-    -- make all points relative to "a" because I'm doing this in my head...
+    -- make all points relative to "a" because that makes b = 0 in y = mx + b
 
     local m = (b.y - a.y) / (b.x - a.x)
 
