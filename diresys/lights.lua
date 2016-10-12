@@ -4,6 +4,7 @@
 assets = require "diresys/assets"
 f = require "diresys/func"
 utils = require "diresys/utils"
+pp = require "diresys/pp"
 
 local lights = {}
 
@@ -17,23 +18,23 @@ local LightComponent = {}
 lights.LightComponent = LightComponent
 
 function LightSource:new(gfxEngine, options)
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
-	obj.options = options or {}
-	obj.position = obj.options.position or {x=0.0, y=0.0}
+    local obj = {}
+    setmetatable(obj, self)
+    self.__index = self
+    obj.options = options or {}
+    obj.position = obj.options.position or {x=0.0, y=0.0}
 
-	obj.lightType = "static" -- "dynamic" or "static"
-	obj.lightDistance = options.lightDistance or 32
-	obj.lightFallOff = options.lightFallOff or 2
+    obj.lightType = "static" -- "dynamic" or "static"
+    obj.lightDistance = options.lightDistance or 32 -- world units?
+    obj.lightFallOff = options.lightFallOff or 2 -- tiles
 
     obj.setPosition = LightSource.setPosition
 
-    obj.staticDirtyFlag = true
+    obj.dirtyFlag = true
 
     obj.tileEngine = gfxEngine
 
-	return obj
+    return obj
 end
 
 function LightSource:setFallOffDistance(dist)
@@ -65,117 +66,131 @@ end
 --
 
 function OmniLightSource:new(gfxEngine, options)
-	local obj = LightSource:new(gfxEngine, options)
-	obj.update = OmniLightSource.update
+    local obj = LightSource:new(gfxEngine, options)
+    obj.update = OmniLightSource.update
     obj.calculateIntensity = OmniLightSource.calculateIntensity
+    obj.getAffectedIndices = OmniLightSource.getAffectedIndices
+    obj.getObstructingIndices = OmniLightSource.getObstructingIndices
 
-    --obj.lightType = "dynamic"
-    
-	return obj
+    -- cache affected indices
+    obj.affected_tiles = nil
+    obj.obstructing_tiles = nil 
+
+    return obj
 end
 
 function OmniLightSource:update(dt)
 
-    if self.lightType == "static" and self.staticDirtyFlag == false then
+    if self.dirtyFlag == false then
         return
     end
 
-    local toVisit = OmniLightSource.getTilesToVisit(self.position, self.lightDistance) 
-    local visited = {}
-    local obstructions = {}
-
-    -- 1. find obstructions
-    for tileIndex, tileCoords in pairs(toVisit) do
-
-        local tile = self.tileEngine:get_tile(tileCoords.x, tileCoords.y)
-        
-        if tile and tile.light and tile.light:getObstructsView() then
-            
-            obstructions[tileIndex] = {
-                x = WORLD_UNIT(tileCoords.x),
-                y = WORLD_UNIT(tileCoords.y)
-            }
-
-        end
+    -- Compute affected and obstructing tiles, if required
+    if not self.affected_tiles then
+        self.affected_tiles = self:getAffectedIndices()
     end
 
-    local lightPosition = self.position
+    if not self.obstructing_tiles then
+        self.obstructing_tiles = self:getObstructingIndices()
+    end
 
-    lightPosition.x = lightPosition.x + WORLD_UNIT(1.0) / 2
-    lightPosition.y = lightPosition.y + WORLD_UNIT(1.0) / 2
+    -- Compute light on each affected tile
+    local visited = {}
 
-    -- 2. compute light on each tile
-    for tileIndex, tileCoords in pairs(toVisit) do
+    for tileIndex, tilePosition in pairs(self.affected_tiles) do
 
-        if visited[tileIndex] then break end -- skip if already visited
+        if not visited[tileIndex] then
 
-        local tilePosition = {
-            x = WORLD_UNIT(tileCoords.x),
-            y = WORLD_UNIT(tileCoords.y)
-        }
+          local tile = self.tileEngine:get_tile(TILE_UNIT(tilePosition.x), TILE_UNIT(tilePosition.y))
 
-        -- Is the path to the light obstructed?
-        local isObstructed = false
+          if tile and tile.light then
 
-        local tile = self.tileEngine:get_tile(tileCoords.x, tileCoords.y)
+            -- Is the path to the light obstructed?
+            local isObstructed = false
 
-        if not tile or not tile.light then break end -- no light component
+            --[[ TODO does not work
+            for obstructionIndex, obstructionPosition in pairs(self.obstructing_tiles) do
 
-        for obstructionIndex, obstructionPosition in pairs(obstructions) do
+              -- Does the ray cross through obstruction?
+              isObstructed = LINE_SEGMENT_INTERSECTS_BOX(self.position, tilePosition, obstructionPosition, WORLD_UNIT(1.0), WORLD_UNIT(1.0))
 
-            -- Does the ray cross through obstruction?
-            isObstructed = LINE_SEGMENT_INTERSECTS_BOX(lightPosition, tilePosition, obstructionPosition, 4.0, 4.0)
+              if isObstructed then break end
+            end
+            ]]
 
-            if isObstructed then break end
-        end
+            -- Add light if not obstructed
+            if not isObstructed then
+              local lightIntensity = self:calculateIntensity(tilePosition)
 
-        -- Add light if not obstructed
-        if not isObstructed then
-
-            local lightIntensity = self:calculateIntensity(tilePosition)
-
-            if self.lightType == "static" then
+              if self.lightType == "static" then
                 tile.light:addStaticIntensity(lightIntensity)
-            else -- "dynamic"
+              else -- "dynamic"
                 tile.light:addDynamicIntensity(lightIntensity)
+              end
             end
 
-        end
-
-        visited[tileIndex] = true
-
+            visited[tileIndex] = true
+          end
+        end 
     end
 
-    -- Do not render static light until staticDirtyFlag is true
+    -- Do not render static light until dirtyFlag is true
     if self.lightType == "static" then
-        self.staticDirtyFlag = false
+        self.dirtyFlag = false
     end
-
 end
 
-function OmniLightSource.getTilesToVisit(origin, radius)
+function OmniLightSource:getAffectedIndices()
+  
+    local origin = self.position
+    local radius = self.lightDistance
 
-    local toVisit = {}
+    local tiles = {}
 
     local radius2 = radius * radius
 
     for x = -radius, radius do
         for y = -radius, radius do
-            
             if x * x + y * y <= radius2 then
-
-                local tile_x = TILE_UNIT(math.floor(origin.x + x))
-                local tile_y = TILE_UNIT(math.floor(origin.y + y))
+                local tile_x = TILE_UNIT(origin.x + x)
+                local tile_y = TILE_UNIT(origin.y + y)
                 local tile_index = _I(tile_x, tile_y)
 
-                toVisit[tile_index] = {x = tile_x, y = tile_y} 
-
+                if not tiles[tile_index] then
+                    tiles[tile_index] = {
+                        x = WORLD_UNIT(tile_x),
+                        y = WORLD_UNIT(tile_y)
+                    }
+                end
             end
         end
-
     end
 
-    return toVisit
+    return tiles
+end
+
+function OmniLightSource:getObstructingIndices()
+    if not self.affected_tiles then
+        return {}
+    end
+
+    local obstructions = {}
+
+    for tileIndex, tilePosition in pairs(self.affected_tiles) do
+
+        local tileCoords = {
+            x = TILE_UNIT(tilePosition.x),
+            y = TILE_UNIT(tilePosition.y)
+        }
+
+        local tile = self.tileEngine:get_tile(tileCoords.x, tileCoords.y)
+        
+        if tile and tile.light and tile.light:getObstructsView() then
+            obstructions[tileIndex] = tilePosition 
+        end
+    end
+
+    return obstructions
 end
 
 function OmniLightSource:calculateIntensity(position)
@@ -190,7 +205,7 @@ function OmniLightSource:calculateIntensity(position)
 
     if dist2 > falloff2 and dist2 < zero2 then
         return math.floor(maxIntensity * (1.0 - (dist2 - falloff2) / (zero2 - falloff2)))
-    elseif dist2 > zero2 then
+    elseif dist2 >= zero2 then
         return 0
     else
         return math.floor(maxIntensity)
@@ -214,18 +229,18 @@ end
 --
 
 function LightComponent:new(parent, gfxEngine, options)
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	  local obj = {}
+    setmetatable(obj, self)
+    self.__index = self
 
-	obj.parent = parent
-	obj.gfxEngine = gfxEngine
-	obj.intensity_static = 0
-	obj.intensity_dynamic = 0
-	
+    obj.parent = parent
+    obj.gfxEngine = gfxEngine
+    obj.intensity_static = 0
+    obj.intensity_dynamic = 0
+
     obj.obstructs_view = false
 
-	return obj
+    return obj
 end
 
 function LightComponent:init()
@@ -243,7 +258,7 @@ end
 function LightComponent:getIntensity()
     local intensity = self.intensity_static + self.intensity_dynamic
 
-	return math.max(0, math.min(15, intensity))
+    return math.max(0, math.min(15, intensity))
 end
 
 function LightComponent:getIntensitySprite()
