@@ -1,5 +1,8 @@
 --[[
-	Represents a map
+
+	Represents a playable Map. This brings together the tiles, actors,
+	sounds, physics, etc.
+
 ]]
 require "diresys/utils"
 pp = require "diresys/pp"
@@ -23,10 +26,20 @@ hud = require "diresys/hud"
 local Map = {}
 
 function Map:new(options)
+	--[[
+
+		Instantiates a map
+
+		Optional Arguments:
+
+		/nothing here/
+
+	]]
 	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
-	
+
+	-- Player instance, which is currently playing on the map.
 	obj.currentPlayer = nil
 	obj.viewport = {x=0, y=0}	
 
@@ -44,6 +57,11 @@ function Map:new(options)
 end
 
 function Map:updateViewport()
+	--[[
+
+		Updates the viewport based on the current player's position.
+
+	]]
 	local playerPosition = self.currentPlayer:getPosition()
 	local playerDims = self.currentPlayer:getDimensions()
 	-- viewport needs to be in the center of the player
@@ -59,6 +77,17 @@ function Map:updateViewport()
 end
 
 function Map:draw()
+	--[[
+
+		passed to love.draw. This draws the map, with all of the
+		actors and tiles
+
+		Notes:
+
+		- Note the order of draw calls between the tile engine and the
+          actor engine.
+
+	]]
 	local viewx = self.viewport.x
 	local viewy = self.viewport.y
 
@@ -74,6 +103,11 @@ function Map:draw()
 end
 
 function Map:update(dt)
+	--[[
+
+		Update function passed to love.update.
+
+	]]
 	self.physicsWorld:update(dt)
 	self.tileEngine:update(dt)
 	self.actorEngine:update(dt)
@@ -82,25 +116,60 @@ function Map:update(dt)
 end
 
 function Map:updateLightSources(dt)
+	--[[
+		
+		Passes along love.update() to the Tile Light Components.
+
+	]]
 	for _, lightSource in ipairs(self.lightSourceList) do
 		lightSource:update(dt)
 	end
 end
 
 function Map:getTileList()
+	--[[
+
+		Retrieves the map's list of tiles
+		
+	]]
 	return self.tileEngine.tilemap
 end
 
 function Map:getTile(tilex, tiley)
+	--[[
+
+		Gets a tile at the given tile coordinate. Returns nil if the
+		tile does not exist.
+
+		Notes:
+
+		- More info on this can be found in TileEngine:get_tile
+
+	]]
 	return self.tileEngine:get_tile(tilex, tiley)
 end
 
 function Map:refreshTiles()
+	--[[
+
+		Refreshes all of the tiles on the screen.
+
+		Notes:
+		
+		- This is an expensive operation.
+
+	]]
 	self.tileEngine:reset(1)
 	self.tileEngine:reset(2)
 end
 
 function Map:createFloor(tilex, tiley)
+	--[[
+
+		Create a FloorTile instance, and place it at the provided Tile
+		Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -112,6 +181,12 @@ function Map:createFloor(tilex, tiley)
 end
 
 function Map:createDoor(tilex, tiley)
+	--[[
+
+		Create a DoorTile instance, and place it at the provided Tile
+		Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -123,6 +198,12 @@ function Map:createDoor(tilex, tiley)
 end
 
 function Map:createVerticalDoor(tilex, tiley)
+	--[[
+
+		Create a VerticalDoorTile instance, and place it at the provided Tile
+		Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -134,6 +215,12 @@ function Map:createVerticalDoor(tilex, tiley)
 end
 
 function Map:createWall(tilex, tiley)
+	--[[
+
+		Create a WallTile instance, and place it at the provided Tile
+		Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -145,6 +232,17 @@ function Map:createWall(tilex, tiley)
 end
 
 function Map:createPlayer(tilex, tiley)
+	--[[
+
+		Create an Player instance, and place it at the provided Tile
+		Coordinate.
+
+		Notes:
+
+		- This will also assign the player to the map's
+          self.currentPlayer.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -158,6 +256,12 @@ function Map:createPlayer(tilex, tiley)
 end
 
 function Map:createAlien(tilex, tiley)
+	--[[
+
+		Create an Alien instance, and place it at the provided Tile
+		Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -169,6 +273,12 @@ function Map:createAlien(tilex, tiley)
 end
 
 function Map:createTable(tilex, tiley)
+	--[[
+
+		Creates a TableTile instance, and places it at the provided
+		Tile Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -180,6 +290,12 @@ function Map:createTable(tilex, tiley)
 end
 
 function Map:createPlant(tilex, tiley)
+	--[[
+
+		Creates a PlantTile instance, and places it at the provided
+		Tile Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -191,6 +307,12 @@ function Map:createPlant(tilex, tiley)
 end
 
 function Map:createCloset(tilex, tiley)
+	--[[
+
+		Creates a ClosetTile instance, and places it at the provided
+		Tile Coordinate.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -202,6 +324,17 @@ function Map:createCloset(tilex, tiley)
 end
 
 function Map:createOmniLight(tilex, tiley)
+	--[[
+
+		Creates an OmniLight instance, and places it at the provided
+		Tile Coordinate.
+
+		Notes:
+
+		- This will also assign the light source to the
+          self.lightSourceList.
+
+	]]
 	local position = {
 		x = WORLD_UNIT(tilex),
 		y = WORLD_UNIT(tiley)
@@ -212,6 +345,19 @@ function Map:createOmniLight(tilex, tiley)
 end
 
 function Map.physicsContactBegin(fixtureA, fixtureB)
+	--[[
+
+		This is the callback function for when love.World begins
+		contact between two body fixtures.
+		
+		Tiles and Actors can overload .action_proximity_in in order to
+		change their behaviour for this situation.
+
+		Notes:
+		
+		- Please also look at Tile:action_use and Actor:action_use.
+
+	]]
 	local objecta = fixtureA:getUserData() or nil
 	local objectb = fixtureB:getUserData() or nil
 	
@@ -226,6 +372,15 @@ function Map.physicsContactBegin(fixtureA, fixtureB)
 end
 
 function Map.physicsContactEnd(fixtureA, fixtureB)
+	--[[
+
+		This is the callback function for when love.World ends contact
+		between two body fixtures.
+		
+		Tiles and Actors can overload .action_proximity_out in order to
+		change their behaviour for this situation.
+
+	]]
 	local objecta = fixtureA:getUserData() or nil
 	local objectb = fixtureB:getUserData() or nil
 	
@@ -240,7 +395,15 @@ function Map.physicsContactEnd(fixtureA, fixtureB)
 end
 
 function Map:setBackgroundMusic(asset_name)
+	--[[
 
+		Sets the background music to the asset with the given name
+
+		Keyword Arguments:
+
+		asset_name -- name of the asset within assets.lua
+
+	]]
     self.backgroundMusic = assets.get_music(asset_name)
 	self.backgroundMusic:setVolume(0.5)
 end
