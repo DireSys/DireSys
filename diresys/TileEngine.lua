@@ -6,6 +6,7 @@ config = require "config"
 assets = require "diresys/assets"
 f = require "diresys/func"
 pp = require "diresys/pp"
+shaders = require "diresys/shaders"
 
 local TileEngine = {}
 
@@ -121,8 +122,22 @@ function TileEngine:draw_shadows(viewx, viewy, layer)
 
 	--love.graphics.setColor(0, 0, 0)
 	love.graphics.setBlendMode("darken", "premultiplied")
+
+    local shader = shaders.render_light
+
+    love.graphics.setShader(shader)
+
+    shader:send("scale", 4)
+    shader:send("light_position", {50 * 4, 50 * 4})
+    shader:sendInt("obstruction_count", 2)
+    shader:send("obstruction_bounds", {40 * 4, 40 * 4, 4, 16}, {55 * 4, 50 * 4, 8, 8})
+    shader:send("viewport_offset", {-viewx, -viewy})
+
 	love.graphics.draw(self.tilesetBatch[shadowLayer], viewx, viewy, 0,
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
+
+    love.graphics.setShader()
 end
+
 
 return TileEngine
