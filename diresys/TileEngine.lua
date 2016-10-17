@@ -150,7 +150,7 @@ function TileEngine:draw_shadows(lights, sendLights, viewx, viewy, layer)
                 light_limit = WORLD_UNIT(light:getMaxDistance())
             end
 
-            local obstructing_bounds = light:getObstructingBounds()
+            --local obstructing_bounds = light:getObstructingBounds()
 
             light_positions[#light_positions+1] = { WORLD_UNIT(light_position.x),
                                                     WORLD_UNIT(light_position.y)  }
@@ -158,6 +158,7 @@ function TileEngine:draw_shadows(lights, sendLights, viewx, viewy, layer)
             light_falloffs[#light_falloffs+1] = light_falloff
             light_limits[#light_limits+1] = light_limit
 
+            --[[
             for _, obstruction in ipairs(obstructing_bounds) do
                 obstructions[#obstructions+1] = { 
                     WORLD_UNIT(obstruction.x),
@@ -166,6 +167,7 @@ function TileEngine:draw_shadows(lights, sendLights, viewx, viewy, layer)
                     WORLD_UNIT(obstruction.h)
                 }
             end
+            ]]
         end
 
         shader:send("light_positions", unpack(light_positions))
@@ -173,11 +175,13 @@ function TileEngine:draw_shadows(lights, sendLights, viewx, viewy, layer)
         shader:send("light_limits", unpack(light_limits))
         shader:sendInt("light_count", #light_positions)
 
+        --[[
         if #obstructions > 0 then
             shader:send("obstruction_bounds", unpack(obstructions))
         end
 
         shader:sendInt("obstruction_count", #obstructions)
+        ]]
     end
 
     love.graphics.draw(self.tilesetBatch[shadowLayer], viewx, viewy, 0,
