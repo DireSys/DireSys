@@ -22,11 +22,19 @@ gfx.ActorGraphicsComponent = ActorGraphicsComponent
 function GraphicsComponent:new(parent, gfxEngine)
 	--[[
 
+		Graphics components contain objects within self.graphics,
+		which represent drawn assets on the screen.
+
 		Keyword Arguments:
 
 		parent -- a Tile instance
 
 		gfxEngine -- a GfxEngine instance (TileEngine, ActorEngine)
+
+		Notes:
+
+		- The graphics component comes with two pre-defined graphics
+          called 'foreground' and 'background'
 
 	]]
 	local obj = {}
@@ -46,30 +54,64 @@ end
 
 
 function GraphicsComponent:get(tag)
+	--[[
+
+		Gets a graphic with the given tag name
+
+	]]
 	local graphic = f.find(self.graphics, function(g) return g.tag == tag end)
 	return graphic
 end
 
 function GraphicsComponent:getBackground()
+	--[[
+
+		Get the pre-defined 'background' graphic
+
+	]]
 	return self:get("background")
 end
 
 function GraphicsComponent:getForeground()
+	--[[
+		
+		Get the pre-defined 'foreground' graphic
+		
+	]]
 	return self:get("foreground")
 end
 
 function GraphicsComponent:set(tag, options)
 	--[[
 
+		Keyword Arguments:
+
+		tag -- The tag name of the graphic that you want to modify. If
+		the given graphic with the provided tagname does not exist, it
+		will be created.
+
 		Options:
 
-		key -- the graphics key
+		key -- the graphics key. The key is the name of the sprite in
+		assets.lua.
 
-		layer --  the layer (either 1 or 2)
+		layer -- the layer (either 1 or 2). Layer 1 is drawn first
+		(background) and Layer 2 is drawn last (foreground)
 
-		offset -- the offset of the graphic
+		offset -- the offset of the graphic expressed in tile
+		coordinates.
 
-		index --  the index for graphics on the same layer
+		index -- the index for graphics on the same layer. A higher
+		index is drawn last.
+
+		Notes:
+
+		- this function can be quirky in situations where you want to
+          set values to nil. Please use GraphicsComponent:setKey to
+          remove a key from a graphic.
+
+		- graphics also contain an 'id' which is an identifier for
+          it's quad representation inside of a sprite batch.
 
 	]]
 	assert(type(tag) == "string")
@@ -95,6 +137,11 @@ function GraphicsComponent:set(tag, options)
 end
 
 function GraphicsComponent:redraw()
+	--[[
+
+		Redraws the current graphics component within the tile engine.
+
+	]]
 	self.gfxEngine:redrawSprite(self.parent)
 end
 
@@ -109,6 +156,17 @@ function GraphicsComponent:setForeground(options)
 end
 
 function GraphicsComponent:setKey(tag, key)
+	--[[
+
+		Sets the 'key' property for the provided graphic's tag
+
+		Keyword Argument:
+
+		tag -- The tag for the graphic you wish to modify
+
+		key -- The new key you would like to assign.
+		
+	]]
 	local graphic = self:get(tag)
 	assert(graphic)
 	graphic.key = key
@@ -135,6 +193,22 @@ function GraphicsComponent:setIndex(tag, index)
 end
 
 function GraphicsComponent:getLayer(layer)
+	--[[
+
+		Gets all of the graphics for the specified layer
+
+		Keyword Arguments:
+
+		layer -- The layer of graphics you want [default: 1]
+
+		Notes:
+
+		- Sorts the graphics with respect to the provided index.
+
+		- This will also avoid returning graphics where the key is
+          nil.
+
+	]]
 	local layer = layer or 1
 
 	-- sort by index
@@ -156,10 +230,24 @@ function GraphicsComponent:getLayer(layer)
 end
 
 function GraphicsComponent:getAll()
+	-- Retrieves all graphics, except for graphics where key is nil
 	return f.filter(self.graphics, function(g) return g.key ~= nil end)
 end
 
 function GraphicsComponent:getDimensions(tag)
+	--[[
+
+		Retrieves the graphics dimensions
+
+		Keyword Arguments:
+
+		tag -- If no tag is provided or "*all" is provided, will
+		return the rectangular dimension bounds for the accumulation
+		of graphics that currently make up this graphics
+		component. Otherwise, it will only return the dimensions of
+		the given tagged graphic.
+
+	]]
 	if tag and tag ~= "*all" then
 		return self:getTagDimensions(tag)
 	end
@@ -199,6 +287,16 @@ function GraphicsComponent:getDimensions(tag)
 end
 
 function GraphicsComponent:getTagDimensions(tag)
+	--[[
+
+		Retrieves the dimensions of the graphic with the given tag
+
+		Notes:
+
+		- GraphicsComponent:getDimensions(tag) will call this, if you
+          provide a tag.
+
+	]]
 	local graphic = self:get(tag)
 	if not graphic then
 		print("Failed to find tag " .. tostring(tag))
@@ -227,6 +325,12 @@ function GraphicsComponent:getTagDimensions(tag)
 end
 
 function GraphicsComponent:getTileDimensions(tag)
+	--[[
+
+		The same as GraphicsComponent:getDimensions, but returns the
+		result in Tile coordinates.
+
+	]]
 	local graphic = self:get(tag)
 	local dims = self:getDimensions(tag)
 	if graphic then
@@ -247,6 +351,11 @@ function GraphicsComponent:getTileDimensions(tag)
 end
 
 function GraphicsComponent:getPosition(tag)
+	--[[
+		
+		Gets the position of a graphic in world coordinates
+
+	]]
 	local graphic = self:get(tag)
 	local tilePosition = self.parent:getPosition()
 	if graphic then
@@ -261,11 +370,21 @@ function GraphicsComponent:getPosition(tag)
 end
 
 function GraphicsComponent:setHidden(bool)
+	--[[
+
+		If true, will not draw the graphics within this component.
+		
+	]]
 	self.hidden = bool == nil and false or bool
 	self:redraw()
 end
 
 function GraphicsComponent:isHidden()
+	--[[
+
+		Returns true if the graphics component is currently hidden.
+
+	]]
 	return self.hidden
 end
 
