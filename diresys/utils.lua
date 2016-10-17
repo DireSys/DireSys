@@ -26,69 +26,35 @@ function IFF(cond, t, f)
 
 end
 
-function LINE_SEGMENT_INTERSECTS_BOX(a, b, c, h, w)
+function LINE_SEGMENT_INTERSECTS_BOX( source, target, box )
 
-    -- a and b make up line segment
-    -- c is top-left position of box
-    -- h and w are the height and width of the box
-
-    local bounds = {
-        xmin = math.min(a.x, b.x),
-        xmax = math.max(a.x, b.x),
-        ymin = math.min(a.y, b.y),
-        ymax = math.max(a.y, b.y),
+    local ray_bounds = {
+        x = math.min(target.x, source.x),
+        y = math.min(target.y, source.y),
+        w = math.max(target.x, source.x) - math.min(target.x, source.x),
+        h = math.max(target.y, source.y) - math.min(target.y, source.y)
     }
 
-    local box = {
-        x0 = c.x,
-        x1 = c.x + w,
-        y0 = c.y,
-        y1 = c.y + h,
-    }
-
-    -- Trivial cases
-    if a.x == b.x then
-        -- trivial case: vertical line
-        -- check x bounds on box
-        return (box.x0 < a.x and box.x1 > a.x) and                 -- a.x is between x0 and x1 and
-               ((box.y0 > bounds.ymin and box.y0 < bounds.ymax) or -- y0 or y1 is in bounds
-                (box.y1 > bounds.ymin and box.y1 < bounds.ymax))
-    elseif a.y == b.y then
-        -- trivial case: horizontal line
-        -- check y bounds on box
-        return (box.y0 < a.y and box.y1 > a.y) and                 -- a.y is between y0 and y1 and
-               ((box.x0 > bounds.xmin and box.x0 < bounds.xmax) or -- x0 or x1 is in bounds
-                (box.x1 > bounds.xmin and box.x1 < bounds.xmax))
+    if not BOUNDS_OVERLAP(ray_bounds, box) then
+        return false
     end
 
-    -- Make sure box is partially overlapping line segment bounds
-    if ((box.x0 > bounds.xmin and box.x0 < bounds.xmax) or (box.x1 > bounds.xmin and box.x1 < bounds.xmax)) and -- one vertical edge is in bounds and
-       ((box.y0 > bounds.ymin and box.y0 < bounds.ymax) or (box.y1 > bounds.ymin and box.y1 < bounds.ymax))     -- one horizontal edge is in bounds
-    then
-        -- pass: in bounds
-    else
-        return false -- box not in bounds of line segment
-    end
+    local m = (target.y - source.y) / (target.x - source.x)
 
-    -- non-trivial case: sloped line
-    -- check that all corners are on the same side of line
-    -- make all points relative to "a" because that makes b = 0 in y = mx + b
+    local y0 = m * (box.x - source.x)
+    local y1 = m * (box.x + box.w - source.x)
 
-    local m = (b.y - a.y) / (b.x - a.x)
+    local s = ((box.y - source.y) >= y0)
 
-    -- y values of line at x values of box
-    local y0 = m * (box.x0 - a.x) 
-    local y1 = m * (box.x1 - a.x)
-
-    local sideOfFirstPoint = ((c.y - a.y) > y0)
-
-    if (box.y0 - a.y) > y1 ~= sideOfFirstPoint or
-       (box.y1 - a.y) > y0 ~= sideOfFirstPoint or
-       (box.y1 - a.y) > y1 ~= sideOfFirstPoint
-    then
-        return true -- one point is not on the same side of the line as the others 
-    end
-
-    return false -- all points in box are on the same side of the line
-
+    return ((box.y - source.y) >= y1) ~= s or
+           ((box.y + box.h - source.y) >= y0) ~= s or
+           ((box.y + box.h - source.y) >= y1) ~= s
 end
+
+function BOUNDS_OVERLAP ( a, b )
+    return a.x       < b.x + b.w and
+           a.x + a.w > b.x       and
+           a.y       < b.y + b.h and
+           a.y + a.h > b.y
+end
+

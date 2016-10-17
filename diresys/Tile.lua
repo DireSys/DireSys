@@ -144,10 +144,6 @@ function Tile:redraw()
 	]]
 
 	self.graphics:redraw()
-    
-    if (self.light) then
-        self.light:resetDynamicLight()
-    end
 end
 
 function Tile:getDimensions()

@@ -49,7 +49,9 @@ function Map:new(options)
 								   obj.physicsContactEnd)
 	obj.tileEngine = TileEngine:new(obj.physicsWorld)
 	obj.actorEngine = ActorEngine:new(obj.physicsWorld)
+
 	obj.lightSourceList = {}
+    obj.lightsUpdated = true 
 
     obj.backgroundMusic = nil
 
@@ -67,12 +69,12 @@ function Map:updateViewport()
 	-- viewport needs to be in the center of the player
 	self.viewport.x = (-playerPosition.x +
 						   config.WINDOW_WIDTH/2 - playerDims.w/2) *
-		config.WINDOW_SCALE
+                           config.WINDOW_SCALE
 	self.viewport.x = math.floor(self.viewport.x)
 
 	self.viewport.y = (-playerPosition.y +
 						   config.WINDOW_HEIGHT/2 - playerDims.h/2) *
-		config.WINDOW_SCALE
+                           config.WINDOW_SCALE
 	self.viewport.y = math.floor(self.viewport.y)
 end
 
@@ -95,11 +97,16 @@ function Map:draw()
         self.backgroundMusic:play()
     end
 
+    local lights = self.lightSourceList
+    local sendLights = self.lightsUpdated
+
 	self.tileEngine:draw_tiles(viewx, viewy, 1)
 	self.actorEngine:draw_actors(viewx, viewy, 1)
 	self.tileEngine:draw_tiles(viewx, viewy, 2)
-	self.tileEngine:draw_shadows(viewx, viewy, 3)
+	self.tileEngine:draw_shadows(lights, sendLights, viewx, viewy, 3)
 	hud.draw()
+
+    self.lightsUpdated = false
 end
 
 function Map:update(dt)
@@ -121,8 +128,11 @@ function Map:updateLightSources(dt)
 		Passes along love.update() to the Tile Light Components.
 
 	]]
+    self.lightsUpdated = false
+
 	for _, lightSource in ipairs(self.lightSourceList) do
 		lightSource:update(dt)
+        self.lightsUpdated = self.lightsUpdated or lightSource:hasChanged()
 	end
 end
 
@@ -341,6 +351,7 @@ function Map:createOmniLight(tilex, tiley)
 	}
 	local omniLight = lights.OmniLightSource:new(self.tileEngine, {position=position})
 	table.insert(self.lightSourceList, omniLight)
+    self.lightsUpdated = true
 	return omniLight
 end
 

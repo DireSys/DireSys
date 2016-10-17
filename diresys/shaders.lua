@@ -113,16 +113,17 @@ shaders.test_radial_shader_fixed = love.graphics.newShader[[
     }
 ]]
 
-shaders.render_light = love.graphics.newShader[[
+shaders.render_lights = love.graphics.newShader[[
     extern number scale;
     extern vec2 viewport_offset;
 
-    extern vec2 light_position;
     extern int obstruction_count = 0;
-    extern vec4 obstruction_bounds[64];
+    extern vec4 obstruction_bounds[256];
 
-    extern number light_falloff = 16;
-    extern number light_limit = 256;
+    extern int light_count = 0;
+    extern vec2 light_positions[16];
+    extern number light_falloffs[16];
+    extern number light_limits[16];
 
     /*
         Naive check that "point" is inside "bounds"
@@ -138,6 +139,7 @@ shaders.render_light = love.graphics.newShader[[
                && point.y <= bounds.w;
     }
 
+    
     /*
         Naive check that a and b overlap.
 
@@ -146,14 +148,10 @@ shaders.render_light = love.graphics.newShader[[
     */
     bool bounds_overlap( vec4 a, vec4 b )
     {
-        return point_in_bounds(a.xy, b) ||
-               point_in_bounds(a.zw, b) ||
-               point_in_bounds(a.xz, b) ||
-               point_in_bounds(a.yw, b) ||
-               point_in_bounds(b.xy, a) ||
-               point_in_bounds(b.zw, a) ||
-               point_in_bounds(b.xz, a) ||
-               point_in_bounds(b.yw, a);
+        return a.x < b.z &&
+               a.z > b.x &&
+               a.y < b.w &&
+               a.w > b.y;
     }
 
     /*
@@ -202,29 +200,26 @@ shaders.render_light = love.graphics.newShader[[
     /*
         Computes light intensity given pixel and light (world) positions.
     */
-    number calculate_intensity( vec2 light_position, vec2 pixel_position ) {
+    number calculate_intensity( vec2 target_position, vec2 source_position, number light_falloff, number light_limit  ) {
 
-        vec2 position = pixel_position - light_position;
+        vec2 offset = target_position - source_position;
 
-        position /= scale * scale;
-        position = floor(position);
-        position *= scale * scale;
+        offset /= scale * scale;
+        offset = floor(offset);
+        offset *= scale * scale;
 
         number intensity = 0;
 
-        number radius_inner2 = light_falloff * light_falloff;
-        number radius_outer2 = light_limit * light_limit;
+        number light_falloff2 = light_falloff * light_falloff;
+        number light_limit2 = light_limit * light_limit;
 
-        number dist2 = position.x * position.x
-                       + position.y * position.y;
+        number dist2 = offset.x * offset.x + offset.y * offset.y;
 
-        if (dist2 <= radius_inner2)
+        if (dist2 <= light_falloff2)
             intensity = 1;
-        else if (dist2 > radius_inner2 && dist2 <= radius_outer2)
-            intensity = 1.0 - (dist2 - radius_inner2) / (radius_outer2 - radius_inner2);
+        else if (dist2 > light_falloff2 && dist2 <= light_limit2)
+            intensity = 1.0 - (dist2 - light_falloff2) / (light_limit2 - light_falloff2);
 
-        intensity = ceil(15 * intensity) / 15;
-        
         return intensity;
     }
 
@@ -233,38 +228,67 @@ shaders.render_light = love.graphics.newShader[[
     */
     vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ) {
 
+        bool draw_debug = false;
+
+        // Resultant pixel intensity
+        number intensity = 0;
+
         // Calculate pixel position
         vec2 pixel_position = screen_coords + viewport_offset;
 
-        // Calculate blockedness
-        bool blocked = false;
+        // Integrate intensities
+        for (int l = 0; l < light_count; l++) {
 
-        for (int o = 0; o < obstruction_count; o++) {
-            vec4 box = obstruction_bounds[o];
+            vec2 light_position = light_positions[l];
+            number light_falloff = light_falloffs[l];
+            number light_limit = light_limits[l];
 
-            if (line_intersects_box(light_position, pixel_position, box)) {
-                blocked = true;
-                break;
+            // Alias light position for effect
+            light_position = floor(light_position * scale) / scale;
+
+            // Calculate blockedness of light
+            bool blocked = false;
+
+            for (int o = 0; o < obstruction_count; o++) {
+                vec4 box = obstruction_bounds[o];
+
+                if (point_in_bounds(pixel_position, box)) {
+                    draw_debug = true;
+                }
+
+                if (line_intersects_box(light_position, pixel_position, box)) {
+                    blocked = true;
+                    break;
+                }
+            }
+
+            // Add intensity contribution
+            if (!blocked) {
+                intensity += calculate_intensity(pixel_position, light_position, light_falloff, light_limit);
+            }
+            else {
+                intensity += 0; // TODO "blocked" intensity ?
             }
         }
 
-        // Calculate intensity
-        number intensity;
-        
-        if (!blocked) {
-            intensity = calculate_intensity(light_position, pixel_position);
-        }
-        else {
-            intensity = 0; // TODO "blocked" intensity ?
-        }
+        // Clamp intensity
+        intensity = clamp(intensity, 0, 1);
+
+        // Alias intensity for effect
+        intensity = ceil(intensity * 15) / 15;
 
         // Apply intensity to current pixel
-        vec4 pixel = Texel(texture, texture_coords);
-        pixel.r = color.r * intensity;
-        pixel.g = color.g * intensity;
-        pixel.b = color.b * intensity;
+        if (draw_debug){
+            return vec4(1,0,0,255);
+        }
+        else {
+            vec4 pixel = Texel(texture, texture_coords);
+            pixel.r = color.r * intensity;
+            pixel.g = color.g * intensity;
+            pixel.b = color.b * intensity;
 
-        return pixel;
+            return pixel;
+        }
     }
 ]]
 

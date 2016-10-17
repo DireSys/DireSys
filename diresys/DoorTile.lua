@@ -14,6 +14,7 @@ function DoorTile:new(parent, physics_world, options)
 	obj.graphics:setForeground({key="hdoor_upper0"})
 	obj.graphics:setBackground({key="hdoor_lower0", offset={0, 1}})
 
+    -- Obstructs light
     obj.light:setObstructsView(true)
 
 	-- set several floor tiles under the door

@@ -13,9 +13,6 @@ function VerticalDoorTile:new(parent, physics_world, options)
 	local obj = Tile:new(parent, physics_world, options)
 	obj.type = "doortile"
 
-    -- will block light
-    obj.light:setObstructsView(true)
-
 	-- force it to look like empty space
 	obj.bounds_type = "empty"
 

@@ -16,6 +16,8 @@ function FloorTile:new(parent, physics_world, options)
 	-- Physics
 	obj.physics:setEnabled(false)
 
+    -- Light
+
 	return obj
 end
 

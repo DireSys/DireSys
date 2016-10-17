@@ -12,6 +12,9 @@ function WallTile:new(parent, physics_world, options)
 	obj.type = "walltile"
 	obj.bounds_type = "wall"
 
+    -- Obstructs light
+    obj.light:setObstructsView(true)
+
 	-- Methods
 	obj.updateBounds = WallTile.updateBounds
 
@@ -21,9 +24,6 @@ function WallTile:new(parent, physics_world, options)
 	-- Physics
 	obj.physics:setCollidable(true)
 	obj.physics:setUseable(false)
-
-    -- Light
-    obj.light:setObstructsView(true) -- will block light
 
 	return obj
 end

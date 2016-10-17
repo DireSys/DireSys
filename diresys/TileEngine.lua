@@ -112,7 +112,7 @@ function TileEngine:draw_tiles(viewx, viewy, layer)
 					   config.WINDOW_SCALE, config.WINDOW_SCALE)
 end
 
-function TileEngine:draw_shadows(viewx, viewy, layer)
+function TileEngine:draw_shadows(lights, sendLights, viewx, viewy, layer)
 	local shadowLayer = layer or 3
 
 	if self.resetDirtyFlag[shadowLayer] then
@@ -123,18 +123,65 @@ function TileEngine:draw_shadows(viewx, viewy, layer)
 	--love.graphics.setColor(0, 0, 0)
 	love.graphics.setBlendMode("darken", "premultiplied")
 
-    local shader = shaders.render_light
+    local shader = shaders.render_lights
 
     love.graphics.setShader(shader)
 
     shader:send("scale", 4)
-    shader:send("light_position", {50 * 4, 50 * 4})
-    shader:sendInt("obstruction_count", 2)
-    shader:send("obstruction_bounds", {40 * 4, 40 * 4, 4, 16}, {55 * 4, 50 * 4, 8, 8})
     shader:send("viewport_offset", {-viewx, -viewy})
 
-	love.graphics.draw(self.tilesetBatch[shadowLayer], viewx, viewy, 0,
-					   config.WINDOW_SCALE, config.WINDOW_SCALE)
+    if sendLights then
+
+        -- for each light...
+        local light_positions = {}
+        local light_falloffs = {}
+        local light_limits = {}
+        local obstructions = {}
+
+        for _, light in ipairs(lights) do
+
+            local light_position = light:getPosition()
+
+            local light_falloff = 0
+            local light_limit = 0
+
+            if light.getFalloffDistance and light.getMaxDistance then
+                light_falloff = WORLD_UNIT(light:getFalloffDistance())
+                light_limit = WORLD_UNIT(light:getMaxDistance())
+            end
+
+            local obstructing_bounds = light:getObstructingBounds()
+
+            light_positions[#light_positions+1] = { WORLD_UNIT(light_position.x),
+                                                    WORLD_UNIT(light_position.y)  }
+
+            light_falloffs[#light_falloffs+1] = light_falloff
+            light_limits[#light_limits+1] = light_limit
+
+            for _, obstruction in ipairs(obstructing_bounds) do
+                obstructions[#obstructions+1] = { 
+                    WORLD_UNIT(obstruction.x),
+                    WORLD_UNIT(obstruction.y),
+                    WORLD_UNIT(obstruction.w),
+                    WORLD_UNIT(obstruction.h)
+                }
+            end
+        end
+
+        shader:send("light_positions", unpack(light_positions))
+        shader:send("light_falloffs", unpack(light_falloffs))
+        shader:send("light_limits", unpack(light_limits))
+        shader:sendInt("light_count", #light_positions)
+
+        if #obstructions > 0 then
+            shader:send("obstruction_bounds", unpack(obstructions))
+        end
+
+        shader:sendInt("obstruction_count", #obstructions)
+    end
+
+    love.graphics.draw(self.tilesetBatch[shadowLayer], viewx, viewy, 0,
+                       config.WINDOW_SCALE, config.WINDOW_SCALE)
 
     love.graphics.setShader()
 end
