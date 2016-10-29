@@ -6,18 +6,44 @@
 
 local func = {}
 
-func.range = function(s, e, inc)
+func.range = function(startIndex, endIndex, increment)
+	--[[
+		
+		Keyword Arguments:
+
+		startIndex -- start index
+		
+		endIndex -- end index
+	
+		increment -- the increment of the range [default: 1]
+
+	]]
 	local t = {}
-	local index = 1;
-	inc = inc or 1
-	for i = s,e,inc do
+	index = 1
+	increment = increment or 1
+	for i = startIndex, endIndex, increment do
 		table.insert(t, index, i)
 		index = index + 1
 	end
 	return t
 end
 
-func.map = function(t, f) 
+func.map = function(t, f)
+	--[[
+
+		Keyword Arguments:
+
+		t -- array of elements
+
+		f -- transformation function of the form f(element), where
+		element is every element in 't', and the return value is what
+		that element is transformed into.
+
+		Return Value:
+
+		New array table with each element of 't' transformed by 'f'
+		
+	]]
 	local resultTable = {}
 	for i,v in ipairs(t) do
 		resultTable[i] = f(v)
@@ -26,6 +52,23 @@ func.map = function(t, f)
 end
 
 func.filter = function(t, f)
+	--[[
+
+		Keyword Arguments:
+
+		t -- array of elements
+
+		f -- conditional function of the form f(element), where the
+		return value is whether the given element should remain in the
+		array. Where true would keep the value in the array returned,
+		and false will remove the value from the returned array.
+
+		Return Value:
+
+		New array table with each element of 't' filtered by the
+		conditional function 'f'
+
+	]]
 	local resultTable = {}
 	for i,v in ipairs(t) do
 		if f(v) then 
@@ -36,6 +79,16 @@ func.filter = function(t, f)
 end
 
 func.reduce = function(t, f)
+	--[[
+
+		Keyword Arguments:
+
+		t -- an array of elements
+
+		f -- a reduction function of the form f(a, b), where the
+		entire array of elements is consumed from 'b' into 'a'.
+
+	]]
 	local result = t[1]
 	for _,v in ipairs(func.rest(t)) do
 		result = f(result, v)
@@ -44,6 +97,21 @@ func.reduce = function(t, f)
 end
 
 func.find = function(t, f)
+	--[[
+
+		Keyword Argument:
+
+		t -- array of elements
+
+		f -- function of the form f(element), which returns True if
+		the functions condition is true.
+
+		Return Value:
+
+		Returns the first element within 't' which is conditionally
+		true when iterating over 't' with 'f'
+
+	]]
 	for i,v in ipairs(t) do
 		if f(v) then
 			return v
@@ -53,6 +121,7 @@ func.find = function(t, f)
 end
 
 func.findall = function(t, f)
+	-- Same as func.filter
 	local resultTable = {}
 	for i,v in ipairs(t) do
 		if f(v) then
@@ -63,6 +132,20 @@ func.findall = function(t, f)
 end
 
 func.contains = function(t, val)
+	--[[
+		
+		Keyword Arguments:
+		
+		t -- Array of elements
+
+		val -- the value we are determining whether it exists in 't'
+
+		Return Value:
+
+		Returns true if 'val' exists within the array of elements 't',
+		otherwise false.
+
+	]]
 	for i,v in ipairs(t) do
 		if v == val then
 			return true
