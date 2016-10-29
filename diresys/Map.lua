@@ -5,6 +5,7 @@
 
 ]]
 require "diresys/utils"
+class = require "diresys/class"
 pp = require "diresys/pp"
 config = require "config"
 f = require "diresys/func"
@@ -23,7 +24,7 @@ Alien = require "diresys/Alien"
 lights = require "diresys/lights"
 hud = require "diresys/hud"
 
-local Map = {}
+local Map = class.create()
 
 function Map:new(options)
 	--[[
@@ -35,9 +36,7 @@ function Map:new(options)
 		/nothing here/
 
 	]]
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	-- Player instance, which is currently playing on the map.
 	obj.currentPlayer = nil

@@ -2,21 +2,19 @@
 	Represents a Wall Tile
 ]]
 
+class = require "diresys/class"
 Tile = require "diresys/Tile"
 
-local WallTile = {}
+local WallTile = class.create(Tile)
 
 function WallTile:new(parent, physics_world, options)
-	local obj = Tile:new(parent, physics_world, options)
+	local obj = Tile.new(self, parent, physics_world, options)
 	obj.options = options or {}
 	obj.type = "walltile"
 	obj.bounds_type = "wall"
 
     -- Obstructs light
     obj.light:setObstructsView(true)
-
-	-- Methods
-	obj.updateBounds = WallTile.updateBounds
 
 	-- Graphics
 	obj.graphics:setBackground({key="wall_____", redraw=false})

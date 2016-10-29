@@ -6,15 +6,16 @@
 ]]
 require "diresys/utils"
 config = require "config"
+class = require "diresys/class"
 pp = require "diresys/pp"
 f = require "diresys/func"
 assets = require "diresys/assets"
 
 local phys = {}
 
-local PhysicsComponent = {}
-local TilePhysicsComponent = {}
-local ActorPhysicsComponent = {}
+local PhysicsComponent = class.create()
+local TilePhysicsComponent = class.create(PhysicsComponent)
+local ActorPhysicsComponent = class.create(PhysicsComponent)
 
 phys.TilePhysicsComponent = TilePhysicsComponent
 phys.ActorPhysicsComponent = ActorPhysicsComponent
@@ -29,9 +30,7 @@ function PhysicsComponent:new(parent, physicsWorld)
 		physicsWorld -- a love.World instance
 
 	]]
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 	obj.parent = parent
 	obj.physicsWorld = physicsWorld
 	
@@ -154,12 +153,12 @@ function PhysicsComponent:destroy()
 end
 
 function TilePhysicsComponent:new(parent, physicsWorld)
-	local obj = PhysicsComponent:new(parent, physicsWorld)
+	local obj = PhysicsComponent.new(self, parent, physicsWorld)
 	return obj
 end
 
 function ActorPhysicsComponent:new(parent, physicsWorld)
-	local obj = PhysicsComponent:new(parent, physicsWorld)
+	local obj = PhysicsComponent.new(self, parent, physicsWorld)
 	obj.bodytype = "dynamic"
 	obj.enabled = true
 	obj.collidable = true

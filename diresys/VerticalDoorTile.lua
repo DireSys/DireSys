@@ -2,28 +2,20 @@
 	A Vertical Door Tile
 ]]
 config = require "config"
+class = require "diresys/class"
 assets = require "diresys/assets"
 f = require "diresys/func"
 Tile = require "diresys/Tile"
 anim = require "diresys/anim"
 
-local VerticalDoorTile = {}
+local VerticalDoorTile = class.create(Tile)
 
 function VerticalDoorTile:new(parent, physics_world, options)
-	local obj = Tile:new(parent, physics_world, options)
+	local obj = Tile.new(self, parent, physics_world, options)
 	obj.type = "doortile"
 
 	-- force it to look like empty space
 	obj.bounds_type = "empty"
-
-	-- Methods
-	obj.update = VerticalDoorTile.update
-	obj.action_use = VerticalDoorTile.action_use
-	obj.openDoor = VerticalDoorTile.openDoor
-	obj.closeDoor = VerticalDoorTile.closeDoor
-	obj.toggleDoor = VerticalDoorTile.toggleDoor
-	obj.handleClosed = VerticalDoorTile.handleClosed
-	obj.handleOpened = VerticalDoorTile.handleOpened
 
 	-- Graphics
 	obj.graphics:setBackground({key="vdoor_upper0"})

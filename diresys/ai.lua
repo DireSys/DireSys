@@ -5,9 +5,10 @@
 	simple actions.
 
 ]]
+class = require "diresys/class"
 
 local ai = {}
-local StateMachine = {}
+local StateMachine = class.create()
 
 function StateMachine:new(parent, options)
 	--[[
@@ -32,9 +33,7 @@ function StateMachine:new(parent, options)
 		means of transition.
 
 	]]
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	obj.parent = parent
 	obj.options = options or {}

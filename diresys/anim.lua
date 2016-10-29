@@ -1,11 +1,12 @@
 --[[
 	For Actor and Tile Animations
 ]]
+class = require "diresys/class"
 pp = require "diresys/pp"
 
 local anim = {}
 
-local Animation = {}
+local Animation = class.create()
 
 function Animation:new(frames, options)
 	--[[
@@ -34,9 +35,7 @@ function Animation:new(frames, options)
 		returned. [default: nil]
 
 	]]
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	obj.type = "animation"
 	obj.options = options or {}
@@ -108,12 +107,10 @@ function Animation:reset()
 	self.currentInterval = 0.0
 end
 
-local AnimationBatch = {}
+local AnimationBatch = class.create()
 
 function AnimationBatch:new(parent)
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 	obj.type = "animationbatch"
 	obj.parent = parent
 	obj.animations = {}

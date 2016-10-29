@@ -13,9 +13,7 @@ assets = require "diresys/assets"
 local ActorEngine = class.create()
 
 function ActorEngine:new(physics_world, options)
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	obj.type = "actorengine"
 	obj.resetDirtyFlag = {false, false}

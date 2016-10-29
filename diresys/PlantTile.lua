@@ -2,18 +2,15 @@
 	Plant Tile
 ]]
 config = require "config"
+class = require "diresys/class"
 f = require "diresys/func"
 Tile = require "diresys/Tile"
 
-local PlantTile = {}
+local PlantTile = class.create(Tile)
 
 function PlantTile:new(parent, physicsWorld, options)
-	local obj = Tile:new(parent, physicsWorld, options)
+	local obj = Tile.new(self, parent, physicsWorld, options)
 	obj.type = "planttile"
-
-	-- Methods
-	obj.update = PlantTile.update
-	obj.action_use = PlantTile.action_use
 
 	-- Graphics
 	obj.graphics:setForeground({key="plant_upper0", offset={0, -1}})
@@ -25,18 +22,10 @@ function PlantTile:new(parent, physicsWorld, options)
 
 	-- Physics
 	obj.physics:setCollidable(true)
-	obj.physics:setUseable(true)
+	--obj.physics:setUseable(true)
 	obj.physics:setMainBounds(4, 2, 8, 4)
 
 	return obj
-end
-
-function PlantTile:update(dt)
-
-end
-
-function PlantTile:action_use()
-
 end
 
 return PlantTile

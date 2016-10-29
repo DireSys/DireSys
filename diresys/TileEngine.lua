@@ -12,9 +12,7 @@ shaders = require "diresys/shaders"
 local TileEngine = class.create()
 
 function TileEngine:new(options)
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	obj.type = "tileengine"
 	obj.tilemap = {}

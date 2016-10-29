@@ -6,15 +6,16 @@
 ]]
 require "diresys/utils"
 config = require "config"
+class = require "diresys/class"
 pp = require "diresys/pp"
 f = require "diresys/func"
 assets = require "diresys/assets"
 
 local gfx = {}
 
-local GraphicsComponent = {}
-local TileGraphicsComponent = {}
-local ActorGraphicsComponent = {}
+local GraphicsComponent = class.create()
+local TileGraphicsComponent = class.create(GraphicsComponent)
+local ActorGraphicsComponent = class.create(GraphicsComponent)
 
 gfx.TileGraphicsComponent = TileGraphicsComponent
 gfx.ActorGraphicsComponent = ActorGraphicsComponent
@@ -37,9 +38,7 @@ function GraphicsComponent:new(parent, gfxEngine)
           called 'foreground' and 'background'
 
 	]]
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	obj.hidden = false
 	obj.parent = parent
@@ -389,12 +388,12 @@ function GraphicsComponent:isHidden()
 end
 
 function TileGraphicsComponent:new(parent, gfxEngine)
-	local obj = GraphicsComponent:new(parent, gfxEngine)
+	local obj = GraphicsComponent.new(self, parent, gfxEngine)
 	return obj
 end
 
 function ActorGraphicsComponent:new(parent, gfxEngine)
-	local obj = GraphicsComponent:new(parent, gfxEngine)
+	local obj = GraphicsComponent.new(self, parent, gfxEngine)
 	return obj
 end
 

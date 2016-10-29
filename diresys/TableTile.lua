@@ -2,18 +2,15 @@
 	Table Tile
 ]]
 config = require "config"
+class = require "diresys/class"
 f = require "diresys/func"
 Tile = require "diresys/Tile"
 
-local TableTile = {}
+local TableTile = class.create(Tile)
 
 function TableTile:new(parent, physicsWorld, options)
-	local obj = Tile:new(parent, physicsWorld, options)
+	local obj = Tile.new(self, parent, physicsWorld, options)
 	obj.type = "tabletile"
-
-	-- Methods
-	obj.update = TableTile.update
-	obj.action_use = TableTile.action_use
 
 	-- Graphics
 	obj.graphics:setForeground({key="table_upper0", offset={0, -1}})
@@ -29,7 +26,7 @@ function TableTile:new(parent, physicsWorld, options)
 
 	-- Physics
 	obj.physics:setCollidable(true)
-	obj.physics:setUseable(true)
+	--obj.physics:setUseable(true)
 	obj.physics:setMainBounds(6, 4, 12, 8)
 
 	return obj
