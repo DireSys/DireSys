@@ -129,6 +129,29 @@ test_func.test_sortby = function()
 	test.assert(x ~= sorted, "test sorted make sure we retain immutability")
 end
 
+test_func.test_thrf_1 = function()
+	local x = {1, 2, 3, 4}
+	local result = f.thrf{
+		x,
+		{f.filter, function(i) return i % 2 == 0 end},
+		{f.reduce, function(a, b) return a + b end},
+	}
+	test.assert(result == 6, "threading first test 1")
+end
+
+test_func.test_thrf_2 = function()
+	local x = {1, 2, 3, 4}
+	local sum = function(t)
+		return f.reduce(t, function(a, b) return a + b end)
+	end
+	
+	local isOdd = function(i) return i % 2 ~= 0 end
+
+	local result = f.thrf{x, {f.filter, isOdd}, sum}
+
+	test.assert(result == 4, "threading first test 2")
+end
+
 test_func.test_lineIntersect = function()
 
 end

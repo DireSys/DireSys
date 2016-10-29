@@ -172,6 +172,10 @@ func.first = function(t)
 	return t[1]
 end
 
+func.second = function(t)
+	return t[2]
+end
+
 func.rest = function(t)
 	local resultTable = {}
 	for i=2,#t do
@@ -237,6 +241,27 @@ func.declass = function(f, obj)
 		local obj = obj
 		return f(obj, unpack(arg)) 
 	end
+end
+
+func.thrf = function(t)
+	--[[
+
+		Clojure Threading function (->)
+
+	]]
+	local result = f.first(t)
+	for _, v in ipairs(f.rest(t)) do
+		if type(v) == "table" then
+			local func = f.first(v)
+			local args = f.rest(v)
+			result = func(result, unpack(args))
+		elseif type(v) == "function" then
+			result = v(result)
+		else
+			error("unhandled type")
+		end
+	end
+	return result
 end
 
 return func
