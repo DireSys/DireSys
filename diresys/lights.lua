@@ -2,35 +2,29 @@
 	For controlling light intensities
 ]]
 assets = require "diresys/assets"
+class = require "diresys/class"
 f = require "diresys/func"
 utils = require "diresys/utils"
 pp = require "diresys/pp"
 
 local lights = {}
 
-local LightSource = {}
-local OmniLightSource = {}
-local DirectionalLightSource = {}
+local LightSource = class.create()
+local OmniLightSource = class.create(LightSource)
+local DirectionalLightSource = class.create(LightSource)
 lights.LightSource = LightSource
 lights.OmniLightSource = OmniLightSource
 lights.DirectionalLightSource = DirectionalLightSource
-local LightComponent = {}
+local LightComponent = class.create()
 lights.LightComponent = LightComponent
 
 function LightSource:new(gfxEngine, options)
-    local obj = {}
-    setmetatable(obj, self)
-    self.__index = self
+    local obj = self:classInit()
     obj.options = options or {}
     obj.position = obj.options.position or {x=0.0, y=0.0}
 
-    obj.setPosition = LightSource.setPosition
-    obj.getPosition = LightSource.getPosition
-
     obj.tileEngine = gfxEngine
     obj.dirtyFlag = true
-
-    obj.hasChanged = LightSource.hasChanged
 
     return obj
 end
@@ -58,25 +52,12 @@ end
 --
 
 function OmniLightSource:new(gfxEngine, options)
-    local obj = LightSource:new(gfxEngine, options)
-    obj.update = OmniLightSource.update
-    obj.calculateIntensity = OmniLightSource.calculateIntensity
-    obj.getAffectedTiles = OmniLightSource.getAffectedTiles
-    obj.getObstructingBounds = OmniLightSource.getObstructingBounds
+    local obj = LightSource.new(self, gfxEngine, options)
 
     obj.lightDistance = options.lightDistance or 32 -- world units? tile units?
     obj.lightFalloff = options.lightFalloff or 8   -- world units? tile units?
 
-    obj.setMaxDistance = OmniLightSource.setMaxDistance
-    obj.getMaxDistance = OmniLightSource.getMaxDistance
-
-    obj.setFalloffDistance = OmniLightSource.setFalloffDistance
-    obj.getFalloffDistance = OmniLightSource.getFalloffDistance
-
     obj.obstructing_bounds = nil
-    obj.computeObstructingBounds = OmniLightSource.computeObstructingBounds
-    obj.getObstructingBounds = OmniLightSource.getObstructingBounds
-
 
     return obj
 end
@@ -200,8 +181,7 @@ function OmniLightSource:getMaxDistance()
 end
 
 function DirectionalLightSource:new(gfxEngine, options)
-	local obj = LightSource:new(gfxEngine, options)
-	obj.Update = DirectionalLightSource.update
+	local obj = LightSource.new(self, gfxEngine, options)
 
 	return obj
 end
@@ -215,9 +195,7 @@ end
 --
 
 function LightComponent:new(parent, gfxEngine, options)
-    local obj = {}
-    setmetatable(obj, self)
-    self.__index = self
+    local obj = self:classInit()
 
     obj.parent = parent
     obj.gfxEngine = gfxEngine

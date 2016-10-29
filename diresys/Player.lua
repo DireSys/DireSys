@@ -77,7 +77,6 @@ function Player:new(parent, physicsWorld, options)
 end
 
 function Player:init_physics()
-	print("Player Init Physics")
 	local dims = self:getDimensions()
 	local rectwidth = dims.w - 2
 	local rectheight = dims.h / 2
