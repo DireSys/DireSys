@@ -2,23 +2,19 @@
 	Represents the Player
 ]]
 config = require "config"
+class = require "diresys/class"
 Actor = require "diresys/Actor"
 
-local Player = {}
+local Player = class.create(Actor)
 
 function Player:new(parent, physicsWorld, options)
-	local obj = Actor:new(parent, physicsWorld, options)
+	local obj = Actor.new(self, parent, physicsWorld, options)
 	obj.type = "player"
 	obj.parent_type = "actor"
 
 
     -- Vision
-    obj.setLight = Player.setLight 
     obj.light = nil
-
-	-- Methods
-	obj.init_physics = Player.init_physics
-	obj.update = Player.update
 
 	-- Graphics
 	obj.graphics:setBackground({key="player_idle_DR_0"})
@@ -33,7 +29,6 @@ function Player:new(parent, physicsWorld, options)
         left = false,
         right = true,
     }
-    
 
 	-- Animations
     
@@ -82,6 +77,7 @@ function Player:new(parent, physicsWorld, options)
 end
 
 function Player:init_physics()
+	print("Player Init Physics")
 	local dims = self:getDimensions()
 	local rectwidth = dims.w - 2
 	local rectheight = dims.h / 2

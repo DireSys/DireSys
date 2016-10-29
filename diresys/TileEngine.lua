@@ -2,13 +2,14 @@
 	The tiling engine
 ]]
 require "diresys/utils"
+class = require "diresys/class"
 config = require "config"
 assets = require "diresys/assets"
 f = require "diresys/func"
 pp = require "diresys/pp"
 shaders = require "diresys/shaders"
 
-local TileEngine = {}
+local TileEngine = class.create()
 
 function TileEngine:new(options)
 	local obj = {}

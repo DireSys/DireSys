@@ -2,13 +2,14 @@
 	Horizontal Door Tile
 ]]
 config = require "config"
+class = require "diresys/class"
 f = require "diresys/func"
 Tile = require "diresys/Tile"
 
-local DoorTile = {}
+local DoorTile = class.create(Tile)
 
 function DoorTile:new(parent, physics_world, options)
-	local obj = Tile:new(parent, physics_world, options)
+	local obj = Tile.new(self, parent, physics_world, options)
 	obj.type = "doortile"
 	obj.bounds_type = "wall"
 	obj.graphics:setForeground({key="hdoor_upper0"})
@@ -24,16 +25,6 @@ function DoorTile:new(parent, physics_world, options)
 	obj.graphics:set("tile11", {key="floor0", offset={1,1}})
 	obj.graphics:set("tile20", {key="floor0", offset={2,0}})
 	obj.graphics:set("tile21", {key="floor0", offset={2,1}})
-
-	obj.init_physics = DoorTile.init_physics
-	obj.update = DoorTile.update
-	obj.action_use = DoorTile.action_use
-
-	-- Door Animation Functions
-	obj.openDoor = DoorTile.openDoor
-	obj.closeDoor = DoorTile.closeDoor
-	obj.toggleDoor = DoorTile.toggleDoor
-	obj.updateDoor = DoorTile.updateDoor
 
 	obj.animation = {
 		cycle_interval = 0.4,

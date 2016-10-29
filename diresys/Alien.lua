@@ -2,6 +2,7 @@
 	Represents the Alien
 ]]
 config = require "config"
+class = require "diresys/class"
 Actor = require "diresys/Actor"
 ai = require "diresys/ai"
 random = require "diresys/random"
@@ -9,17 +10,12 @@ pp = require "diresys/pp"
 f = require "diresys/func"
 pathfinding = require "diresys/pathfinding"
 
-local Alien = {}
+local Alien = class.create(Actor)
 
 function Alien:new(parent, physicsWorld, options)
-	local obj = Actor:new(parent, physicsWorld, options)
+	local obj = Actor.new(self, parent, physicsWorld, options)
 	obj.type = "alien"
 	obj.parent_type = "actor"
-
-	-- Methods
-	obj.init_physics = Alien.init_physics
-	obj.update = Alien.update
-	obj.checkPlayerProximity = Alien.checkPlayerProximity
 
 	-- Graphics
 	obj.graphics:setBackground({key="alien_idle_DR_0"})

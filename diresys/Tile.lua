@@ -12,13 +12,14 @@
 ]]
 require "diresys/utils"
 config = require "config"
+class = require "diresys/class"
 f = require "diresys/func"
 assets = require "diresys/assets"
 gfx = require "diresys/gfx"
 phys = require "diresys/phys"
 lights = require "diresys/lights"
 
-local Tile = {}
+local Tile = class.create()
 
 function Tile:new(parent, physicsWorld, options)
 	--[[
@@ -39,9 +40,7 @@ function Tile:new(parent, physicsWorld, options)
 
 	]]
 	local options = options or {}
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 
 	obj.options = options or {}
 	obj.parent = parent

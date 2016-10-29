@@ -7,9 +7,10 @@
 
 ]]
 config = require "config"
+class = require "diresys/class"
 assets = require "diresys/assets"
 
-local ActorEngine = {}
+local ActorEngine = class.create()
 
 function ActorEngine:new(physics_world, options)
 	local obj = {}

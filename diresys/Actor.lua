@@ -14,12 +14,13 @@
 ]]
 require "diresys/utils"
 config = require "config"
+class = require "diresys/class"
 f = require "diresys/func"
 assets = require "diresys/assets"
 phys = require "diresys/phys"
 gfx = require "diresys/gfx"
 
-local Actor = {}
+local Actor = class.create()
 
 function Actor:new(parent, physicsWorld, options)
 	--[[
@@ -40,9 +41,7 @@ function Actor:new(parent, physicsWorld, options)
 		world. [default:{x=0, y=0}]
 		
 	]]
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
+	local obj = self:classInit()
 	local options = options or {}
 	obj.parent_type = "actor"
 	obj.type = "actor"

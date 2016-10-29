@@ -2,25 +2,17 @@
 	Closet Tile
 ]]
 config = require "config"
+class = require "diresys/class"
 f = require "diresys/func"
 Tile = require "diresys/Tile"
 anim = require "diresys/anim"
 
-local ClosetTile = {}
+local ClosetTile = class.create(Tile)
 
 function ClosetTile:new(parent, physicsWorld, options)
-	local obj = Tile:new(parent, physicsWorld, options)
+	local obj = Tile.new(self, parent, physicsWorld, options)
 	obj.type = "closettile"
 	obj.hiddenPlayer = nil
-
-	-- Methods
-	obj.update = ClosetTile.update
-	obj.action_use = ClosetTile.action_use
-	obj.toggleHiding = ClosetTile.toggleHiding
-	obj.goIntoHiding = ClosetTile.goIntoHiding
-	obj.getOutOfHiding = ClosetTile.getOutOfHiding
-	obj.handleOpened = ClosetTile.handleOpened
-	obj.handleClosed = ClosetTile.handleClosed
 
 	-- Graphics
 	obj.graphics:setForeground({key="closet_upper0", offset={0, -2}})
