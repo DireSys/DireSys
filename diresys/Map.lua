@@ -12,6 +12,7 @@ f = require "diresys/func"
 assets = require "diresys/assets"
 TileEngine = require "diresys/TileEngine"
 ActorEngine = require "diresys/ActorEngine"
+LightEngine = require "diresys/LightEngine"
 FloorTile = require "diresys/FloorTile"
 WallTile = require "diresys/WallTile"
 DoorTile = require "diresys/DoorTile"
@@ -48,6 +49,7 @@ function Map:new(options)
 								   obj.physicsContactEnd)
 	obj.tileEngine = TileEngine:new(obj.physicsWorld)
 	obj.actorEngine = ActorEngine:new(obj.physicsWorld)
+	obj.lightEngine = LightEngine:new(obj)
 
 	obj.lightSourceList = {}
     obj.lightsUpdated = true 
@@ -102,8 +104,9 @@ function Map:draw()
 	self.tileEngine:draw_tiles(viewx, viewy, 1)
 	self.actorEngine:draw_actors(viewx, viewy, 1)
 	self.tileEngine:draw_tiles(viewx, viewy, 2)
-	self.tileEngine:draw_shadows(lights, sendLights, viewx, viewy, 3)
-	hud.draw()
+	--self.tileEngine:draw_shadows(lights, sendLights, viewx, viewy, 3)
+	self.lightEngine:draw(viewx, viewy)
+	hud.draw(viewx, viewy)
 
     self.lightsUpdated = false
 end
@@ -350,6 +353,7 @@ function Map:createOmniLight(tilex, tiley)
 	}
 	local omniLight = lights.OmniLightSource:new(self.tileEngine, {position=position})
 	table.insert(self.lightSourceList, omniLight)
+	self.lightEngine:addLight(omniLight)
     self.lightsUpdated = true
 	return omniLight
 end
@@ -416,6 +420,36 @@ function Map:setBackgroundMusic(asset_name)
 	]]
     self.backgroundMusic = assets.get_music(asset_name)
 	self.backgroundMusic:setVolume(0.5)
+end
+
+function Map:getBounds()
+	--[[
+
+		Gets the map's maximum width and height
+		
+		Return Value:
+
+		table with the keys "width" and "height"
+	]]
+	
+	local tileList = self:getTileList()
+	local maxWidth = 0
+	local maxHeight = 0
+	for _, tile in pairs(tileList) do
+		x, y = tile:getTilePosition()
+		if x > maxWidth then
+			maxWidth = x
+		end
+		
+		if y > maxHeight then
+			maxHeight = y
+		end
+	end
+
+	return {
+		width=maxWidth+1,
+		height=maxHeight+1,
+	}
 end
 
 return Map

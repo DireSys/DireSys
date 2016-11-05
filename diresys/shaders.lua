@@ -1,5 +1,35 @@
 local shaders = {}
 
+local SHADER_FOLDER = "./assets/shaders"
+
+function create(include_files, content)
+	--[[
+
+		Keyword Arguments:
+
+		include_files -- a list of files prepended to the string
+		representing the shader. The files are grabbed from
+		SHADER_FOLDER
+
+		content -- a string, containing the contents of the shader
+
+	]]
+	include_files = include_files or {}
+	content = content or ""
+	local shaderString = ""
+	for _, includeFile in ipairs(include_files) do
+		local includePath = SHADER_FOLDER .. "/" .. includeFile
+		local f = assert(io.open(includePath, "r"))
+		local s = f:read("*all")
+		f:close()
+		shaderString = shaderString .. s
+	end
+
+	shaderString = shaderString .. content
+
+	return love.graphics.newShader(shaderString)
+end
+
 shaders.test_0 = love.graphics.newShader[[
     vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ){
         vec4 pixel;

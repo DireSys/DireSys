@@ -8,6 +8,7 @@ assets = require "diresys/assets"
 f = require "diresys/func"
 pp = require "diresys/pp"
 shaders = require "diresys/shaders"
+perf = require "diresys/perf"
 
 local TileEngine = class.create()
 
@@ -169,10 +170,12 @@ function TileEngine:draw_shadows(lights, sendLights, viewx, viewy, layer)
             ]]
         end
 
+		perf.step("GFX Transfer")
         shader:send("light_positions", unpack(light_positions))
         shader:send("light_falloffs", unpack(light_falloffs))
         shader:send("light_limits", unpack(light_limits))
         shader:sendInt("light_count", #light_positions)
+		perf.step("GFX Transfer", {once=true})
 
         --[[
         if #obstructions > 0 then

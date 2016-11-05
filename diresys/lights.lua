@@ -21,6 +21,8 @@ lights.LightComponent = LightComponent
 function LightSource:new(gfxEngine, options)
     local obj = self:classInit()
     obj.options = options or {}
+
+	obj.parent_type = "light"
     obj.position = obj.options.position or {x=0.0, y=0.0}
 
     obj.tileEngine = gfxEngine
